@@ -244,6 +244,75 @@ footer {
     margin: 0;
 }
 
+/* Menu Styling */
+.menu-section {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.menu-section h3 {
+    position: relative;
+    font-size: 1.3em;
+    color: #ffffff;
+    margin-bottom: 30px;
+    padding: 20px 0;
+    overflow: hidden;
+}
+
+.menu-section h3 span {
+    display: inline-block;
+    position: relative;
+}
+
+.menu-section h3 span::before,
+.menu-section h3 span::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 100vw;
+    height: 1px;
+    background-color: #ffffff;
+}
+
+.menu-section h3 span::before {
+    right: 100%;
+    margin-right: 15px;
+}
+
+.menu-section h3 span::after {
+    left: 100%;
+    margin-left: 15px;
+}
+
+.menu-items {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-items li:first-child {
+    margin-top: 20px; /* Add space above the first menu item */
+}
+
+.menu-items li {
+    margin-bottom: 20px;
+}
+
+.menu-items li strong {
+    display: block;
+    font-size: 1.1em;
+    color: #4a90e2; /* Blue color for the dish name */
+    margin-bottom: 5px;
+}
+
+.menu-items li p {
+    margin: 0 auto; /* Center the paragraph text */
+    font-size: 0.9em;
+    color: #bdc3c7; /* Light gray color for the description */
+    line-height: 1.4;
+    max-width: 80%; /* Limit the width of the description for better readability */
+}
+
 /* Media query for desktop screens */
 @media screen and (min-width: 1024px) {
     main {
@@ -303,25 +372,5 @@ footer {
     .header-content {
         max-width: 1200px; /* Limit the width of the header content */
         margin: 0 auto; /* Center the header content */
-    }
-
-    main {
-        padding: 40px;
-    }
-
-    #container {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        flex-wrap: wrap;
-    }
-
-    #container > div {
-        width: calc(33.333% - 20px);
-        margin-bottom: 30px;
-    }
-
-    #container img {
-        height: 300px;
     }
 }
