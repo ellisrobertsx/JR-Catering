@@ -1,12 +1,21 @@
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded and parsed');
+
     const burgerBtn = document.getElementById('burger-btn');
     const navLinks = document.getElementById('nav-links');
+    const dropdownBtns = document.querySelectorAll('.dropbtn');
+
+    console.log('Burger button:', burgerBtn);
+    console.log('Nav links:', navLinks);
 
     if (burgerBtn && navLinks) {
+        console.log('Both burger button and nav links found');
         burgerBtn.addEventListener('click', function(event) {
-            event.stopPropagation(); // Prevent the click from propagating to the document
+            console.log('Burger button clicked');
+            event.stopPropagation();
             navLinks.classList.toggle('nav-active');
             burgerBtn.classList.toggle('open');
+            console.log('Nav active:', navLinks.classList.contains('nav-active'));
         });
 
         // Close the menu when clicking outside
@@ -14,14 +23,41 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!navLinks.contains(event.target) && !burgerBtn.contains(event.target)) {
                 navLinks.classList.remove('nav-active');
                 burgerBtn.classList.remove('open');
+                console.log('Clicked outside, closing menu');
             }
         });
     } else {
-        if (!burgerBtn) console.error('Burger button not found!');
-        if (!navLinks) console.error('Nav links not found!');
+        console.log('Burger button or nav links not found');
     }
 
-    // Image gallery rotation
+
+    // Handle dropdowns on mobile
+    dropdownBtns.forEach(function(btn) {
+        btn.addEventListener('click', function(event) {
+            if (window.innerWidth < 1024) {
+                event.preventDefault();
+                const dropdownContent = this.nextElementSibling;
+                dropdownContent.style.display = 
+                    dropdownContent.style.display === 'block' ? 'none' : 'block';
+            }
+        });
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.matches('.dropbtn')) {
+            const dropdowns = document.getElementsByClassName('dropdown-content');
+            for (let i = 0; i < dropdowns.length; i++) {
+                const openDropdown = dropdowns[i];
+                if (openDropdown.style.display === 'block') {
+                    openDropdown.style.display = 'none';
+                }
+            }
+        }
+    });
+
+
+    
     const images = document.querySelectorAll('.gallery-image');
     let currentIndex = 0;
 
@@ -32,4 +68,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     setInterval(rotateImage, 5000); // Change image every 5 seconds
+    
 });

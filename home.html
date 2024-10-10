@@ -6,12 +6,13 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <!--Favicon-->
     <script src="https://kit.fontawesome.com/3388b1b6ae.js" crossorigin="anonymous"></script>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <title>JR Catering</title>
 </head>
 <body>
     <header>
         <div class="header-content">
-            <a href="#" id="logo">JR Catering</a>
+            <a href="home.html" id="logo">JR Catering</a>
             <nav>
                 <button id="burger-btn" class="burger-btn" aria-label="Toggle menu">
                     <span class="burger-icon"></span>
@@ -19,14 +20,13 @@
                 <ul id="nav-links" class="nav-links">
                     <li><a href="#">Home</a></li>
                     <li class="dropdown">
-                        <a href="#" class="dropbtn">Menu</a>
+                        <a href="#" class="dropbtn">Menus</a>
                         <div class="dropdown-content">
                             <a href="menu.html">Food Menu</a>
                             <a href="drinks.html">Drinks Menu</a>
                         </div>
                     </li>
                     <li><a href="#">Book</a></li>
-                    <li><a href="#">About</a></li>
                     <li><a href="#">Contact</a></li>
                     <li><a href="#">Login</a></li>
 
@@ -48,16 +48,22 @@
         <p>We are a catering company that specializes in providing high-quality food and service to our clients.</p>
         <section id="container">
             <div class="book-table">
-                <img src="assets/images/table.jpg" alt="Table">
-                <h2>Book a Table</h2>
+                <a href="book.html">
+                    <img src="assets/images/table.jpg" alt="Table">
+                    <h2>Book a Table</h2>
+                </a>
             </div>
             <div class="book-table">
-                <img src="assets/images/food.jpg" alt="Food">
-                <h2>Food Menu</h2>
+                <a href="menu.html">
+                    <img src="assets/images/food.jpg" alt="Food">
+                    <h2>Food Menu</h2>
+                </a>
             </div>
             <div class="book-table">
-                <img src="assets/images/drinks.jpg" alt="Drinks">
-                <h2>Drinks Menu</h2>
+                <a href="drinks.html">
+                    <img src="assets/images/drinks.jpg" alt="Drinks">
+                    <h2>Drinks Menu</h2>
+                </a>
             </div>
         </section>
     </main>

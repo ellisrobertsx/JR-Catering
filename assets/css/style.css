@@ -342,6 +342,16 @@ footer {
     display: block;
 }
 
+.book-table a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.book-table a:hover {
+    opacity: 0.8;
+}
+
 
 
 /* Media query for desktop screens */
