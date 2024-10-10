@@ -22,6 +22,7 @@ main {
     flex: 1 0 auto;
     text-align: center; /* Centers all inline content */
     padding: 20px; /* Adds some space around the content */
+    background-color: #0f1925;
 }
 
 main h1 {
@@ -35,7 +36,7 @@ main p {
 }
 
 header {
-    background-color: #0f1925; /* Slightly darker blue for the header */
+    background-color: #1a2a3a; /* Slightly darker blue for the header */
     padding: 15px;
     position: relative;
     z-index: 1000; /* Ensure header is above other content */
@@ -96,7 +97,7 @@ nav {
     position: fixed; /* Changed from absolute to fixed */
     top: 60px; /* Adjust based on your header height */
     right: 0;
-    background-color: #0f1925;
+    background-color: #1a2a3a;
     width: 200px;
     padding: 20px;
     border-radius: 0 0 0 10px;
@@ -164,9 +165,12 @@ nav {
 
 #container {
     width: 100%;
-    max-width: 800px; /* Match this to your gallery max-width */
-    margin: 30px auto; /* Centers the container and adds space above/below */
+    max-width: 800px;
+    margin: 30px auto;
     text-align: center;
+    background-color: #1a2a3a; /* This color is now matched in header and nav-links */
+    padding: 20px;
+    border-radius: 15px;
 }
 
 #container > div {
@@ -209,7 +213,7 @@ nav {
 
 footer {
     margin-top: auto;
-    background-color: #0f1925; /* Slightly darker blue for the footer, matching the header */
+    background-color: #1a2a3a; /* Slightly darker blue for the footer, matching the header */
     padding: 20px;
     text-align: center;
 }
@@ -238,4 +242,86 @@ footer {
 
 #footer-text {
     margin: 0;
+}
+
+/* Media query for desktop screens */
+@media screen and (min-width: 1024px) {
+    main {
+        padding: 40px; /* Increase padding for larger screens */
+    }
+    
+    #container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    #container > div {
+        width: calc(33.333% - 20px); /* Subtracting margin */
+        margin-bottom: 30px;
+    }
+
+    #container img {
+        height: 300px; /* Adjust this value as needed */
+    }
+
+    .burger-btn {
+        display: none; /* Hide the burger menu button */
+    }
+
+    nav {
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-links {
+        position: static;
+        display: flex;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        background-color: transparent;
+        width: auto;
+        padding: 0;
+        box-shadow: none;
+    }
+
+    .nav-links li {
+        margin: 0 0 0 20px; /* Add some space between nav items */
+    }
+
+    .nav-links a {
+        font-size: 16px;
+        transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+        color: #4a90e2; /* Add a hover effect */
+    }
+
+    .header-content {
+        max-width: 1200px; /* Limit the width of the header content */
+        margin: 0 auto; /* Center the header content */
+    }
+
+    main {
+        padding: 40px;
+    }
+
+    #container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    #container > div {
+        width: calc(33.333% - 20px);
+        margin-bottom: 30px;
+    }
+
+    #container img {
+        height: 300px;
+    }
 }
