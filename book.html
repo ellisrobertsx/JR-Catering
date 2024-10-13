@@ -35,41 +35,42 @@
             </nav>
         </div>
     </header>
-    
     <main>
-        
-        <div class="image-gallery">
-            <img src="assets/images/img1.jpg" alt="Description of image 1" class="gallery-image active">
-            <img src="assets/images/img2.jpg" alt="Description of image 2" class="gallery-image">
-            <img src="assets/images/img3.jpg" alt="Description of image 3" class="gallery-image">
-            <img src="assets/images/img4.jpg" alt="Description of image 4" class="gallery-image">
+        <div class="booking-container">
+            <h2>Book a Table</h2>
+            <form action="/book" method="POST" class="booking-form">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone:</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="time">Time:</label>
+                    <input type="time" id="time" name="time" required>
+                </div>
+                <div class="form-group">
+                    <label for="guests">Number of Guests:</label>
+                    <input type="number" id="guests" name="guests" min="1" max="10" required>
+                </div>
+                <div class="form-group">
+                    <label for="special-requests">Special Requests:</label>
+                    <textarea id="special-requests" name="special-requests"></textarea>
+                </div>
+                <button type="submit">Book Now</button>
+            </form>
         </div>
-
-        <h1>Welcome to JR Catering</h1>
-        <p>We are a catering company that specializes in providing high-quality food and service to our clients.</p>
-        <section id="container">
-            <div class="book-table">
-                <a href="book.html">
-                    <img src="assets/images/table.jpg" alt="Table">
-                    <h2>Book a Table</h2>
-                </a>
-            </div>
-            <div class="book-table">
-                <a href="menu.html">
-                    <img src="assets/images/food.jpg" alt="Food">
-                    <h2>Food Menu</h2>
-                </a>
-            </div>
-            <div class="book-table">
-                <a href="drinks.html">
-                    <img src="assets/images/drinks.jpg" alt="Drinks">
-                    <h2>Drinks Menu</h2>
-                </a>
-            </div>
-        </section>
     </main>
-   
-    
     <footer>
         <ul id="social-networks">
             <li>
@@ -90,7 +91,5 @@
         </ul>
         <p id="footer-text">&copy; 2024 JR Catering. All rights reserved.</p>
     </footer>
-
-    <script src="assets/js/script.js"></script>
 </body>
 </html>

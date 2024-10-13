@@ -479,6 +479,244 @@ form button:hover {
     margin-bottom: 10px;
 }
 
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.login-container h2 {
+    color: var(--accent-color);
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 10px 0;
+    border-bottom: 2px solid var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.login-form .form-group {
+    margin-bottom: 20px;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-color);
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--accent-color);
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    font-size: 16px;
+}
+
+.login-form input[type="text"]:focus,
+.login-form input[type="password"]:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+}
+
+.login-form button {
+    display: inline-block;
+    width: auto;  /* Changed from 100% */
+    min-width: 120px;  /* Ensure a minimum width */
+    padding: 10px 15px;
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-form button:hover {
+    background-color: var(--hover-color);
+}
+
+.login-form {
+    text-align: center;
+}
+
+/* Registration Form Styling */
+.register-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.register-container h2 {
+    color: var(--accent-color);
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 10px 0;
+    border-bottom: 2px solid var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.register-form .form-group {
+    margin-bottom: 20px;
+}
+
+.register-form label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-color);
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.register-form input[type="text"],
+.register-form input[type="email"],
+.register-form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--accent-color);
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    font-size: 16px;
+}
+
+.register-form input[type="text"]:focus,
+.register-form input[type="email"]:focus,
+.register-form input[type="password"]:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+}
+
+.register-form button {
+    display: inline-block;
+    width: auto;
+    min-width: 120px;
+    padding: 10px 15px;
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.register-form button:hover {
+    background-color: var(--hover-color);
+}
+
+/* Center the button */
+.register-form {
+    text-align: center;
+}
+
+/* Booking Form Styling */
+.booking-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.booking-container h2 {
+    color: var(--accent-color);
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 10px 0;
+    border-bottom: 2px solid var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.booking-form .form-group {
+    margin-bottom: 20px;
+}
+
+.booking-form label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-color);
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.booking-form input[type="text"],
+.booking-form input[type="email"],
+.booking-form input[type="tel"],
+.booking-form input[type="date"],
+.booking-form input[type="time"],
+.booking-form input[type="number"],
+.booking-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--accent-color);
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    font-size: 16px;
+}
+
+.booking-form input:focus,
+.booking-form textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+}
+
+.booking-form textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+.booking-form button {
+    display: inline-block;
+    width: auto;
+    min-width: 120px;
+    padding: 10px 15px;
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.booking-form button:hover {
+    background-color: var(--hover-color);
+}
+
+/* Center the button */
+.booking-form {
+    text-align: center;
+}
+
 /* Media query for desktop screens */
 @media screen and (min-width: 768px) {
     main {
@@ -586,5 +824,30 @@ form button:hover {
     .contact-info h2,
     .opening-hours h2 {
         font-size: 2em;
+    }
+
+    .login-container {
+        padding: 20px;
+    }
+
+    .login-container h2 {
+        font-size: 1.5em;
+    }
+
+    .login-form input[type="text"],
+    .login-form input[type="password"],
+    .login-form button {
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+
+    register-form button {
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+
+    .booking-form button {
+        padding: 12px 20px;
+        font-size: 16px;
     }
 }

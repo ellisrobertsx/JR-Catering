@@ -35,41 +35,23 @@
             </nav>
         </div>
     </header>
-    
     <main>
-        
-        <div class="image-gallery">
-            <img src="assets/images/img1.jpg" alt="Description of image 1" class="gallery-image active">
-            <img src="assets/images/img2.jpg" alt="Description of image 2" class="gallery-image">
-            <img src="assets/images/img3.jpg" alt="Description of image 3" class="gallery-image">
-            <img src="assets/images/img4.jpg" alt="Description of image 4" class="gallery-image">
+        <div class="login-container">
+            <h2>Login</h2>
+            <form action="/login" method="POST" class="login-form">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit">Login</button>
+                <p>Don't have an account? <a href="register.html">Register</a></p>
+            </form>
         </div>
-
-        <h1>Welcome to JR Catering</h1>
-        <p>We are a catering company that specializes in providing high-quality food and service to our clients.</p>
-        <section id="container">
-            <div class="book-table">
-                <a href="book.html">
-                    <img src="assets/images/table.jpg" alt="Table">
-                    <h2>Book a Table</h2>
-                </a>
-            </div>
-            <div class="book-table">
-                <a href="menu.html">
-                    <img src="assets/images/food.jpg" alt="Food">
-                    <h2>Food Menu</h2>
-                </a>
-            </div>
-            <div class="book-table">
-                <a href="drinks.html">
-                    <img src="assets/images/drinks.jpg" alt="Drinks">
-                    <h2>Drinks Menu</h2>
-                </a>
-            </div>
-        </section>
     </main>
-   
-    
     <footer>
         <ul id="social-networks">
             <li>
@@ -90,7 +72,5 @@
         </ul>
         <p id="footer-text">&copy; 2024 JR Catering. All rights reserved.</p>
     </footer>
-
-    <script src="assets/js/script.js"></script>
 </body>
 </html>
