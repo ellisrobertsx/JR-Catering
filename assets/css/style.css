@@ -1,3 +1,12 @@
+:root {
+    --primary-color: #333333;
+    --secondary-color: #4a4a4a;
+    --accent-color: #d4af37;  /* Gold */
+    --text-color: #f0f0f0;
+    --background-color: #1a1a1a;
+    --hover-color: #555555;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -9,37 +18,38 @@ html, body {
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: #1a2a3a; /* Dark blue background */
-    color: #ffffff; /* White text for better contrast */
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 main {
     flex: 1 0 auto;
-    text-align: center; /* Centers all inline content */
-    padding: 20px; /* Adds some space around the content */
-    background-color: #0f1925;
+    text-align: center;
+    padding: 20px;
+    background-color: var(--background-color);
 }
 
 main h1 {
-    margin-bottom: 20px; /* Adds space below the heading */
+    margin-bottom: 20px;
+    color: var(--accent-color);
 }
 
 main p {
-    max-width: 600px; /* Limits the width of paragraphs for better readability */
-    margin: 0 auto; /* Centers the paragraph if it's narrower than its container */
-    line-height: 1.6; /* Improves readability of the text */
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
 }
 
 header {
-    background-color: #1a2a3a; /* Slightly darker blue for the header */
+    background-color: var(--primary-color);
     padding: 15px;
     position: relative;
-    z-index: 1000; /* Ensure header is above other content */
+    z-index: 1000;
 }
 
 .header-content {
@@ -51,7 +61,7 @@ header {
 #logo {
     font-size: 24px;
     font-weight: bold;
-    color: #ffffff; /* White color for the logo text */
+    color: var(--accent-color);
     text-decoration: none;
 }
 
@@ -65,7 +75,7 @@ nav {
     border: none;
     cursor: pointer;
     padding: 10px;
-    z-index: 1002; /* Increased z-index */
+    z-index: 1002;
 }
 
 .burger-icon,
@@ -74,7 +84,7 @@ nav {
     display: block;
     width: 25px;
     height: 3px;
-    background-color: #ffffff; /* White color for burger icon */
+    background-color: var(--text-color);
     position: relative;
     transition: all 0.3s;
 }
@@ -94,10 +104,10 @@ nav {
 }
 
 .nav-links {
-    position: fixed; /* Changed from absolute to fixed */
-    top: 60px; /* Adjust based on your header height */
+    position: fixed;
+    top: 60px;
     right: 0;
-    background-color: #1a2a3a;
+    background-color: var(--primary-color);
     width: 200px;
     padding: 20px;
     border-radius: 0 0 0 10px;
@@ -106,7 +116,7 @@ nav {
     visibility: hidden;
     transform: translateY(-10px);
     transition: all 0.3s ease-in-out;
-    z-index: 1001; /* Ensure nav links are above other content */
+    z-index: 1001;
     list-style-type: none;
 }
 
@@ -122,8 +132,13 @@ nav {
 
 .nav-links a {
     text-decoration: none;
-    color: #ffffff; /* White color for nav links */
+    color: var(--text-color);
     font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--accent-color);
 }
 
 .burger-btn.open .burger-icon {
@@ -141,10 +156,10 @@ nav {
 .image-gallery {
     position: relative;
     width: 100%;
-    max-width: 800px; /* Adjust this value as needed */
-    height: 450px; /* Adjust this value as needed */
-    margin: 0 auto 30px; /* Centers the gallery and adds space below */
-    background-color: #2c3e50; /* Slightly lighter blue for image background */
+    max-width: 800px;
+    height: 450px;
+    margin: 0 auto 30px;
+    background-color: var(--secondary-color);
     overflow: hidden;
 }
 
@@ -168,52 +183,43 @@ nav {
     max-width: 800px;
     margin: 30px auto;
     text-align: center;
-    background-color: #1a2a3a; /* This color is now matched in header and nav-links */
+    background-color: var(--primary-color);
     padding: 20px;
     border-radius: 15px;
 }
 
 #container > div {
-    border: 4px solid #4a90e2; /* Thicker, more vibrant blue border */
-    border-radius: 15px; /* Increased border radius for a softer look */
+    border: 4px solid var(--accent-color);
+    border-radius: 15px;
     padding: 20px;
-    margin-bottom: 30px; /* Space between container elements */
-    background-color: #2c3e50; /* Slightly lighter than the body background */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Increased shadow for more depth */
-    overflow: hidden; /* Ensures the inner elements don't overflow the rounded corners */
+    margin-bottom: 30px;
+    background-color: var(--secondary-color);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
 }
 
 #container img {
     width: 100%;
-    height: 400px; /* Reduced height */
+    height: 400px;
     object-fit: contain;
-    background-color: #1a2a3a; /* Matching the body background */
-    border-radius: 8px 8px 0 0; /* Rounded corners only on top */
-    margin-bottom: 0; /* Remove bottom margin */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Shadow to make image stand out */
+    background-color: var(--primary-color);
+    border-radius: 8px 8px 0 0;
+    margin-bottom: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 #container h2 {
-    margin: 0; /* Remove default margins */
-    padding: 15px 0; /* Add some vertical padding */
-    background-color: #1a2a3a; /* Same as image background */
-    color: #ffffff; /* Ensure text is white for contrast */
-    border-radius: 0 0 8px 8px; /* Rounded corners only on bottom */
-    font-size: 1.5em; /* Increased font size for better visibility */
-}
-
-#container .book-table {
-    border-color: #34495e; /* A different color for the Book a Table section */
-    background-color: #34495e; /* A slightly different background */
-}
-
-#container .book-table h2 {
-    background-color: #2c3e50; /* A different background for the heading */
+    margin: 0;
+    padding: 15px 0;
+    background-color: var(--primary-color);
+    color: var(--accent-color);
+    border-radius: 0 0 8px 8px;
+    font-size: 1.5em;
 }
 
 footer {
     margin-top: auto;
-    background-color: #1a2a3a; /* Slightly darker blue for the footer, matching the header */
+    background-color: var(--primary-color);
     padding: 20px;
     text-align: center;
 }
@@ -231,13 +237,13 @@ footer {
 }
 
 #social-networks a {
-    color: #ffffff; /* White color for social icons */
+    color: var(--text-color);
     font-size: 20px;
     transition: color 0.3s ease;
 }
 
 #social-networks a:hover {
-    color: #007bff;  /* Change this to your preferred hover color */
+    color: var(--accent-color);
 }
 
 #footer-text {
@@ -253,7 +259,7 @@ footer {
 .menu-section h3 {
     position: relative;
     font-size: 1.3em;
-    color: #ffffff;
+    color: var(--accent-color);
     margin-bottom: 30px;
     padding: 20px 0;
     overflow: hidden;
@@ -271,7 +277,7 @@ footer {
     top: 50%;
     width: 100vw;
     height: 1px;
-    background-color: #ffffff;
+    background-color: var(--accent-color);
 }
 
 .menu-section h3 span::before {
@@ -291,7 +297,7 @@ footer {
 }
 
 .menu-items li:first-child {
-    margin-top: 20px; /* Add space above the first menu item */
+    margin-top: 20px;
 }
 
 .menu-items li {
@@ -301,16 +307,16 @@ footer {
 .menu-items li strong {
     display: block;
     font-size: 1.1em;
-    color: #4a90e2; /* Blue color for the dish name */
+    color: var(--accent-color);
     margin-bottom: 5px;
 }
 
 .menu-items li p {
-    margin: 0 auto; /* Center the paragraph text */
+    margin: 0 auto;
     font-size: 0.9em;
-    color: #bdc3c7; /* Light gray color for the description */
+    color: var(--text-color);
     line-height: 1.4;
-    max-width: 80%; /* Limit the width of the description for better readability */
+    max-width: 80%;
 }
 
 /* Dropdown styles */
@@ -321,21 +327,21 @@ footer {
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #1a2a3a;
+    background-color: var(--primary-color);
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 }
 
 .dropdown-content a {
-    color: #ffffff;
+    color: var(--text-color);
     padding: 12px 16px;
     text-decoration: none;
     display: block;
 }
 
 .dropdown-content a:hover {
-    background-color: #2c3e50;
+    background-color: var(--hover-color);
 }
 
 .dropdown:hover .dropdown-content {
@@ -352,12 +358,131 @@ footer {
     opacity: 0.8;
 }
 
+/* Form Styling */
+.form-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 
+.form-container h2 {
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.5em;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    margin-bottom: 5px;
+    color: var(--text-color);
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+form input,
+form textarea {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--accent-color);
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+form input:focus,
+form textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+form button {
+    padding: 10px 15px;
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: var(--hover-color);
+}
+
+/* Map Container Styles */
+.map-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.map-container h2 {
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.5em;
+}
+
+.map-container iframe {
+    width: 100%;
+    height: 300px;
+    border-radius: 5px;
+}
+
+.contact-info h2,
+.opening-hours h2 {
+    color: var(--accent-color);
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 10px 0;
+    border-bottom: 2px solid var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.contact-info,
+.opening-hours {
+    background-color: var(--secondary-color);
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 100%;
+}
+
+.contact-info p,
+.opening-hours p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
 
 /* Media query for desktop screens */
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 768px) {
     main {
-        padding: 40px; /* Increase padding for larger screens */
+        padding: 40px;
     }
     
     #container {
@@ -368,16 +493,16 @@ footer {
     }
 
     #container > div {
-        width: calc(33.333% - 20px); /* Subtracting margin */
+        width: calc(33.333% - 20px);
         margin-bottom: 30px;
     }
 
     #container img {
-        height: 300px; /* Adjust this value as needed */
+        height: 300px;
     }
 
     .burger-btn {
-        display: none; /* Hide the burger menu button */
+        display: none;
     }
 
     nav {
@@ -398,25 +523,68 @@ footer {
     }
 
     .nav-links li {
-        margin: 0 0 0 20px; /* Add some space between nav items */
+        margin: 0 0 0 20px;
     }
 
     .nav-links a {
         font-size: 16px;
-        transition: color 0.3s ease;
-    }
-
-    .nav-links a:hover {
-        color: #4a90e2; /* Add a hover effect */
     }
 
     .header-content {
-        max-width: 1200px; /* Limit the width of the header content */
-        margin: 0 auto; /* Center the header content */
+        max-width: 1200px;
+        margin: 0 auto;
     }
 
     .dropdown-content {
         top: 100%;
         left: 0;
+    }
+
+    .form-container, .map-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 30px;
+        border-radius: 15px;
+    }
+
+    .form-container h2, .map-container h2 {
+        font-size: 1.8em;
+        margin-bottom: 30px;
+    }
+
+    form label {
+        font-size: 1em;
+        margin-bottom: 8px;
+    }
+
+    form input,
+    form textarea {
+        padding: 12px;
+        margin-bottom: 20px;
+        font-size: 16px;
+    }
+
+    form textarea {
+        min-height: 100px;
+    }
+
+    form button {
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+
+    .map-container iframe {
+        height: 450px;
+    }
+    
+    .contact-info,
+    .opening-hours {
+        max-width: 600px;
+        padding: 30px;
+    }
+
+    .contact-info h2,
+    .opening-hours h2 {
+        font-size: 2em;
     }
 }
