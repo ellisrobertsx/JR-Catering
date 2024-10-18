@@ -1,0 +1,2 @@
+DATABASE_URL=postgresql://username:password@localhost/jr_catering
+SECRET_KEY=your_secret_key
