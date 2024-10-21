@@ -6,7 +6,7 @@ from datetime import datetime
 import bcrypt
 
 # Create the SQLAlchemy engine
-DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://username:password@localhost/jr_catering')
+DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///jr_catering.db')
 engine = create_engine(DATABASE_URL)
 
 # Create a base class for declarative class definitions

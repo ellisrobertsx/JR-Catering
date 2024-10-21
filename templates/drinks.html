@@ -3,32 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
     <!--Favicon-->
     <script src="https://kit.fontawesome.com/3388b1b6ae.js" crossorigin="anonymous"></script>
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <title>JR Catering - Drinks Menu</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <title>JR Catering</title>
 </head>
 <body>
     <header>
         <div class="header-content">
-            <a href="index.html" id="logo">JR Catering</a>
+            <a href="{{ url_for('home') }}" id="logo">JR Catering</a>
             <nav>
                 <button id="burger-btn" class="burger-btn" aria-label="Toggle menu">
                     <span class="burger-icon"></span>
                 </button>
                 <ul id="nav-links" class="nav-links">
-                    <li><a href="index.html">Home</a></li>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
                     <li class="dropdown">
-                        <a href="menu.html" class="dropbtn">Menus</a>
+                        <a href="{{ url_for('menu') }}" class="dropbtn">Menus</a>
                         <div class="dropdown-content">
-                            <a href="menu.html">Food Menu</a>
-                            <a href="drinks.html">Drinks Menu</a>
+                            <a href="{{ url_for('menu') }}">Food Menu</a>
+                            <a href="{{ url_for('drinks') }}">Drinks Menu</a>
                         </div>
                     </li>
-                    <li><a href="book.html">Book</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a href="login.html">Login</a></li>
+                    <li><a href="{{ url_for('book') }}">Book</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
                 </ul>
             </nav>
         </div>
@@ -138,6 +138,6 @@
         <p id="footer-text">&copy; 2024 JR Catering. All rights reserved.</p>
     </footer>
 
-    <script src="assets/js/script.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
