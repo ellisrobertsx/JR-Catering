@@ -7,28 +7,34 @@
     <!--Favicon-->
     <script src="https://kit.fontawesome.com/3388b1b6ae.js" crossorigin="anonymous"></script>
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <title>JR Catering</title>
+    <title>Login</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 </head>
 <body>
     <header>
         <div class="header-content">
-            <a href="{{ url_for('home') }}" id="logo">JR Catering</a>
+            <a href="{{ url_for('index') }}" id="logo">JR Catering</a>
             <nav>
                 <button id="burger-btn" class="burger-btn" aria-label="Toggle menu">
                     <span class="burger-icon"></span>
                 </button>
                 <ul id="nav-links" class="nav-links">
-                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
                     <li class="dropdown">
                         <a href="{{ url_for('menu') }}" class="dropbtn">Menus</a>
                         <div class="dropdown-content">
-                            <a href="{{ url_for('menu') }}">Food Menu</a>
-                            <a href="{{ url_for('drinks') }}">Drinks Menu</a>
+                            <a href="{{ url_for('food_menu') }}">Food Menu</a>
+                            <a href="{{ url_for('drinks_menu') }}">Drinks Menu</a>
                         </div>
                     </li>
                     <li><a href="{{ url_for('book') }}">Book</a></li>
                     <li><a href="{{ url_for('contact') }}">Contact</a></li>
-                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    {% if 'username' in session %}
+                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Login</a></li>
+                    {% endif %}
                 </ul>
             </nav>
         </div>
@@ -36,18 +42,12 @@
     <main>
         <div class="login-container">
             <h2>Login</h2>
-            <form action="{{ url_for('login') }}" method="POST" class="login-form">
-                <div class="form-group">
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
+            <form id="login-form">
+                <input type="text" id="username" name="username" placeholder="Username" required><br>
+                <input type="password" id="password" name="password" placeholder="Password" required><br>
                 <button type="submit">Login</button>
-                <p>Don't have an account? <a href="{{ url_for('register') }}">Register</a></p>
             </form>
+            <div id="result"></div>
         </div>
     </main>
     <footer>
@@ -70,6 +70,24 @@
         </ul>
         <p id="footer-text">&copy; 2024 JR Catering. All rights reserved.</p>
     </footer>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(new FormData(e.target)),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').textContent = JSON.stringify(data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
 </body>
 </html>
