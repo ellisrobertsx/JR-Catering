@@ -7,6 +7,13 @@
     <h1>Add Menu Item</h1>
     <form method="POST">
         <div>
+            <label for="menu_type">Menu Type:</label>
+            <select id="menu_type" name="menu_type" required>
+                <option value="food">Food Menu</option>
+                <option value="drink">Drinks Menu</option>
+            </select>
+        </div>
+        <div>
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
         </div>
@@ -18,7 +25,7 @@
             <label for="price">Price:</label>
             <input type="number" id="price" name="price" step="0.01" required>
         </div>
-        <div>
+        <div id="food_categories" class="category-select">
             <label for="category">Category:</label>
             <select id="category" name="category" required>
                 <option value="Starters">Starters</option>
@@ -26,8 +33,29 @@
                 <option value="Desserts">Desserts</option>
             </select>
         </div>
+        <div id="drink_categories" class="category-select" style="display:none;">
+            <label for="drink_category">Category:</label>
+            <select id="drink_category" name="drink_category">
+                <option value="Wine">Wine</option>
+                <option value="Beer">Beer</option>
+                <option value="Cocktails">Cocktails</option>
+            </select>
+        </div>
         <button type="submit">Add Item</button>
     </form>
+
+    <script>
+        document.getElementById('menu_type').addEventListener('change', function() {
+            const foodCats = document.getElementById('food_categories');
+            const drinkCats = document.getElementById('drink_categories');
+            if (this.value === 'food') {
+                foodCats.style.display = 'block';
+                drinkCats.style.display = 'none';
+            } else {
+                foodCats.style.display = 'none';
+                drinkCats.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>
-

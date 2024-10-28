@@ -7,7 +7,7 @@
     <!--Favicon-->
     <script src="https://kit.fontawesome.com/3388b1b6ae.js" crossorigin="anonymous"></script>
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <title>JR Catering</title>
+    <title>JR Catering - Drinks Menu</title>
 </head>
 <body>
     <header>
@@ -40,85 +40,20 @@
 
     <main>
         <h1>Drinks Menu</h1>
+        {% for category, items in menu_items.items() %}
         <div class="menu-section">
-            <h3><span>Wines</span></h3>
+            <h3><span>{{ category }}</span></h3>
             <ul class="menu-items">
+                {% for item in items %}
                 <li>
-                    <strong>Chardonnay</strong>
-                    <p>A white wine with a rich, buttery texture and a hint of citrus</p>
+                    <strong>{{ item.name }}</strong>
+                    <span class="price">£{{ "%.2f"|format(item.price) }}</span>
+                    <p>{{ item.description }}</p>
                 </li>
-                <li>
-                    <strong>Merlot</strong>
-                    <p>A red wine with a rich, fruity flavor and a smooth texture</p>
-                </li>
-                <li>
-                    <strong>Cabernet Sauvignon</strong>
-                    <p>A full-bodied red wine with notes of black currant and cedar</p>
-                </li>
-                <li>
-                    <strong>Pinot Noir</strong>
-                    <p>A light-bodied red wine with flavors of cherry and earth</p>
-                </li>
-                <li>
-                    <strong>Prosecco</strong>
-                    <p>A sparkling white wine with crisp apple and pear notes</p>
-                </li>
-                <li>
-                    <strong>Cava</strong>
-                    <p>A Spanish sparkling wine with citrus and almond flavors</p>
-                </li>
+                {% endfor %}
             </ul>
         </div>
-        <div class="menu-section">
-            <h3><span>Beers</span></h3>
-            <ul class="menu-items">
-                <li>
-                    <strong>Guinness</strong>
-                    <p>Irish dry stout with a creamy texture and roasted flavor</p>
-                </li>
-                <li>
-                    <strong>Carlsberg</strong>
-                    <p>Danish pilsner with a balanced hop and malt profile</p>
-                </li>
-                <li>
-                    <strong>Heineken</strong>
-                    <p>Dutch pale lager with a crisp and slightly bitter taste</p>
-                </li>
-                <li>
-                    <strong>Budweiser</strong>
-                    <p>American-style lager with a clean, crisp taste</p>
-                </li>
-                <li>
-                    <strong>Stella Artois</strong>
-                    <p>Belgian pilsner with a well-balanced flavor and subtle bitterness</p>
-                </li>
-                <li>
-                    <strong>Corona</strong>
-                    <p>Mexican pale lager with a light, refreshing taste</p>
-                </li>
-            </ul>
-        </div>
-        <div class="menu-section">
-            <h3><span>Cocktails</span></h3>
-            <ul class="menu-items">
-                <li>
-                    <strong>Mojito</strong>
-                    <p>Refreshing, minty, and fizzy rum cocktail</p>
-                </li>
-                <li>
-                    <strong>Margarita</strong>
-                    <p>Tequila, triple sec, and lime juice, served with salt</p>
-                </li>
-                <li>
-                    <strong>Cosmopolitan</strong>
-                    <p>Vodka cocktail with cranberry juice, lime, and orange liqueur</p>
-                </li>
-                <li>
-                    <strong>Mimosa</strong>
-                    <p>Chilled citrus juice and sparkling wine, topped with champagne</p>
-                </li>
-            </ul>
-        </div>
+        {% endfor %}
     </main>
 
     <footer>

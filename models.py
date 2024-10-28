@@ -11,3 +11,12 @@ class MenuItem(Base):
     description = Column(String(500))
     price = Column(Float, nullable=False)
     category = Column(String(50), nullable=False)  # 'Starters', 'Main Course', 'Desserts'
+
+class DrinkItem(Base):
+    __tablename__ = 'drink_items'
+    
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    description = Column(String(500))
+    price = Column(Float, nullable=False)
+    category = Column(String(50), nullable=False) 

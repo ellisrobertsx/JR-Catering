@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from models import Base, MenuItem
+from models import Base, MenuItem, DrinkItem
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Change this to a random secret key
@@ -141,7 +141,34 @@ def food_menu():
 
 @app.route('/menu/drinks')
 def drinks_menu():
-    return render_template('drinks.html')
+    session = Session()
+    try:
+        # Query all drink items from database
+        drink_items = session.query(DrinkItem).all()
+        
+        # Initialize categories dictionary
+        menu_by_category = {
+            'Wine': [],
+            'Beer': [],
+            'Cocktails': []
+        }
+        
+        # Sort items into categories
+        for item in drink_items:
+            if item.category in menu_by_category:
+                menu_by_category[item.category].append(item)
+            
+        # Debug print
+        print("\nDebug: Categorized drinks:")
+        for category, items in menu_by_category.items():
+            print(f"{category}: {len(items)} items")
+            
+        return render_template('drinks.html', menu_items=menu_by_category)
+    except Exception as e:
+        print(f"Error loading drinks menu: {str(e)}")
+        return render_template('drinks.html', menu_items={})
+    finally:
+        session.close()
 
 @app.route('/book')
 def book():
@@ -156,15 +183,24 @@ def admin_menu():
     if request.method == 'POST':
         session = Session()
         try:
-            new_item = MenuItem(
-                name=request.form['name'],
-                description=request.form['description'],
-                price=float(request.form['price']),
-                category=request.form['category']
-            )
+            menu_type = request.form['menu_type']
+            if menu_type == 'food':
+                new_item = MenuItem(
+                    name=request.form['name'],
+                    description=request.form['description'],
+                    price=float(request.form['price']),
+                    category=request.form['category']
+                )
+            else:  # drink
+                new_item = DrinkItem(
+                    name=request.form['name'],
+                    description=request.form['description'],
+                    price=float(request.form['price']),
+                    category=request.form['drink_category']
+                )
             session.add(new_item)
             session.commit()
-            return jsonify({"message": "Menu item added successfully"}), 201
+            return jsonify({"message": "Item added successfully"}), 201
         finally:
             session.close()
     return render_template('admin_menu.html')
