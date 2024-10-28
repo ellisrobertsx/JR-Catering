@@ -1,10 +1,42 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from sqlalchemy import create_engine, text
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Change this to a random secret key
 
 # Dummy user data (replace this with a database later)
 users = {}
+
+# Connection URL format: postgresql://username:password@host:port/database_name
+DATABASE_URL = "postgresql://postgres:Burngask10!@localhost:5432/JR-CATERING"
+
+def test_db_connection():
+    try:
+        engine = create_engine(DATABASE_URL)
+        
+        with engine.connect() as connection:
+            # Basic connection test
+            result = connection.execute(text("SELECT 1"))
+            print("\n=== Database Connection Test ===")
+            print("✓ Basic connection test passed!")
+            
+            # Get PostgreSQL version
+            version = connection.execute(text("SELECT version()"))
+            print(f"✓ Connected to: {version.scalar()}")
+            
+            # Add this new test to check database name
+            current_db = connection.execute(text("SELECT current_database()"))
+            db_name = current_db.scalar()
+            print(f"✓ Connected to database: {db_name}")
+            
+            print("==============================\n")
+            return True
+            
+    except Exception as e:
+        print("\n=== Database Connection Error ===")
+        print(f"❌ Connection failed: {str(e)}")
+        print("==============================\n")
+        return False
 
 @app.route('/')
 def index():
@@ -59,4 +91,5 @@ def contact():
     return render_template('contact.html')
 
 if __name__ == '__main__':
+    test_db_connection()  # Test database connection before starting the app
     app.run(debug=True)
