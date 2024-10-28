@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from models import Base, MenuItem, DrinkItem
+from models import Base, MenuItem, DrinkItem, User
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Change this to a random secret key
@@ -51,24 +52,68 @@ def index():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
-        if username in users:
-            return jsonify({"error": "Username already exists"}), 400
-        users[username] = {"email": email, "password": password}
-        return jsonify({"message": "User registered successfully"}), 201
+        db_session = Session()
+        try:
+            # Get form data
+            username = request.form['username']
+            email = request.form['email']
+            password = request.form['password']
+            
+            # Check if username or email already exists
+            existing_user = db_session.query(User).filter(
+                (User.username == username) | (User.email == email)
+            ).first()
+            
+            if existing_user:
+                return jsonify({
+                    "error": "Username or email already exists"
+                }), 400
+            
+            # Create new user with hashed password
+            new_user = User(
+                username=username,
+                email=email,
+                password=generate_password_hash(password, method='pbkdf2:sha256')
+            )
+            
+            db_session.add(new_user)
+            db_session.commit()
+            return jsonify({"message": "User registered successfully"}), 201
+            
+        except Exception as e:
+            db_session.rollback()
+            print(f"Registration error: {str(e)}")
+            return jsonify({"error": "Registration failed"}), 500
+        finally:
+            db_session.close()
+            
     return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        if username in users and users[username]["password"] == password:
-            session['username'] = username
-            return jsonify({"message": "Logged in successfully"}), 200
-        return jsonify({"error": "Invalid username or password"}), 401
+        db_session = Session()
+        try:
+            username = request.form['username']
+            password = request.form['password']
+            
+            # Find user in database
+            user = db_session.query(User).filter_by(username=username).first()
+            
+            if user and check_password_hash(user.password, password):
+                session['username'] = username
+                session['user_id'] = user.id
+                session['is_admin'] = user.is_admin
+                return jsonify({"message": "Logged in successfully"}), 200
+            else:
+                return jsonify({"error": "Invalid username or password"}), 401
+                
+        except Exception as e:
+            print(f"Login error: {str(e)}")
+            return jsonify({"error": "Login failed"}), 500
+        finally:
+            db_session.close()
+            
     return render_template('login.html')
 
 @app.route('/logout')
