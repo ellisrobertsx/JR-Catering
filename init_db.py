@@ -1,7 +1,8 @@
 from app import engine, Session, MenuItem, Base
 
 def init_db():
-    # Create tables
+    # Drop existing tables and recreate them
+    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
     
     session = Session()
@@ -57,8 +58,62 @@ def init_db():
             category="Main Course"
         ),
         MenuItem(
+            name="Chicken Tikka Masala",
+            description="Chicken Tikka Masala with rice and naan bread",
+            price=14.99,
+            category="Main Course"
+        ),
+        MenuItem(
+            name="Beef Wellington",
+            description="Beef Wellington with mashed potatoes and vegetables",
+            price=24.99,
+            category="Main Course"
+        ),
+        MenuItem(
+            name="Fish and Chips",
+            description="Fish and Chips with hand-cut chips",
+            price=14.99,
+            category="Main Course"
+        ),
+        MenuItem(
+            name="Steak Pie",
+            description="Steak pie with mashed potatoes and vegetables",
+            price=14.99,
+            category="Main Course"
+        ),
+        MenuItem(
+            name="Lasagna",
+            description="Lasagna with marinara sauce",
+            price=14.99,
+            category="Main Course"
+        ),
+        MenuItem(
             name="Chocolate Cake",
             description="Rich chocolate cake with cream",
+            price=5.99,
+            category="Desserts"
+        ),
+        MenuItem(
+            name="Cheesecake",
+            description="Cheesecake with strawberry sauce",
+            price=5.99,
+            category="Desserts"
+        ),
+        MenuItem(
+            name="Apple Crumble",
+            description="Apple crumble with custard",
+            price=5.99,
+            category="Desserts"
+        ),
+        MenuItem(
+            name="Banana Bread",
+            description="Banana bread with cream cheese frosting",
+            price=5.99,
+            category="Desserts"
+        ),
+        MenuItem(
+            name="Chocolate Chip Cookies",
+            description="Chocolate chip cookies with milk",
             price=5.99,
             category="Desserts"
         )
@@ -68,6 +123,13 @@ def init_db():
         session.add_all(items)
         session.commit()
         print("Added sample menu items successfully!")
+        
+        # Add this to verify items were added
+        all_items = session.query(MenuItem).all()
+        print(f"\nVerifying added items:")
+        for item in all_items:
+            print(f"- {item.name} ({item.category})")
+            
     except Exception as e:
         print(f"Error adding menu items: {str(e)}")
         session.rollback()

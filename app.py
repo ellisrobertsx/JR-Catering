@@ -83,6 +83,42 @@ def menu():
         # Query all menu items from database
         menu_items = session.query(MenuItem).all()
         
+        # Debug print
+        print("\nDebug: Found menu items:")
+        for item in menu_items:
+            print(f"- {item.name} ({item.category})")
+        
+        # Initialize categories dictionary
+        menu_by_category = {
+            'Starters': [],
+            'Main Course': [],
+            'Desserts': []
+        }
+        
+        # Sort items into categories
+        for item in menu_items:
+            if item.category in menu_by_category:
+                menu_by_category[item.category].append(item)
+            
+        # Debug print
+        print("\nDebug: Categorized items:")
+        for category, items in menu_by_category.items():
+            print(f"{category}: {len(items)} items")
+            
+        return render_template('menu.html', menu_items=menu_by_category)
+    except Exception as e:
+        print(f"Error loading menu: {str(e)}")
+        return render_template('menu.html', menu_items={})
+    finally:
+        session.close()
+
+@app.route('/menu/food')
+def food_menu():
+    session = Session()
+    try:
+        # Query all menu items from database
+        menu_items = session.query(MenuItem).all()
+        
         # Initialize categories dictionary
         menu_by_category = {
             'Starters': [],
@@ -102,10 +138,6 @@ def menu():
         return render_template('menu.html', menu_items={})  # Return empty menu if error
     finally:
         session.close()
-
-@app.route('/menu/food')
-def food_menu():
-    return render_template('menu.html')
 
 @app.route('/menu/drinks')
 def drinks_menu():
