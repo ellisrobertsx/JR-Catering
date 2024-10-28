@@ -41,3 +41,4 @@ class Booking(Base):
     time = Column(String(5), nullable=False)
     guests = Column(Integer, nullable=False)
     special_requests = Column(String(500))
+    user_id = Column(Integer, nullable=False)  # Add this line to link bookings to users

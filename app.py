@@ -92,34 +92,41 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    print("\n=== Login Route Accessed ===")  # Debug print
+    
     if request.method == 'POST':
+        print("POST request received")  # Debug print
         db_session = Session()
+        
+        username = request.form.get('username')
+        password = request.form.get('password')
+        print(f"Login attempt for username: {username}")  # Debug print
+        
         try:
-            username = request.form['username']
-            password = request.form['password']
-            
-            # Find user in database
             user = db_session.query(User).filter_by(username=username).first()
             
             if user and check_password_hash(user.password, password):
-                session['username'] = username
+                print("Login successful!")  # Debug print
+                session['username'] = user.username
                 session['user_id'] = user.id
                 session['is_admin'] = user.is_admin
-                return jsonify({"message": "Logged in successfully"}), 200
-            else:
-                return jsonify({"error": "Invalid username or password"}), 401
-                
+                db_session.close()
+                print("Redirecting to index...")  # Debug print
+                return redirect('/')  # Direct redirect to home page
+            
+            print("Login failed - invalid credentials")  # Debug print
+            
         except Exception as e:
-            print(f"Login error: {str(e)}")
-            return jsonify({"error": "Login failed"}), 500
+            print(f"Database error: {str(e)}")  # Debug print
         finally:
             db_session.close()
-            
+    
     return render_template('login.html')
 
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
+    session.clear()  # Clear all session data
+    flash('Logged out successfully!', 'success')
     return redirect(url_for('index'))
 
 @app.route('/menu')
@@ -222,6 +229,11 @@ def drinks_menu():
 
 @app.route('/book', methods=['GET', 'POST'])
 def book():
+    # Check if user is logged in
+    if 'user_id' not in session:
+        flash('Please log in to make or view bookings.', 'error')
+        return redirect(url_for('login'))
+    
     db_session = Session()
     
     try:
@@ -238,7 +250,7 @@ def book():
                 flash('Cannot book a table in the past. Please select a future date and time.', 'error')
                 return redirect(url_for('book'))
             
-            # Create new booking
+            # Create new booking with user_id
             new_booking = Booking(
                 name=request.form['name'],
                 email=request.form['email'],
@@ -246,7 +258,8 @@ def book():
                 date=date,
                 time=time,
                 guests=int(request.form['guests']),
-                special_requests=request.form.get('special-requests', '')
+                special_requests=request.form.get('special-requests', ''),
+                user_id=session['user_id']  # Add the user_id from session
             )
             
             db_session.add(new_booking)
@@ -254,8 +267,8 @@ def book():
             flash('Booking created successfully!', 'success')
             return redirect(url_for('book'))
                 
-        # Get all bookings for display
-        bookings = db_session.query(Booking).order_by(Booking.date, Booking.time).all()
+        # Get only the logged-in user's bookings
+        bookings = db_session.query(Booking).filter_by(user_id=session['user_id']).order_by(Booking.date, Booking.time).all()
         return render_template('book.html', bookings=bookings)
             
     except Exception as e:
@@ -299,8 +312,19 @@ def admin_menu():
 
 @app.route('/booking/<int:booking_id>/edit', methods=['POST'])
 def edit_booking(booking_id):
+    # Check if user is logged in
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'error': 'Please log in to edit bookings.'})
+    
     db_session = Session()
     try:
+        booking = db_session.query(Booking).get(booking_id)
+        
+        # Check if booking exists and belongs to the logged-in user
+        if not booking or booking.user_id != session['user_id']:
+            flash('Booking not found or unauthorized.', 'error')
+            return redirect(url_for('book'))
+        
         # Validate date and time
         date = request.form['date']
         time = request.form['time']
@@ -308,21 +332,16 @@ def edit_booking(booking_id):
         current_datetime = datetime.now()
         
         if booking_datetime < current_datetime:
-            flash('Cannot update booking to a past date/time. Please select a future date and time.', 'error')
+            flash('Cannot update booking to a past date/time.', 'error')
             return redirect(url_for('book'))
             
-        booking = db_session.query(Booking).get(booking_id)
-        if booking:
-            booking.date = date
-            booking.time = time
-            booking.guests = int(request.form['guests'])
-            booking.special_requests = request.form.get('special-requests', '')
-            
-            db_session.commit()
-            flash('Booking updated successfully!', 'success')
-        else:
-            flash('Booking not found.', 'error')
-            
+        booking.date = date
+        booking.time = time
+        booking.guests = int(request.form['guests'])
+        booking.special_requests = request.form.get('special-requests', '')
+        
+        db_session.commit()
+        flash('Booking updated successfully!', 'success')
         return redirect(url_for('book'))
             
     except Exception as e:
@@ -334,14 +353,21 @@ def edit_booking(booking_id):
 
 @app.route('/booking/<int:booking_id>/cancel', methods=['POST'])
 def cancel_booking(booking_id):
+    # Check if user is logged in
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'error': 'Please log in to cancel bookings.'})
+    
     db_session = Session()
     try:
         booking = db_session.query(Booking).get(booking_id)
-        if booking:
-            db_session.delete(booking)
-            db_session.commit()
-            return jsonify({'success': True})
-        return jsonify({'success': False, 'error': 'Booking not found'})
+        
+        # Check if booking exists and belongs to the logged-in user
+        if not booking or booking.user_id != session['user_id']:
+            return jsonify({'success': False, 'error': 'Booking not found or unauthorized'})
+        
+        db_session.delete(booking)
+        db_session.commit()
+        return jsonify({'success': True})
     except Exception as e:
         db_session.rollback()
         return jsonify({'success': False, 'error': str(e)})
