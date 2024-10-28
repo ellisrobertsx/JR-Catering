@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from sqlalchemy import create_engine, text
+from sqlalchemy.orm import sessionmaker
+from models import Base, MenuItem
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Change this to a random secret key
@@ -9,6 +11,10 @@ users = {}
 
 # Connection URL format: postgresql://username:password@host:port/database_name
 DATABASE_URL = "postgresql://postgres:Burngask10!@localhost:5432/JR-CATERING"
+
+engine = create_engine(DATABASE_URL)
+Base.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
 
 def test_db_connection():
     try:
@@ -72,7 +78,30 @@ def logout():
 
 @app.route('/menu')
 def menu():
-    return render_template('menu.html')
+    session = Session()
+    try:
+        # Query all menu items from database
+        menu_items = session.query(MenuItem).all()
+        
+        # Initialize categories dictionary
+        menu_by_category = {
+            'Starters': [],
+            'Main Course': [],
+            'Desserts': []
+        }
+        
+        # Sort items into categories
+        for item in menu_items:
+            if item.category in menu_by_category:
+                menu_by_category[item.category].append(item)
+            
+        # Pass menu_by_category to template as menu_items
+        return render_template('menu.html', menu_items=menu_by_category)
+    except Exception as e:
+        print(f"Error loading menu: {str(e)}")
+        return render_template('menu.html', menu_items={})  # Return empty menu if error
+    finally:
+        session.close()
 
 @app.route('/menu/food')
 def food_menu():
@@ -89,6 +118,24 @@ def book():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+
+@app.route('/admin/menu', methods=['GET', 'POST'])
+def admin_menu():
+    if request.method == 'POST':
+        session = Session()
+        try:
+            new_item = MenuItem(
+                name=request.form['name'],
+                description=request.form['description'],
+                price=float(request.form['price']),
+                category=request.form['category']
+            )
+            session.add(new_item)
+            session.commit()
+            return jsonify({"message": "Menu item added successfully"}), 201
+        finally:
+            session.close()
+    return render_template('admin_menu.html')
 
 if __name__ == '__main__':
     test_db_connection()  # Test database connection before starting the app

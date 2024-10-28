@@ -40,97 +40,20 @@
 
     <main>
         <h1>Food Menu</h1>
+        {% for category, items in menu_items.items() %}
         <div class="menu-section">
-            <h3><span>Starters</span></h3>
+            <h3><span>{{ category }}</span></h3>
             <ul class="menu-items">
+                {% for item in items %}
                 <li>
-                    <strong>Bruschetta</strong>
-                    <p>Grilled bread rubbed with garlic and topped with olive oil, salt, and fresh tomato</p>
+                    <strong>{{ item.name }}</strong>
+                    <span class="price">£{{ "%.2f"|format(item.price) }}</span>
+                    <p>{{ item.description }}</p>
                 </li>
-                <li>
-                    <strong>Caprese Salad</strong>
-                    <p>Fresh mozzarella, tomatoes, and sweet basil seasoned with salt and olive oil</p>
-                </li>
-                <li>
-                    <strong>Garlic Prawns</strong>
-                    <p>Succulent prawns cooked in garlic butter, white wine, and fresh herbs</p>
-                </li>
-                <li>
-                    <strong>Haggis Bon Bons</strong>
-                    <p>Haggis, wrapped in puff pastry and served with a whisky sauce</p>
-                </li>
-                <li>
-                    <strong>Honey Chilli Chicken Wings</strong>
-                    <p>Crispy chicken wings marinated in a honey chilli sauce</p>
-                </li>
-                <li>
-                    <strong>Prawn Cocktail</strong>
-                    <p>Crispy prawns served with a tangy cocktail sauce</p>
-                </li>
-                <li>
-                    <strong>Home-made Spicy Nachos</strong>
-                    <p>Tortilla chips topped with melted cheese, salsa and jalapenos</p>
-                </li>
+                {% endfor %}
             </ul>
         </div>
-        <div class="menu-section">
-            <h3><span>Main Course</span></h3>
-            <ul class="menu-items">
-                <li>
-                    <strong>Roast Chicken</strong>
-                    <p>A classic roast chicken with all the trimmings</p>
-                </li>
-                <li>
-                    <strong>Beef Wellington</strong>
-                    <p>A traditional beef Wellington with a rich, flaky pastry crust</p>
-                </li>
-                <li>
-                    <strong>Fish and Chips</strong>
-                    <p>Crispy fish fillets served with golden fries and tartar sauce</p>
-                </li>
-                <li>
-                    <strong>Pork Chops</strong>
-                    <p>Tender pork chops with a creamy mushroom sauce</p>
-                </li>
-                <li>
-                    <strong>Vegetable Lasagna</strong>
-                    <p>Layers of lasagna noodles filled with a vegetable-rich filling and topped with cheese</p>
-                </li>
-                <li>
-                    <strong>Chicken Alfredo</strong>
-                    <p>Creamy chicken Alfredo pasta with fettuccine and a rich, cheesy sauce</p>
-                </li>
-            </ul>
-        </div>
-        <div class="menu-section">
-            <h3><span>Desserts</span></h3>
-            <ul class="menu-items">
-                <li>
-                    <strong>Cheesecake</strong>
-                    <p>A classic cheesecake with a graham cracker crust and a creamy filling</p>
-                </li>
-                <li>
-                    <strong>Tiramisu</strong>
-                    <p>A classic tiramisu with ladyfingers, mascarpone cheese, and coffee-soaked ladyfingers</p>
-                </li>
-                <li>
-                    <strong>Chocolate Lava Cake</strong>
-                    <p>A decadent chocolate lava cake with a gooey chocolate center</p>
-                </li>
-                <li>
-                    <strong>Strawberry Shortcake</strong>
-                    <p>A classic strawberry shortcake with a graham cracker crust and a whipped cream topping</p>
-                </li>
-                <li>
-                    <strong>Apple Pie</strong>
-                    <p>A classic apple pie with a flaky crust and a cinnamon-sugar filling</p>
-                </li>
-                <li>
-                    <strong>Banana Bread</strong>
-                    <p>A classic banana bread with a moist and flavorful texture</p>
-                </li>
-            </ul>
-        </div>
+        {% endfor %}
     </main>
 
     <footer>
