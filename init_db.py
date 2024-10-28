@@ -87,7 +87,7 @@ def init_db():
             ),
             DrinkItem(
                 name="House White Wine",
-                description="Smooth medium-bodied white wine",
+                description="Crisp and refreshing white wine",
                 price=5.99,
                 category="Wine"
             ),

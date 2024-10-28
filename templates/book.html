@@ -203,6 +203,65 @@
             const today = new Date().toISOString().split('T')[0];
             input.min = today;
         });
+
+        // Function to validate date and time
+        function validateDateTime() {
+            const dateInput = document.getElementById('date');
+            const timeInput = document.getElementById('time');
+            const now = new Date();
+            const selected = new Date(dateInput.value + 'T' + timeInput.value);
+
+            // If selected date is today, check if time is in the past
+            if (selected < now) {
+                alert('Please select a future date and time.');
+                return false;
+            }
+            return true;
+        }
+
+        // Add validation to the booking form
+        document.querySelector('.booking-form').addEventListener('submit', function(e) {
+            if (!validateDateTime()) {
+                e.preventDefault();
+            }
+        });
+
+        // Add validation to edit forms
+        document.querySelectorAll('.edit-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const dateInput = this.querySelector('input[type="date"]');
+                const timeInput = this.querySelector('input[type="time"]');
+                if (!validateDateTime(dateInput.value, timeInput.value)) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Set minimum time if date is today
+        function updateMinTime(dateInput, timeInput) {
+            const selectedDate = dateInput.value;
+            const now = new Date();
+            
+            if (selectedDate === today) {
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                timeInput.min = `${hours}:${minutes}`;
+            } else {
+                timeInput.min = ''; // Reset min time for future dates
+            }
+        }
+
+        // Add event listeners for date changes
+        document.querySelectorAll('.booking-form, .edit-form').forEach(form => {
+            const dateInput = form.querySelector('input[type="date"]');
+            const timeInput = form.querySelector('input[type="time"]');
+            
+            if (dateInput && timeInput) {
+                dateInput.addEventListener('change', () => updateMinTime(dateInput, timeInput));
+                // Initial check
+                updateMinTime(dateInput, timeInput);
+            }
+        });
     </script>
 </body>
 </html>

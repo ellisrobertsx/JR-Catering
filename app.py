@@ -3,6 +3,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from models import Base, MenuItem, DrinkItem, User, Booking
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Change this to a random secret key
@@ -175,12 +176,16 @@ def food_menu():
         for item in menu_items:
             if item.category in menu_by_category:
                 menu_by_category[item.category].append(item)
+        
+        # Debug print
+        print("Found menu items:", len(menu_items))
+        for category, items in menu_by_category.items():
+            print(f"{category}: {len(items)} items")
             
-        # Pass menu_by_category to template as menu_items
         return render_template('menu.html', menu_items=menu_by_category)
     except Exception as e:
-        print(f"Error loading menu: {str(e)}")
-        return render_template('menu.html', menu_items={})  # Return empty menu if error
+        print(f"Error loading food menu: {str(e)}")
+        return render_template('menu.html', menu_items={})
     finally:
         session.close()
 
@@ -202,9 +207,9 @@ def drinks_menu():
         for item in drink_items:
             if item.category in menu_by_category:
                 menu_by_category[item.category].append(item)
-            
+        
         # Debug print
-        print("\nDebug: Categorized drinks:")
+        print("Found drink items:", len(drink_items))
         for category, items in menu_by_category.items():
             print(f"{category}: {len(items)} items")
             
@@ -221,21 +226,32 @@ def book():
     
     try:
         if request.method == 'POST':
+            # Get form data
+            date = request.form['date']
+            time = request.form['time']
+            
+            # Validate date and time
+            booking_datetime = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M")
+            current_datetime = datetime.now()
+            
+            if booking_datetime < current_datetime:
+                flash('Cannot book a table in the past. Please select a future date and time.', 'error')
+                return redirect(url_for('book'))
+            
             # Create new booking
             new_booking = Booking(
                 name=request.form['name'],
                 email=request.form['email'],
                 phone=request.form['phone'],
-                date=request.form['date'],
-                time=request.form['time'],
+                date=date,
+                time=time,
                 guests=int(request.form['guests']),
                 special_requests=request.form.get('special-requests', '')
             )
             
             db_session.add(new_booking)
             db_session.commit()
-            
-            # Redirect to the same page to show updated bookings
+            flash('Booking created successfully!', 'success')
             return redirect(url_for('book'))
                 
         # Get all bookings for display
@@ -285,10 +301,20 @@ def admin_menu():
 def edit_booking(booking_id):
     db_session = Session()
     try:
+        # Validate date and time
+        date = request.form['date']
+        time = request.form['time']
+        booking_datetime = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M")
+        current_datetime = datetime.now()
+        
+        if booking_datetime < current_datetime:
+            flash('Cannot update booking to a past date/time. Please select a future date and time.', 'error')
+            return redirect(url_for('book'))
+            
         booking = db_session.query(Booking).get(booking_id)
         if booking:
-            booking.date = request.form['date']
-            booking.time = request.form['time']
+            booking.date = date
+            booking.time = time
             booking.guests = int(request.form['guests'])
             booking.special_requests = request.form.get('special-requests', '')
             
