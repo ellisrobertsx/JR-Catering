@@ -1,4 +1,4 @@
-from app import engine, Session, MenuItem, DrinkItem, User, Base
+from app import engine, Session, MenuItem, DrinkItem, User, Booking, Base
 from werkzeug.security import generate_password_hash
 
 def init_db():
@@ -8,22 +8,16 @@ def init_db():
     
     session = Session()
     
-    # Add a test admin user
-    admin_user = User(
-        username='admin',
-        email='admin@example.com',
-        password=generate_password_hash('Admin123!'),
-        is_admin=True
-    )
-    
     try:
-        session.add(admin_user)
+        # Add a test admin user
+        admin_user = User(
+            username='admin',
+            email='admin@example.com',
+            password=generate_password_hash('Admin123!'),
+            is_admin=True
+        )
         
-        # Check if we already have menu items
-        existing_items = session.query(MenuItem).first()
-        if existing_items:
-            print("Database already has menu items!")
-            return
+        session.add(admin_user)
         
         # Sample menu items
         items = [
@@ -44,42 +38,6 @@ def init_db():
                 description="Prawns in a classic cocktail sauce",
                 price=7.99,
                 category="Starters"
-            ),
-            MenuItem(
-                name="Crab Cakes",
-                description="Crab cakes with a classic tartar sauce",
-                price=8.99,
-                category="Starters"
-            ),
-            MenuItem(
-                name="Scallops",
-                description="Scallops with a classic lemon butter sauce",
-                price=10.99,
-                category="Starters"
-            ),
-            MenuItem(
-                name="Caesar Salad",
-                description="Classic Caesar salad with croutons",
-                price=6.99,
-                category="Starters"
-            ),
-            MenuItem(
-                name="Steak and Chips",
-                description="8oz sirloin steak with hand-cut chips",
-                price=19.99,
-                category="Main Course"
-            ),
-            MenuItem(
-                name="Chicken Tikka Masala",
-                description="Chicken Tikka Masala with rice and naan bread",
-                price=14.99,
-                category="Main Course"
-            ),
-            MenuItem(
-                name="Beef Wellington",
-                description="Beef Wellington with mashed potatoes and vegetables",
-                price=24.99,
-                category="Main Course"
             ),
             MenuItem(
                 name="Fish and Chips",
@@ -116,33 +74,16 @@ def init_db():
                 description="Apple crumble with custard",
                 price=5.99,
                 category="Desserts"
-            ),
-            MenuItem(
-                name="Banana Bread",
-                description="Banana bread with cream cheese frosting",
-                price=5.99,
-                category="Desserts"
-            ),
-            MenuItem(
-                name="Chocolate Chip Cookies",
-                description="Chocolate chip cookies with milk",
-                price=5.99,
-                category="Desserts"
             )
         ]
 
+        # Sample drink items
         drink_items = [
             DrinkItem(
                 name="House Red Wine",
                 description="Smooth medium-bodied red wine",
                 price=5.99,
                 category="Wine"
-            ),
-            DrinkItem(
-                name="Draft Beer",
-                description="Local craft beer",
-                price=4.99,
-                category="Beer"
             ),
             DrinkItem(
                 name="House White Wine",
@@ -157,14 +98,8 @@ def init_db():
                 category="Wine"
             ),
             DrinkItem(
-                name="Cava",
-                description="A Spanish sparkling wine with citrus and almond flavors",
-                price=5.99,
-                category="Wine"
-            ),
-            DrinkItem(
                 name="Guinness",
-                description="Irish dry stout with a creamy texture and roasted flavor",
+                description="Irish dry stout with a creamy texture",
                 price=5.99,
                 category="Beer"
             ),
@@ -176,19 +111,7 @@ def init_db():
             ),
             DrinkItem(
                 name="Heineken",
-                description="Dutch pale lager with a crisp and slightly bitter taste",
-                price=5.99,
-                category="Beer"
-            ),
-            DrinkItem(
-                name="Fosters",
-                description="Australian lager with a crisp and slightly bitter taste",
-                price=5.99,
-                category="Beer"
-            ),  
-            DrinkItem(
-                name="Tennents",
-                description="Scottish pale lager with a crisp and slightly bitter taste",
+                description="Dutch pale lager with a crisp taste",
                 price=5.99,
                 category="Beer"
             ),
@@ -209,39 +132,33 @@ def init_db():
                 description="Classic Negroni with gin, vermouth, and bitters",
                 price=7.99,
                 category="Cocktails"
-            ),
-            DrinkItem(
-                name="Cosmopolitan",
-                description="Classic Cosmopolitan with vodka, cranberry, lime, and orange",
-                price=7.99,
-                category="Cocktails"
-            ),
-            
+            )
         ]
         
-        try:
-            session.add_all(items)
-            session.add_all(drink_items)
-            session.commit()
-            print("Added sample menu items successfully!")
+        # Add all items to the session
+        session.add_all(items)
+        session.add_all(drink_items)
+        session.commit()
+        
+        print("Added sample menu items successfully!")
+        
+        # Verify items were added
+        all_items = session.query(MenuItem).all()
+        all_drinks = session.query(DrinkItem).all()
+        
+        print(f"\nVerifying added food items:")
+        for item in all_items:
+            print(f"- {item.name} ({item.category})")
             
-            # Add this to verify items were added
-            all_items = session.query(MenuItem).all()
-            all_drinks = session.query(DrinkItem).all()
+        print(f"\nVerifying added drink items:")
+        for item in all_drinks:
+            print(f"- {item.name} ({item.category})")
             
-            print(f"\nVerifying added items:")
-            for item in all_items:
-                print(f"- {item.name} ({item.category})")
-                
-            print(f"\nVerifying added drink items:")
-            for item in all_drinks:
-                print(f"- {item.name} ({item.category})")
-                
-        except Exception as e:
-            print(f"Error adding menu items: {str(e)}")
-            session.rollback()
-        finally:
-            session.close()
+    except Exception as e:
+        print(f"Error initializing database: {str(e)}")
+        session.rollback()
+    finally:
+        session.close()
 
 if __name__ == "__main__":
     init_db()

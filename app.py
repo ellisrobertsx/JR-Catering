@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from models import Base, MenuItem, DrinkItem, User
+from models import Base, MenuItem, DrinkItem, User, Booking
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -215,9 +215,40 @@ def drinks_menu():
     finally:
         session.close()
 
-@app.route('/book')
+@app.route('/book', methods=['GET', 'POST'])
 def book():
-    return render_template('book.html')
+    db_session = Session()
+    
+    try:
+        if request.method == 'POST':
+            # Create new booking
+            new_booking = Booking(
+                name=request.form['name'],
+                email=request.form['email'],
+                phone=request.form['phone'],
+                date=request.form['date'],
+                time=request.form['time'],
+                guests=int(request.form['guests']),
+                special_requests=request.form.get('special-requests', '')
+            )
+            
+            db_session.add(new_booking)
+            db_session.commit()
+            
+            # Redirect to the same page to show updated bookings
+            return redirect(url_for('book'))
+                
+        # Get all bookings for display
+        bookings = db_session.query(Booking).order_by(Booking.date, Booking.time).all()
+        return render_template('book.html', bookings=bookings)
+            
+    except Exception as e:
+        db_session.rollback()
+        print(f"Booking error: {str(e)}")
+        flash('Error processing booking request. Please try again.', 'error')
+        return render_template('book.html', bookings=[])
+    finally:
+        db_session.close()
 
 @app.route('/contact')
 def contact():
@@ -249,6 +280,47 @@ def admin_menu():
         finally:
             session.close()
     return render_template('admin_menu.html')
+
+@app.route('/booking/<int:booking_id>/edit', methods=['POST'])
+def edit_booking(booking_id):
+    db_session = Session()
+    try:
+        booking = db_session.query(Booking).get(booking_id)
+        if booking:
+            booking.date = request.form['date']
+            booking.time = request.form['time']
+            booking.guests = int(request.form['guests'])
+            booking.special_requests = request.form.get('special-requests', '')
+            
+            db_session.commit()
+            flash('Booking updated successfully!', 'success')
+        else:
+            flash('Booking not found.', 'error')
+            
+        return redirect(url_for('book'))
+            
+    except Exception as e:
+        db_session.rollback()
+        flash('Error updating booking. Please try again.', 'error')
+        return redirect(url_for('book'))
+    finally:
+        db_session.close()
+
+@app.route('/booking/<int:booking_id>/cancel', methods=['POST'])
+def cancel_booking(booking_id):
+    db_session = Session()
+    try:
+        booking = db_session.query(Booking).get(booking_id)
+        if booking:
+            db_session.delete(booking)
+            db_session.commit()
+            return jsonify({'success': True})
+        return jsonify({'success': False, 'error': 'Booking not found'})
+    except Exception as e:
+        db_session.rollback()
+        return jsonify({'success': False, 'error': str(e)})
+    finally:
+        db_session.close()
 
 if __name__ == '__main__':
     test_db_connection()  # Test database connection before starting the app

@@ -7,7 +7,7 @@
     <!--Favicon-->
     <script src="https://kit.fontawesome.com/3388b1b6ae.js" crossorigin="anonymous"></script>
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <title>JR Catering</title>
+    <title>Book a Table - JR Catering</title>
 </head>
 <body>
     <header>
@@ -38,39 +38,96 @@
         </div>
     </header>
     <main>
-        <div class="booking-container">
-            <h2>Book a Table</h2>
-            <form action="{{ url_for('book') }}" method="POST" class="booking-form">
-                <div class="form-group">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required>
+        <div class="bookings-container">
+            <h2>Your Bookings</h2>
+            
+            {% if bookings %}
+                <div class="existing-bookings">
+                    {% for booking in bookings %}
+                        <div class="booking-card">
+                            <h3>Booking for {{ booking.name }}</h3>
+                            <div class="booking-details">
+                                <p><strong>Date:</strong> {{ booking.date }}</p>
+                                <p><strong>Time:</strong> {{ booking.time }}</p>
+                                <p><strong>Guests:</strong> {{ booking.guests }}</p>
+                                {% if booking.special_requests %}
+                                    <p><strong>Special Requests:</strong> {{ booking.special_requests }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="booking-actions">
+                                <button onclick="showEditForm({{ booking.id }})" class="btn edit-btn">Edit Booking</button>
+                                <button onclick="confirmCancel({{ booking.id }})" class="btn cancel-btn">Cancel Booking</button>
+                            </div>
+                            
+                            <!-- Edit form (hidden by default) -->
+                            <div id="edit-form-{{ booking.id }}" class="edit-form" style="display: none;">
+                                <h4>Edit Booking</h4>
+                                <form action="{{ url_for('edit_booking', booking_id=booking.id) }}" method="POST">
+                                    <div class="form-group">
+                                        <label for="edit-date-{{ booking.id }}">Date:</label>
+                                        <input type="date" id="edit-date-{{ booking.id }}" name="date" value="{{ booking.date }}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-time-{{ booking.id }}">Time:</label>
+                                        <input type="time" id="edit-time-{{ booking.id }}" name="time" value="{{ booking.time }}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-guests-{{ booking.id }}">Number of Guests:</label>
+                                        <input type="number" id="edit-guests-{{ booking.id }}" name="guests" value="{{ booking.guests }}" min="1" max="10" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-special-requests-{{ booking.id }}">Special Requests:</label>
+                                        <textarea id="edit-special-requests-{{ booking.id }}" name="special-requests">{{ booking.special_requests }}</textarea>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn save-btn">Save Changes</button>
+                                        <button type="button" onclick="hideEditForm({{ booking.id }})" class="btn cancel-edit-btn">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone:</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-                <div class="form-group">
-                    <label for="date">Date:</label>
-                    <input type="date" id="date" name="date" required>
-                </div>
-                <div class="form-group">
-                    <label for="time">Time:</label>
-                    <input type="time" id="time" name="time" required>
-                </div>
-                <div class="form-group">
-                    <label for="guests">Number of Guests:</label>
-                    <input type="number" id="guests" name="guests" min="1" max="10" required>
-                </div>
-                <div class="form-group">
-                    <label for="special-requests">Special Requests:</label>
-                    <textarea id="special-requests" name="special-requests"></textarea>
-                </div>
-                <button type="submit">Book Now</button>
-            </form>
+            {% else %}
+                <p class="no-bookings">No current bookings found.</p>
+            {% endif %}
+
+            <button id="new-booking-btn" class="btn primary-btn">Make New Booking</button>
+
+            <div id="booking-form-container" class="booking-form-container" style="display: none;">
+                <h2>Book a Table</h2>
+                <form action="{{ url_for('book') }}" method="POST" class="booking-form">
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone:</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date:</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="time">Time:</label>
+                        <input type="time" id="time" name="time" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="guests">Number of Guests:</label>
+                        <input type="number" id="guests" name="guests" min="1" max="10" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="special-requests">Special Requests:</label>
+                        <textarea id="special-requests" name="special-requests"></textarea>
+                    </div>
+                    <button type="submit" class="btn submit-btn">Book Now</button>
+                </form>
+            </div>
         </div>
     </main>
     <footer>
@@ -94,5 +151,58 @@
         <p id="footer-text">&copy; 2024 JR Catering. All rights reserved.</p>
     </footer>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        document.getElementById('new-booking-btn').addEventListener('click', function() {
+            const formContainer = document.getElementById('booking-form-container');
+            const button = document.getElementById('new-booking-btn');
+            
+            if (formContainer.style.display === 'none') {
+                formContainer.style.display = 'block';
+                button.textContent = 'Hide Booking Form';
+            } else {
+                formContainer.style.display = 'none';
+                button.textContent = 'Make New Booking';
+            }
+        });
+
+        // Set minimum date to today
+        const dateInput = document.getElementById('date');
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.min = today;
+
+        function showEditForm(bookingId) {
+            document.getElementById(`edit-form-${bookingId}`).style.display = 'block';
+        }
+
+        function hideEditForm(bookingId) {
+            document.getElementById(`edit-form-${bookingId}`).style.display = 'none';
+        }
+
+        function confirmCancel(bookingId) {
+            if (confirm('Are you sure you want to cancel this booking?')) {
+                fetch(`/booking/${bookingId}/cancel`, {
+                    method: 'POST',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        alert('Error canceling booking. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error canceling booking. Please try again.');
+                });
+            }
+        }
+
+        // Set minimum date for all date inputs
+        document.querySelectorAll('input[type="date"]').forEach(input => {
+            const today = new Date().toISOString().split('T')[0];
+            input.min = today;
+        });
+    </script>
 </body>
 </html>
