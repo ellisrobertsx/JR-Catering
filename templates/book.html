@@ -74,7 +74,12 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="edit-time-{{ booking.id }}">Time:</label>
-                                            <input type="time" id="edit-time-{{ booking.id }}" name="time" value="{{ booking.time }}" required>
+                                            <input type="time" 
+                                                   id="edit-time-{{ booking.id }}" 
+                                                   name="time" 
+                                                   value="{{ booking.time }}" 
+                                                   required 
+                                                   step="300">
                                         </div>
                                         <div class="form-group">
                                             <label for="edit-guests-{{ booking.id }}">Number of Guests:</label>
@@ -120,7 +125,9 @@
                         </div>
                         <div class="form-group">
                             <label for="time">Time:</label>
-                            <input type="time" id="time" name="time" required>
+                            <select id="time" name="time" required>
+                                <option value="">Select a time</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="guests">Number of Guests:</label>
@@ -268,6 +275,28 @@
                 updateMinTime(dateInput, timeInput);
             }
         });
+
+        function generateTimeSlots() {
+            const select = document.getElementById('time');
+            const start = 12 * 60; // 12:00 PM in minutes
+            const end = 21.5 * 60;  // 9:30 PM in minutes
+            const interval = 5; // 5 minute intervals
+            
+            for (let i = start; i <= end; i += interval) {
+                const hours = Math.floor(i / 60);
+                const minutes = i % 60;
+                const timeValue = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                const displayHours = hours > 12 ? hours - 12 : hours;
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const displayTime = `${displayHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+                
+                const option = new Option(displayTime, timeValue);
+                select.add(option);
+            }
+        }
+
+        // Generate time slots when page loads
+        generateTimeSlots();
     </script>
 </body>
 </html>
