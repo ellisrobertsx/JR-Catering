@@ -14,10 +14,10 @@
         <div class="header-content">
             <a href="{{ url_for('index') }}" id="logo">JR Catering</a>
             <nav>
-                <button id="burger-btn" class="burger-btn" aria-label="Toggle menu">
+                <button class="burger-btn" id="burger-btn">
                     <span class="burger-icon"></span>
                 </button>
-                <ul id="nav-links" class="nav-links">
+                <ul class="nav-links" id="nav-links">
                     <li><a href="{{ url_for('index') }}">Home</a></li>
                     <li class="dropdown">
                         <a href="{{ url_for('menu') }}" class="dropbtn">Menus</a>
@@ -26,7 +26,18 @@
                             <a href="{{ url_for('drinks_menu') }}">Drinks Menu</a>
                         </div>
                     </li>
-                    <li><a href="{{ url_for('book') }}">Book</a></li>
+                    <li><a href="{{ url_for('book') }}">
+                        {% if session.get('user_id') %}
+                            {% set has_bookings = get_user_bookings() %}
+                            {% if has_bookings %}
+                                Bookings
+                            {% else %}
+                                Book
+                            {% endif %}
+                        {% else %}
+                            Book
+                        {% endif %}
+                    </a></li>
                     <li><a href="{{ url_for('contact') }}">Contact</a></li>
                     {% if 'username' in session %}
                         <li><a href="{{ url_for('logout') }}">Logout</a></li>
@@ -38,6 +49,17 @@
         </div>
     </header>
 <main>
+    <!-- Add this section for flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <div class="form-container">
         <h2>Contact Us</h2>
         <form action="{{ url_for('contact') }}" method="POST">
@@ -45,7 +67,12 @@
             <input type="text" id="name" name="name" required>
 
             <label for="phone">Phone Number:</label>
-            <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" required>
+            <input type="tel" 
+                   id="phone" 
+                   name="phone" 
+                   pattern="^(?:(?:\+44)|(?:0))(?:[0-9] ?){9,10}$"
+                   placeholder="Enter your phone number"
+                   required>
 
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
@@ -103,6 +130,6 @@
     </ul>
     <p id="footer-text">&copy; 2024 JR Catering. All rights reserved.</p>
 </footer>
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
 </body>
 </html>

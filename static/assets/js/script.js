@@ -1,60 +1,49 @@
 document.addEventListener('DOMContentLoaded', function() {
     const burgerBtn = document.getElementById('burger-btn');
     const navLinks = document.getElementById('nav-links');
-    const dropdownBtns = document.querySelectorAll('.dropbtn');
-
+    
     if (burgerBtn && navLinks) {
-        burgerBtn.addEventListener('click', function(event) {
-            event.stopPropagation();
-            navLinks.classList.toggle('nav-active');
+        burgerBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             burgerBtn.classList.toggle('open');
+            navLinks.classList.toggle('active');
         });
+    }
 
-        // Close the menu when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!navLinks.contains(event.target) && !burgerBtn.contains(event.target)) {
-                navLinks.classList.remove('nav-active');
-                burgerBtn.classList.remove('open');
+    const dropdownBtn = document.querySelector('.dropbtn');
+    const dropdownContent = document.querySelector('.dropdown-content');
+    
+    if (dropdownBtn) {
+        dropdownBtn.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                dropdownContent.classList.toggle('show');
             }
         });
     }
 
-    // Handle dropdowns on mobile
-    dropdownBtns.forEach(function(btn) {
-        btn.addEventListener('click', function(event) {
-            if (window.innerWidth < 768) {  // Adjust this value based on your mobile breakpoint
-                event.preventDefault();
-                const dropdownContent = this.nextElementSibling;
-                dropdownContent.style.display = 
-                    dropdownContent.style.display === 'block' ? 'none' : 'block';
-            }
-        });
-    });
-
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', function(event) {
-        if (!event.target.matches('.dropbtn')) {
+    document.addEventListener('click', function(e) {
+        if (!e.target.matches('.dropbtn')) {
             const dropdowns = document.getElementsByClassName('dropdown-content');
-            for (let i = 0; i < dropdowns.length; i++) {
-                const openDropdown = dropdowns[i];
-                if (openDropdown.style.display === 'block') {
-                    openDropdown.style.display = 'none';
+            for (let dropdown of dropdowns) {
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
                 }
             }
         }
     });
 
-    // Image gallery rotation (only for pages with gallery)
-    const images = document.querySelectorAll('.gallery-image');
-    if (images.length > 0) {
-        let currentIndex = 0;
+    const heroImages = document.querySelectorAll('.hero-image');
+    let currentImageIndex = 0;
 
-        function rotateImage() {
-            images[currentIndex].classList.remove('active');
-            currentIndex = (currentIndex + 1) % images.length;
-            images[currentIndex].classList.add('active');
-        }
+    if (heroImages.length > 0) {
+        heroImages[0].style.display = 'block';
 
-        setInterval(rotateImage, 5000); // Change image every 5 seconds
+        setInterval(() => {
+            heroImages[currentImageIndex].style.display = 'none';
+            currentImageIndex = (currentImageIndex + 1) % heroImages.length;
+            heroImages[currentImageIndex].style.display = 'block';
+        }, 3000);
     }
-});
+}); 

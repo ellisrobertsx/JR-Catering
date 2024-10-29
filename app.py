@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from models import Base, MenuItem, DrinkItem, User, Booking
+from models import Base, MenuItem, DrinkItem, User, Booking, Contact
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
@@ -229,14 +229,18 @@ def drinks_menu():
 
 @app.route('/book', methods=['GET', 'POST'])
 def book():
-    # Check if user is logged in
     if 'user_id' not in session:
         flash('Please log in to make or view bookings.', 'error')
         return redirect(url_for('login'))
     
     db_session = Session()
+    has_bookings = False
     
     try:
+        # Check if user has any bookings
+        existing_bookings = db_session.query(Booking).filter_by(user_id=session['user_id']).first()
+        has_bookings = existing_bookings is not None
+        
         if request.method == 'POST':
             # Get form data
             date = request.form['date']
@@ -269,18 +273,43 @@ def book():
                 
         # Get only the logged-in user's bookings
         bookings = db_session.query(Booking).filter_by(user_id=session['user_id']).order_by(Booking.date, Booking.time).all()
-        return render_template('book.html', bookings=bookings)
+        return render_template('book.html', bookings=bookings, has_bookings=has_bookings)
             
     except Exception as e:
         db_session.rollback()
         print(f"Booking error: {str(e)}")
         flash('Error processing booking request. Please try again.', 'error')
-        return render_template('book.html', bookings=[])
+        return render_template('book.html', bookings=[], has_bookings=False)
     finally:
         db_session.close()
 
-@app.route('/contact')
+@app.route('/contact', methods=['GET', 'POST'])
 def contact():
+    if request.method == 'POST':
+        db_session = Session()
+        try:
+            # Create new contact message
+            new_contact = Contact(
+                name=request.form['name'],
+                phone=request.form['phone'],
+                email=request.form['email'],
+                message=request.form['message']
+            )
+            
+            db_session.add(new_contact)
+            db_session.commit()
+            
+            flash('Message sent successfully!', 'success')
+            return redirect(url_for('contact'))
+            
+        except Exception as e:
+            db_session.rollback()
+            print(f"Contact form error: {str(e)}")
+            flash('Error sending message. Please try again.', 'error')
+            return redirect(url_for('contact'))
+        finally:
+            db_session.close()
+            
     return render_template('contact.html')
 
 @app.route('/admin/menu', methods=['GET', 'POST'])
@@ -373,6 +402,22 @@ def cancel_booking(booking_id):
         return jsonify({'success': False, 'error': str(e)})
     finally:
         db_session.close()
+
+@app.context_processor
+def utility_processor():
+    def get_user_bookings():
+        if 'user_id' not in session:
+            return False
+        db_session = Session()
+        try:
+            existing_bookings = db_session.query(Booking).filter_by(user_id=session['user_id']).first()
+            return existing_bookings is not None
+        except Exception as e:
+            print(f"Error checking bookings: {str(e)}")
+            return False
+        finally:
+            db_session.close()
+    return dict(get_user_bookings=get_user_bookings)
 
 if __name__ == '__main__':
     test_db_connection()  # Test database connection before starting the app

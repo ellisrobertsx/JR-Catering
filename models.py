@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime
 
 Base = declarative_base()
 
@@ -42,3 +43,13 @@ class Booking(Base):
     guests = Column(Integer, nullable=False)
     special_requests = Column(String(500))
     user_id = Column(Integer, nullable=False)  # Add this line to link bookings to users
+
+class Contact(Base):
+    __tablename__ = 'contacts'
+    
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    phone = Column(String(20), nullable=False)
+    email = Column(String(120), nullable=False)
+    message = Column(String(1000), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)

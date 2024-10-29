@@ -14,10 +14,10 @@
         <div class="header-content">
             <a href="{{ url_for('index') }}" id="logo">JR Catering</a>
             <nav>
-                <button id="burger-btn" class="burger-btn" aria-label="Toggle menu">
+                <button class="burger-btn" id="burger-btn">
                     <span class="burger-icon"></span>
                 </button>
-                <ul id="nav-links" class="nav-links">
+                <ul class="nav-links" id="nav-links">
                     <li><a href="{{ url_for('index') }}">Home</a></li>
                     <li class="dropdown">
                         <a href="{{ url_for('menu') }}" class="dropbtn">Menus</a>
@@ -26,7 +26,18 @@
                             <a href="{{ url_for('drinks_menu') }}">Drinks Menu</a>
                         </div>
                     </li>
-                    <li><a href="{{ url_for('book') }}">Book</a></li>
+                    <li><a href="{{ url_for('book') }}">
+                        {% if session.get('user_id') %}
+                            {% set has_bookings = get_user_bookings() %}
+                            {% if has_bookings %}
+                                Bookings
+                            {% else %}
+                                Book
+                            {% endif %}
+                        {% else %}
+                            Book
+                        {% endif %}
+                    </a></li>
                     <li><a href="{{ url_for('contact') }}">Contact</a></li>
                     {% if 'username' in session %}
                         <li><a href="{{ url_for('logout') }}">Logout</a></li>
@@ -73,13 +84,10 @@
                                             <input type="date" id="edit-date-{{ booking.id }}" name="date" value="{{ booking.date }}" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="edit-time-{{ booking.id }}">Time:</label>
-                                            <input type="time" 
-                                                   id="edit-time-{{ booking.id }}" 
-                                                   name="time" 
-                                                   value="{{ booking.time }}" 
-                                                   required 
-                                                   step="300">
+                                            <label for="time-{{ booking.id }}">Time:</label>
+                                            <select id="time-{{ booking.id }}" name="time" required data-current-time="{{ booking.time }}">
+                                                <option value="">Select a time</option>
+                                            </select>
                                         </div>
                                         <div class="form-group">
                                             <label for="edit-guests-{{ booking.id }}">Number of Guests:</label>
@@ -163,7 +171,7 @@
         </ul>
         <p id="footer-text">&copy; 2024 JR Catering. All rights reserved.</p>
     </footer>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
     <script>
         document.getElementById('new-booking-btn').addEventListener('click', function() {
             const formContainer = document.getElementById('booking-form-container');
@@ -276,8 +284,8 @@
             }
         });
 
-        function generateTimeSlots() {
-            const select = document.getElementById('time');
+        function generateTimeSlots(selectId, selectedTime = '') {
+            const select = document.getElementById(selectId);
             const start = 12 * 60; // 12:00 PM in minutes
             const end = 21.5 * 60;  // 9:30 PM in minutes
             const interval = 5; // 5 minute intervals
@@ -291,12 +299,22 @@
                 const displayTime = `${displayHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
                 
                 const option = new Option(displayTime, timeValue);
+                if (timeValue === selectedTime) {
+                    option.selected = true;
+                }
                 select.add(option);
             }
         }
 
-        // Generate time slots when page loads
-        generateTimeSlots();
+        // Generate time slots for new booking form
+        generateTimeSlots('time');
+
+        // Generate time slots for each edit form
+        document.querySelectorAll('[id^="time-"]').forEach(select => {
+            const bookingId = select.id.split('-')[1];
+            const currentTime = select.getAttribute('data-current-time');
+            generateTimeSlots(select.id, currentTime);
+        });
     </script>
 </body>
 </html>
