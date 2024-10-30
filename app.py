@@ -31,15 +31,19 @@ def index():
 
 @app.route('/menu')
 def menu():
-    return render_template('menu.html')
+    food_items = MenuItem.query.all()
+    drink_items = DrinkItem.query.all()
+    return render_template('menu.html', food_items=food_items, drink_items=drink_items)
 
 @app.route('/food_menu')
 def food_menu():
-    return render_template('food_menu.html')
+    food_items = MenuItem.query.all()
+    return render_template('food_menu.html', food_items=food_items)
 
 @app.route('/drinks_menu')
 def drinks_menu():
-    return render_template('drinks_menu.html')
+    drink_items = DrinkItem.query.all()
+    return render_template('drinks_menu.html', drink_items=drink_items)
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
@@ -49,9 +53,28 @@ def contact():
 def book():
     return render_template('book.html')
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        user = User.query.filter_by(username=username).first()
+        
+        if user and check_password_hash(user.password, password):
+            session['user_id'] = user.id
+            session['username'] = user.username
+            flash('Logged in successfully!', 'success')
+            return redirect(url_for('index'))
+        
+        flash('Invalid username or password', 'error')
     return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash('You have been logged out', 'success')
+    return redirect(url_for('index'))
 
 # Error handlers
 @app.errorhandler(404)
