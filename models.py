@@ -1,55 +1,52 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime
-from sqlalchemy.ext.declarative import declarative_base
+from app import db
 from datetime import datetime
 
-Base = declarative_base()
-
-class User(Base):
+class User(db.Model):
     __tablename__ = 'users'
     
-    id = Column(Integer, primary_key=True)
-    username = Column(String(80), unique=True, nullable=False)
-    email = Column(String(120), unique=True, nullable=False)
-    password = Column(String(500), nullable=False)  # Increased from 120 to 500
-    is_admin = Column(Boolean, default=False)
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(500), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
 
-class MenuItem(Base):
+class MenuItem(db.Model):
     __tablename__ = 'menu_items'
     
-    id = Column(Integer, primary_key=True)
-    name = Column(String(100), nullable=False)
-    description = Column(String(500))
-    price = Column(Float, nullable=False)
-    category = Column(String(50), nullable=False)  # 'Starters', 'Main Course', 'Desserts'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(500))
+    price = db.Column(db.Float, nullable=False)
+    category = db.Column(db.String(50), nullable=False)
 
-class DrinkItem(Base):
+class DrinkItem(db.Model):
     __tablename__ = 'drink_items'
     
-    id = Column(Integer, primary_key=True)
-    name = Column(String(100), nullable=False)
-    description = Column(String(500))
-    price = Column(Float, nullable=False)
-    category = Column(String(50), nullable=False) 
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(500))
+    price = db.Column(db.Float, nullable=False)
+    category = db.Column(db.String(50), nullable=False)
 
-class Booking(Base):
+class Booking(db.Model):
     __tablename__ = 'bookings'
     
-    id = Column(Integer, primary_key=True)
-    name = Column(String(100), nullable=False)
-    email = Column(String(120), nullable=False)
-    phone = Column(String(20), nullable=False)
-    date = Column(String(10), nullable=False)
-    time = Column(String(5), nullable=False)
-    guests = Column(Integer, nullable=False)
-    special_requests = Column(String(500))
-    user_id = Column(Integer, nullable=False)  # Add this line to link bookings to users
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+    date = db.Column(db.String(10), nullable=False)
+    time = db.Column(db.String(5), nullable=False)
+    guests = db.Column(db.Integer, nullable=False)
+    special_requests = db.Column(db.String(500))
+    user_id = db.Column(db.Integer, nullable=False)
 
-class Contact(Base):
+class Contact(db.Model):
     __tablename__ = 'contacts'
     
-    id = Column(Integer, primary_key=True)
-    name = Column(String(100), nullable=False)
-    phone = Column(String(20), nullable=False)
-    email = Column(String(120), nullable=False)
-    message = Column(String(1000), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    message = db.Column(db.String(1000), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

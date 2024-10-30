@@ -18,19 +18,11 @@ app.secret_key = os.environ.get('SECRET_KEY', 'dev-key-for-testing')
 db = SQLAlchemy(app)
 
 # Import models
-from models import *
+from models import User, MenuItem, DrinkItem, Booking, Contact
 
 # Create tables
 with app.app_context():
     db.create_all()
-
-# Add these model definitions at the top of your file, after creating db
-class MenuItem(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text)
-    price = db.Column(db.Float, nullable=False)
-    category = db.Column(db.String(50))  # 'food' or 'drink'
 
 # Routes
 @app.route('/')
