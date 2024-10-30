@@ -1,117 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
-    <!--Favicon-->
-    <script src="https://kit.fontawesome.com/3388b1b6ae.js" crossorigin="anonymous"></script>
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <title>Login - JR Catering</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
-</head>
-<body>
-    <header>
-        <div class="header-content">
-            <a href="{{ url_for('index') }}" id="logo">JR Catering</a>
-            <nav>
-                <button class="burger-btn" id="burger-btn">
-                    <span class="burger-icon"></span>
-                </button>
-                <ul class="nav-links" id="nav-links">
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
-                    <li class="dropdown">
-                        <a href="{{ url_for('menu') }}" class="dropbtn">Menus</a>
-                        <div class="dropdown-content">
-                            <a href="{{ url_for('food_menu') }}">Food Menu</a>
-                            <a href="{{ url_for('drinks_menu') }}">Drinks Menu</a>
-                        </div>
-                    </li>
-                    <li><a href="{{ url_for('book') }}">
-                        {% if session.get('user_id') %}
-                            {% set has_bookings = get_user_bookings() %}
-                            {% if has_bookings %}
-                                Bookings
-                            {% else %}
-                                Book
-                            {% endif %}
-                        {% else %}
-                            Book
-                        {% endif %}
-                    </a></li>
-                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
-                    {% if 'username' in session %}
-                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
-                    {% else %}
-                        <li><a href="{{ url_for('login') }}">Login</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login-container">
+    <h2>Login</h2>
+    <form method="POST" action="{{ url_for('login') }}" class="login-form">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
         </div>
-    </header>
-    <main>
-        <h1>Login</h1>
-        <form method="POST" action="{{ url_for('login') }}" class="login-form">
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit">Login</button>
-        </form>
-        <div id="message"></div>
-        <p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
-    </main>
-    <footer>
-        <ul id="social-networks">
-            <li>
-                <a href="https://www.facebook.com/" target="_blank" rel="noopener"
-                    aria-label="Visit our Facebook page (opens in a new tab)">
-                    <i class="fa-brands fa-facebook"></i></a>
-            </li>
-            <li>
-                <a href="https://www.linkedin.com/" target="_blank" rel="noopener"
-                    aria-label="Visit our LinkedIn page (opens in a new tab)">
-                    <i class="fa-brands fa-linkedin"></i></a>
-            </li>
-            <li>
-                <a href="https://www.github.com/" target="_blank" rel="noopener"
-                    aria-label="Visit our Github page (opens in a new tab)">
-                    <i class="fa-brands fa-github"></i></a>
-            </li>
-        </ul>
-        <p id="footer-text">&copy; 2024 JR Catering. All rights reserved.</p>
-    </footer>
-    <script>
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            fetch('/login', {
-                method: 'POST',
-                body: new FormData(this)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    document.getElementById('message').innerHTML = 
-                        `<div class="error">${data.error}</div>`;
-                } else {
-                    document.getElementById('message').innerHTML = 
-                        `<div class="success">${data.message}</div>`;
-                    // Redirect to home page after successful login
-                    window.location.href = '/';
-                }
-            })
-            .catch(error => {
-                document.getElementById('message').innerHTML = 
-                    '<div class="error">Login failed. Please try again.</div>';
-            });
-        });
-    </script>
-    <script src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
-</body>
-</html>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn">Login</button>
+    </form>
+</div>
+{% endblock %}

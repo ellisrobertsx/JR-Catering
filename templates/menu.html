@@ -1,93 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
-    <!--Favicon-->
-    <script src="https://kit.fontawesome.com/3388b1b6ae.js" crossorigin="anonymous"></script>
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <title>JR Catering</title>
-</head>
-<body>
-    <header>
-        <div class="header-content">
-            <a href="{{ url_for('index') }}" id="logo">JR Catering</a>
-            <nav>
-                <button class="burger-btn" id="burger-btn">
-                    <span class="burger-icon"></span>
-                </button>
-                <ul class="nav-links" id="nav-links">
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
-                    <li class="dropdown">
-                        <a href="{{ url_for('menu') }}" class="dropbtn">Menus</a>
-                        <div class="dropdown-content">
-                            <a href="{{ url_for('food_menu') }}">Food Menu</a>
-                            <a href="{{ url_for('drinks_menu') }}">Drinks Menu</a>
-                        </div>
-                    </li>
-                    <li><a href="{{ url_for('book') }}">
-                        {% if session.get('user_id') %}
-                            {% set has_bookings = get_user_bookings() %}
-                            {% if has_bookings %}
-                                Bookings
-                            {% else %}
-                                Book
-                            {% endif %}
-                        {% else %}
-                            Book
-                        {% endif %}
-                    </a></li>
-                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
-                    {% if 'username' in session %}
-                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
-                    {% else %}
-                        <li><a href="{{ url_for('login') }}">Login</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="menu-container">
+    <h2>Our Menus</h2>
+    <div class="menu-options">
+        <div class="menu-card">
+            <h3>Food Menu</h3>
+            <p>Explore our delicious food options</p>
+            <a href="{{ url_for('food_menu') }}" class="btn">View Food Menu</a>
         </div>
-    </header>
-
-    <main>
-        <h1>Food Menu</h1>
-        {% for category, items in menu_items.items() %}
-        <div class="menu-section">
-            <h3><span>{{ category }}</span></h3>
-            <ul class="menu-items">
-                {% for item in items %}
-                <li>
-                    <strong>{{ item.name }}</strong>
-                    <span class="price">£{{ "%.2f"|format(item.price) }}</span>
-                    <p>{{ item.description }}</p>
-                </li>
-                {% endfor %}
-            </ul>
+        <div class="menu-card">
+            <h3>Drinks Menu</h3>
+            <p>Check out our refreshing drinks</p>
+            <a href="{{ url_for('drinks_menu') }}" class="btn">View Drinks Menu</a>
         </div>
-        {% endfor %}
-    </main>
-
-    <footer>
-        <ul id="social-networks">
-            <li>
-                <a href="https://www.facebook.com/" target="_blank" rel="noopener"
-                    aria-label="Visit our Facebook page (opens in a new tab)">
-                    <i class="fa-brands fa-facebook"></i></a>
-            </li>
-            <li>
-                <a href="https://www.linkedin.com/" target="_blank" rel="noopener"
-                    aria-label="Visit our LinkedIn page (opens in a new tab)">
-                    <i class="fa-brands fa-linkedin"></i></a>
-            </li>
-            <li>
-                <a href="https://www.github.com/" target="_blank" rel="noopener"
-                    aria-label="Visit our Github page (opens in a new tab)">
-                    <i class="fa-brands fa-github"></i></a>
-            </li>
-        </ul>
-        <p id="footer-text">&copy; 2024 JR Catering. All rights reserved.</p>
-    </footer>
-
-    <script src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
-</body>
-</html>
+    </div>
+</div>
+{% endblock %}
