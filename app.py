@@ -4,6 +4,8 @@ from sqlalchemy.orm import sessionmaker
 from models import Base, MenuItem, DrinkItem, User, Booking, Contact
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+import os
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Change this to a random secret key
@@ -12,7 +14,12 @@ app.secret_key = 'your_secret_key_here'  # Change this to a random secret key
 users = {}
 
 # Connection URL format: postgresql://username:password@host:port/database_name
-DATABASE_URL = "postgresql://postgres:Burngask10!@localhost:5432/JR-CATERING"
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL or 'sqlite:///your_local_db.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 engine = create_engine(DATABASE_URL)
 Base.metadata.create_all(engine)
