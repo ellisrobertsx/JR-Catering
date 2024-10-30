@@ -24,6 +24,14 @@ from models import *
 with app.app_context():
     db.create_all()
 
+# Add these model definitions at the top of your file, after creating db
+class MenuItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    price = db.Column(db.Float, nullable=False)
+    category = db.Column(db.String(50))  # 'food' or 'drink'
+
 # Routes
 @app.route('/')
 def index():
@@ -31,18 +39,18 @@ def index():
 
 @app.route('/menu')
 def menu():
-    food_items = MenuItem.query.all()
-    drink_items = DrinkItem.query.all()
+    food_items = MenuItem.query.filter_by(category='food').all()
+    drink_items = MenuItem.query.filter_by(category='drink').all()
     return render_template('menu.html', food_items=food_items, drink_items=drink_items)
 
 @app.route('/food_menu')
 def food_menu():
-    food_items = MenuItem.query.all()
+    food_items = MenuItem.query.filter_by(category='food').all()
     return render_template('food_menu.html', food_items=food_items)
 
 @app.route('/drinks_menu')
 def drinks_menu():
-    drink_items = DrinkItem.query.all()
+    drink_items = MenuItem.query.filter_by(category='drink').all()
     return render_template('drinks_menu.html', drink_items=drink_items)
 
 @app.route('/contact', methods=['GET', 'POST'])
