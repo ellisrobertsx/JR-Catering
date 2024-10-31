@@ -9,7 +9,7 @@ app = Flask(__name__)
 # Database configuration
 DATABASE_URL = os.environ.get('postgresql://postgres:Burngask10!@localhost:5432/jr-catering')
 if not DATABASE_URL:  # If no URL in environment, use default
-    DATABASE_URL = 'postgresql://ellisrobertsx:Burngask10!@host:5432/jr-catering'
+    DATABASE_URL = 'postgresql://postgres:Burngask10!@localhost:5432/jr-catering'
 elif DATABASE_URL.startswith("postgres://"):  # Fix Heroku style URLs
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
