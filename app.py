@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 
 # Database configuration with better error handling
-database_url = os.environ.get('postgres://uahl64ocac54vj:p5342a746bcc924b8263b1db85dd318543649ae3b749d3172444d051382f285aa@cbdhrtd93854d5.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d5e8o09ku16d72')
+database_url = os.environ.get('DATABASE_URL')
 if not database_url:
     raise RuntimeError('DATABASE_URL environment variable is not set!')
 
