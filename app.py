@@ -6,12 +6,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
-# Configure database
+# Database configuration
 DATABASE_URL = os.environ.get('postgresql://ellisrobertsx:Burngask10!@host:5432/jr-catering')
-if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+if not DATABASE_URL:  # If no URL in environment, use default
+    DATABASE_URL = 'postgresql://ellisrobertsx:Burngask10!@host:5432/jr-catering'
+elif DATABASE_URL.startswith("postgres://"):  # Fix Heroku style URLs
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL or 'sqlite:///your_local_db.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-key-for-testing')
 
