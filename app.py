@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 
 # Configure database
-DATABASE_URL = os.environ.get('postgresql://ellisrobertsx:Burngask10!@host:5432/jr-catering')
+DATABASE_URL = os.environ.get('postgresql://ellisrobertsx:Burngask10!@localhost:5432/jr-catering')
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
@@ -37,13 +37,23 @@ def menu():
 
 @app.route('/food_menu')
 def food_menu():
-    food_items = MenuItem.query.filter_by(category='food').all()
-    return render_template('food_menu.html', food_items=food_items)
+    try:
+        food_items = MenuItem.query.filter_by(category='food').all()
+        print("DEBUG - Food Items Found:", [{"name": item.name, "category": item.category} for item in food_items])
+        return render_template('food_menu.html', food_items=food_items)
+    except Exception as e:
+        print("DEBUG - Error in food_menu:", str(e))
+        return render_template('food_menu.html', food_items=[])
 
 @app.route('/drinks_menu')
 def drinks_menu():
-    drink_items = MenuItem.query.filter_by(category='drink').all()
-    return render_template('drinks_menu.html', drink_items=drink_items)
+    try:
+        drink_items = DrinkItem.query.all()  # or MenuItem.query.filter_by(category='drink').all()
+        print("DEBUG - Drink Items Found:", [{"name": item.name, "category": item.category} for item in drink_items])
+        return render_template('drinks_menu.html', drink_items=drink_items)
+    except Exception as e:
+        print("DEBUG - Error in drinks_menu:", str(e))
+        return render_template('drinks_menu.html', drink_items=[])
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
