@@ -6,8 +6,18 @@ import os
 
 app = Flask(__name__)
 
-# Configure database - simplified version
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('postgresql://ellisrobertsx:Burngask10!@host:5432/jr-catering')
+# Database configuration with better error handling
+database_url = os.environ.get('postgresql://ellisrobertsx:Burngask10!@host:5432/jr-catering')
+if not database_url:
+    raise RuntimeError('DATABASE_URL environment variable is not set!')
+
+# Convert postgres:// to postgresql://
+if database_url.startswith('postgres://'):
+    database_url = database_url.replace('postgres://', 'postgresql://', 1)
+
+print(f"Using database URL: {database_url[:8]}...{database_url[-8:]}")  # Log partial URL for debugging
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.environ.get('SECRET_KEY', 'dev')
 
