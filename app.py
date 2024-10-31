@@ -7,9 +7,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 
 # Database configuration
-DATABASE_URL = os.environ.get('postgresql://ellisrobertsx:Burngask10!@host:5432/jr-catering')
+DATABASE_URL = os.environ.get('postgres://uahl64ocac54vj:p5342a746bcc924b8263b1db85dd318543649ae3b749d3172444d051382f285aa@cbdhrtd93854d5.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d5e8o09ku16d72')
 if not DATABASE_URL:  # If no URL in environment, use default
-    DATABASE_URL = 'postgresql://ellisrobertsx:Burngask10!@host:5432/jr-catering'
+    DATABASE_URL = 'postgres://uahl64ocac54vj:p5342a746bcc924b8263b1db85dd318543649ae3b749d3172444d051382f285aa@cbdhrtd93854d5.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d5e8o09ku16d72'
 elif DATABASE_URL.startswith("postgres://"):  # Fix Heroku style URLs
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
