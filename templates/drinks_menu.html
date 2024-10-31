@@ -3,6 +3,13 @@
 {% block content %}
 <div class="menu-container">
     <h2>Drinks Menu</h2>
+    <!-- Debug info -->
+    {% if drink_items %}
+        <p style="color: green;">Found {{ drink_items|length }} drink items</p>
+    {% else %}
+        <p style="color: red;">No drink items found in database</p>
+    {% endif %}
+    
     <div class="menu-items">
         {% if drink_items %}
             {% for item in drink_items %}

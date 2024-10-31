@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 
 # Configure database
-DATABASE_URL = os.environ.get('postgresql://ellisrobertsx:Burngask10!@localhost:5432/jr-catering')
+DATABASE_URL = os.environ.get('postgresql://ellisrobertsx:Burngask10!@host:5432/jr-catering')
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
