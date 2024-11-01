@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+from sqlalchemy import text
 
 app = Flask(__name__)
 
@@ -54,13 +55,27 @@ def food_menu():
 @app.route('/drinks_menu')
 def drinks_menu():
     try:
+        print("Attempting to fetch drink items...")
         drink_items = DrinkItem.query.order_by(DrinkItem.category).all()
-        print("DEBUG - Drink Items Found:")
-        for item in drink_items:
-            print(f"- {item.name} ({item.category}): £{item.price}")
+        print(f"Found {len(drink_items)} drink items")
+        
+        if not drink_items:
+            print("No drink items found in database")
+            # Let's check if the table exists and has the right structure
+            with db.engine.connect() as conn:
+                result = conn.execute(text("SELECT table_name FROM information_schema.tables WHERE table_name='drink_item'"))
+                if result.fetchone():
+                    print("drink_item table exists")
+                    # Check table structure
+                    result = conn.execute(text("SELECT column_name FROM information_schema.columns WHERE table_name='drink_item'"))
+                    columns = [row[0] for row in result]
+                    print("Table columns:", columns)
+                else:
+                    print("drink_item table does not exist")
+                    
         return render_template('drinks_menu.html', drink_items=drink_items)
     except Exception as e:
-        print("DEBUG - Error in drinks_menu:", str(e))
+        print(f"Error in drinks_menu: {str(e)}")
         return render_template('drinks_menu.html', drink_items=[])
 
 @app.route('/contact', methods=['GET', 'POST'])
