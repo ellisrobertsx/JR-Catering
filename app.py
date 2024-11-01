@@ -27,6 +27,17 @@ db = SQLAlchemy(app)
 # Import models
 from models import User, MenuItem, DrinkItem, Booking, Contact
 
+# Add this with your other models
+class FoodItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    category = db.Column(db.String(50), nullable=False)
+
+    def __repr__(self):
+        return f'<FoodItem {self.name}>'
+
 # Create tables
 with app.app_context():
     db.create_all()
@@ -45,11 +56,10 @@ def menu():
 @app.route('/food_menu')
 def food_menu():
     try:
-        food_items = MenuItem.query.filter_by(category='food').all()
-        print("DEBUG - Food Items Found:", [{"name": item.name, "category": item.category} for item in food_items])
+        food_items = FoodItem.query.order_by(FoodItem.category).all()
         return render_template('food_menu.html', food_items=food_items)
     except Exception as e:
-        print("DEBUG - Error in food_menu:", str(e))
+        print(f"Error in food_menu: {str(e)}")
         return render_template('food_menu.html', food_items=[])
 
 @app.route('/drinks_menu')
