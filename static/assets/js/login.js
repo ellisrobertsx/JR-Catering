@@ -6,13 +6,23 @@ $(document).ready(function() {
             method: 'POST',
             data: $(this).serialize(),
             success: function(response) {
-                $('#login-message').text(response.message);
                 if (response.success) {
-                    window.location.href = '/';
+                    $('#login-message').text('Login successful! Redirecting...')
+                                     .removeClass('error')
+                                     .addClass('success');
+                    setTimeout(function() {
+                        window.location.href = '/';
+                    }, 1000);
+                } else {
+                    $('#login-message').text(response.message)
+                                     .removeClass('success')
+                                     .addClass('error');
                 }
             },
             error: function(xhr) {
-                $('#login-message').text(xhr.responseJSON.message);
+                $('#login-message').text(xhr.responseJSON.message)
+                                 .removeClass('success')
+                                 .addClass('error');
             }
         });
     });
