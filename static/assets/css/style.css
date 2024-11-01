@@ -642,6 +642,20 @@ form button:hover {
     text-align: center;
 }
 
+.auth-links {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.auth-links a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
 .error {
     color: #ff0000;
     margin: 10px 0;
