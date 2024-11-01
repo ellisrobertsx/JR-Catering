@@ -43,6 +43,20 @@ with app.app_context():
     db.create_all()
 
 # Routes
+def get_user_bookings():
+    if 'user_id' in session:
+        try:
+            return Booking.query.filter_by(user_id=session['user_id']).all()
+        except Exception as e:
+            print(f"Error getting bookings: {str(e)}")
+            return []
+    return []
+
+# Add the function to the template context
+@app.context_processor
+def utility_processor():
+    return dict(get_user_bookings=get_user_bookings)
+
 @app.route('/')
 def index():
     return render_template('index.html')
