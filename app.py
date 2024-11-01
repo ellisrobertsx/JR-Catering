@@ -54,8 +54,10 @@ def food_menu():
 @app.route('/drinks_menu')
 def drinks_menu():
     try:
-        drink_items = DrinkItem.query.all()  # or MenuItem.query.filter_by(category='drink').all()
-        print("DEBUG - Drink Items Found:", [{"name": item.name, "category": item.category} for item in drink_items])
+        drink_items = DrinkItem.query.order_by(DrinkItem.category).all()
+        print("DEBUG - Drink Items Found:")
+        for item in drink_items:
+            print(f"- {item.name} ({item.category}): £{item.price}")
         return render_template('drinks_menu.html', drink_items=drink_items)
     except Exception as e:
         print("DEBUG - Error in drinks_menu:", str(e))
