@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="menu-container">
+    <h2>Food Menu</h2>
+    <!-- Debug info -->
+    {% if food_items %}
+        <p style="color: green;">Found {{ food_items|length }} food items</p>
+    {% else %}
+        <p style="color: red;">No food items found in database</p>
+    {% endif %}
+    
+    <div class="menu-items">
+        {% if food_items %}
+            {% for item in food_items %}
+            <div class="menu-item">
+                <h3>{{ item.name }}</h3>
+                <p>{{ item.description }}</p>
+                <span class="price">£{{ "%.2f"|format(item.price) }}</span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Menu items coming soon!</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 
