@@ -107,15 +107,10 @@ def login():
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
             session['username'] = user.username
-            return jsonify({
-                'success': True,
-                'message': 'Login successful'
-            })
+            return redirect(url_for('index'))  # Redirect to index page directly
         
-        return jsonify({
-            'success': False,
-            'message': 'Invalid username or password'
-        }), 401
+        flash('Invalid username or password', 'error')
+        return redirect(url_for('login'))
         
     return render_template('login.html')
 
