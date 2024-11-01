@@ -106,9 +106,79 @@ def drinks_menu():
 def contact():
     return render_template('contact.html')
 
-@app.route('/book')
+@app.route('/book', methods=['GET', 'POST'])
 def book():
-    return render_template('book.html')
+    if 'user_id' not in session:
+        flash('Please login to make a booking', 'error')
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        try:
+            new_booking = Booking(
+                user_id=session['user_id'],
+                name=request.form['name'],
+                email=request.form['email'],
+                phone=request.form['phone'],
+                date=datetime.strptime(request.form['date'], '%Y-%m-%d').date(),
+                time=request.form['time'],
+                guests=int(request.form['guests']),
+                special_requests=request.form.get('special-requests', '')
+            )
+            db.session.add(new_booking)
+            db.session.commit()
+            
+            return render_template('booking_confirmation.html', booking=new_booking)
+        except Exception as e:
+            print(f"Booking error: {str(e)}")
+            flash('Error creating booking. Please try again.', 'error')
+            db.session.rollback()
+    
+    user_bookings = Booking.query.filter_by(user_id=session['user_id']).all()
+    return render_template('book.html', bookings=user_bookings)
+
+@app.route('/edit_booking/<int:booking_id>', methods=['POST'])
+def edit_booking(booking_id):
+    if 'user_id' not in session:
+        return jsonify({'error': 'Please login'}), 401
+
+    booking = Booking.query.get_or_404(booking_id)
+    if booking.user_id != session['user_id']:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        booking.date = datetime.strptime(request.form['date'], '%Y-%m-%d').date()
+        booking.time = request.form['time']
+        booking.guests = int(request.form['guests'])
+        booking.special_requests = request.form.get('special-requests', '')
+        
+        db.session.commit()
+        flash('Booking updated successfully!', 'success')
+        return redirect(url_for('book'))
+    except Exception as e:
+        print(f"Edit booking error: {str(e)}")
+        db.session.rollback()
+        flash('Error updating booking', 'error')
+        return redirect(url_for('book'))
+
+@app.route('/delete_booking/<int:booking_id>', methods=['POST'])
+def delete_booking(booking_id):
+    if 'user_id' not in session:
+        return jsonify({'error': 'Please login'}), 401
+
+    booking = Booking.query.get_or_404(booking_id)
+    if booking.user_id != session['user_id']:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        db.session.delete(booking)
+        db.session.commit()
+        flash('Booking cancelled successfully!', 'success')
+    except Exception as e:
+        print(f"Delete booking error: {str(e)}")
+        db.session.rollback()
+        flash('Error cancelling booking', 'error')
+    
+    return redirect(url_for('book'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
