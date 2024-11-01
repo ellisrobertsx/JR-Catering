@@ -642,6 +642,22 @@ form button:hover {
     text-align: center;
 }
 
+.error {
+    color: #ff0000;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: rgba(255, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.success {
+    color: #00ff00;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: rgba(0, 255, 0, 0.1);
+    border-radius: 4px;
+}
+
 /* Booking Form Styling */
 .booking-container {
     width: 100%;
@@ -1609,4 +1625,20 @@ form button:hover {
 
 .btn:hover {
     opacity: 0.9;
+}
+
+.error {
+    color: #ff0000;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: rgba(255, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.success {
+    color: #00ff00;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: rgba(0, 255, 0, 0.1);
+    border-radius: 4px;
 }

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -107,10 +107,16 @@ def login():
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
             session['username'] = user.username
-            flash('Logged in successfully!', 'success')
-            return redirect(url_for('index'))
+            return jsonify({
+                'success': True,
+                'message': 'Login successful'
+            })
         
-        flash('Invalid username or password', 'error')
+        return jsonify({
+            'success': False,
+            'message': 'Invalid username or password'
+        }), 401
+        
     return render_template('login.html')
 
 @app.route('/logout')
@@ -118,6 +124,43 @@ def logout():
     session.clear()
     flash('You have been logged out', 'success')
     return redirect(url_for('index'))
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        try:
+            # Get form data
+            username = request.form['username']
+            email = request.form['email']
+            password = request.form['password']
+
+            # Check if username or email already exists
+            if User.query.filter_by(username=username).first():
+                return jsonify({'error': 'Username already exists'}), 400
+            
+            if User.query.filter_by(email=email).first():
+                return jsonify({'error': 'Email already exists'}), 400
+
+            # Create new user with hashed password
+            hashed_password = generate_password_hash(password)
+            new_user = User(
+                username=username,
+                email=email,
+                password=hashed_password
+            )
+
+            # Add user to database
+            db.session.add(new_user)
+            db.session.commit()
+
+            return jsonify({'message': 'User registered successfully'})
+
+        except Exception as e:
+            db.session.rollback()
+            print(f"Registration error: {str(e)}")
+            return jsonify({'error': 'Registration failed'}), 500
+
+    return render_template('register.html')
 
 # Error handlers
 @app.errorhandler(404)
