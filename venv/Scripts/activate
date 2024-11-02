@@ -35,7 +35,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\Ellis\JR-Catering\JR-Catering\venv"
+VIRTUAL_ENV="C:\Users\Ellis\JR-Catering\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
