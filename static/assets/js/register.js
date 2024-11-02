@@ -1,42 +1,42 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('register-form');
+    const message = document.getElementById('register-message');
     
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const username = document.getElementById('username').value;
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirm-password').value;
+        // Get form values
+        const formData = new FormData(form);
         
-        if (password !== confirmPassword) {
-            alert('Passwords do not match');
+        // Check if passwords match
+        if (formData.get('password') !== formData.get('confirm-password')) {
+            message.textContent = 'Passwords do not match';
+            message.className = 'error';
             return;
         }
         
+        // Submit form
         fetch('/register', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: username,
-                email: email,
-                password: password
-            }),
+            body: formData
         })
         .then(response => response.json())
         .then(data => {
-            if (data.message === "User registered successfully") {
-                alert('Registration successful!');
-                window.location.href = '/';  // Redirect to home page
+            if (data.error) {
+                message.textContent = data.error;
+                message.className = 'error';
             } else {
-                alert('Registration failed: ' + data.error);
+                message.textContent = 'Registration successful! Redirecting to login...';
+                message.className = 'success';
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
             }
         })
-        .catch((error) => {
+        .catch(error => {
+            message.textContent = 'An error occurred. Please try again.';
+            message.className = 'error';
             console.error('Error:', error);
-            alert('An error occurred during registration');
         });
     });
 });

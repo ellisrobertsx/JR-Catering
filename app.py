@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+from sqlalchemy import text
 
 app = Flask(__name__)
 
@@ -26,11 +27,36 @@ db = SQLAlchemy(app)
 # Import models
 from models import User, MenuItem, DrinkItem, Booking, Contact
 
+# Add this with your other models
+class FoodItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    category = db.Column(db.String(50), nullable=False)
+
+    def __repr__(self):
+        return f'<FoodItem {self.name}>'
+
 # Create tables
 with app.app_context():
     db.create_all()
 
 # Routes
+def get_user_bookings():
+    if 'user_id' in session:
+        try:
+            return Booking.query.filter_by(user_id=session['user_id']).all()
+        except Exception as e:
+            print(f"Error getting bookings: {str(e)}")
+            return []
+    return []
+
+# Add the function to the template context
+@app.context_processor
+def utility_processor():
+    return dict(get_user_bookings=get_user_bookings)
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -44,32 +70,115 @@ def menu():
 @app.route('/food_menu')
 def food_menu():
     try:
-        food_items = MenuItem.query.filter_by(category='food').all()
-        print("DEBUG - Food Items Found:", [{"name": item.name, "category": item.category} for item in food_items])
+        food_items = FoodItem.query.order_by(FoodItem.category).all()
         return render_template('food_menu.html', food_items=food_items)
     except Exception as e:
-        print("DEBUG - Error in food_menu:", str(e))
+        print(f"Error in food_menu: {str(e)}")
         return render_template('food_menu.html', food_items=[])
 
 @app.route('/drinks_menu')
 def drinks_menu():
     try:
+        print("Attempting to fetch drink items...")
         drink_items = DrinkItem.query.order_by(DrinkItem.category).all()
-        print("DEBUG - Drink Items Found:")
-        for item in drink_items:
-            print(f"- {item.name} ({item.category}): £{item.price}")
+        print(f"Found {len(drink_items)} drink items")
+        
+        if not drink_items:
+            print("No drink items found in database")
+            # Let's check if the table exists and has the right structure
+            with db.engine.connect() as conn:
+                result = conn.execute(text("SELECT table_name FROM information_schema.tables WHERE table_name='drink_item'"))
+                if result.fetchone():
+                    print("drink_item table exists")
+                    # Check table structure
+                    result = conn.execute(text("SELECT column_name FROM information_schema.columns WHERE table_name='drink_item'"))
+                    columns = [row[0] for row in result]
+                    print("Table columns:", columns)
+                else:
+                    print("drink_item table does not exist")
+                    
         return render_template('drinks_menu.html', drink_items=drink_items)
     except Exception as e:
-        print("DEBUG - Error in drinks_menu:", str(e))
+        print(f"Error in drinks_menu: {str(e)}")
         return render_template('drinks_menu.html', drink_items=[])
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     return render_template('contact.html')
 
-@app.route('/book')
+@app.route('/book', methods=['GET', 'POST'])
 def book():
-    return render_template('book.html')
+    if 'user_id' not in session:
+        flash('Please login to make a booking', 'error')
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        try:
+            new_booking = Booking(
+                user_id=session['user_id'],
+                name=request.form['name'],
+                email=request.form['email'],
+                phone=request.form['phone'],
+                date=datetime.strptime(request.form['date'], '%Y-%m-%d').date(),
+                time=request.form['time'],
+                guests=int(request.form['guests']),
+                special_requests=request.form.get('special-requests', '')
+            )
+            db.session.add(new_booking)
+            db.session.commit()
+            
+            return render_template('booking_confirmation.html', booking=new_booking)
+        except Exception as e:
+            print(f"Booking error: {str(e)}")
+            flash('Error creating booking. Please try again.', 'error')
+            db.session.rollback()
+    
+    user_bookings = Booking.query.filter_by(user_id=session['user_id']).all()
+    return render_template('book.html', bookings=user_bookings)
+
+@app.route('/edit_booking/<int:booking_id>', methods=['POST'])
+def edit_booking(booking_id):
+    if 'user_id' not in session:
+        return jsonify({'error': 'Please login'}), 401
+
+    booking = Booking.query.get_or_404(booking_id)
+    if booking.user_id != session['user_id']:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        booking.date = datetime.strptime(request.form['date'], '%Y-%m-%d').date()
+        booking.time = request.form['time']
+        booking.guests = int(request.form['guests'])
+        booking.special_requests = request.form.get('special-requests', '')
+        
+        db.session.commit()
+        flash('Booking updated successfully!', 'success')
+        return redirect(url_for('book'))
+    except Exception as e:
+        print(f"Edit booking error: {str(e)}")
+        db.session.rollback()
+        flash('Error updating booking', 'error')
+        return redirect(url_for('book'))
+
+@app.route('/delete_booking/<int:booking_id>', methods=['POST'])
+def delete_booking(booking_id):
+    if 'user_id' not in session:
+        return jsonify({'error': 'Please login'}), 401
+
+    booking = Booking.query.get_or_404(booking_id)
+    if booking.user_id != session['user_id']:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    try:
+        db.session.delete(booking)
+        db.session.commit()
+        flash('Booking cancelled successfully!', 'success')
+    except Exception as e:
+        print(f"Delete booking error: {str(e)}")
+        db.session.rollback()
+        flash('Error cancelling booking', 'error')
+    
+    return redirect(url_for('book'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -82,10 +191,11 @@ def login():
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
             session['username'] = user.username
-            flash('Logged in successfully!', 'success')
-            return redirect(url_for('index'))
+            return redirect(url_for('index'))  # Redirect to index page directly
         
         flash('Invalid username or password', 'error')
+        return redirect(url_for('login'))
+        
     return render_template('login.html')
 
 @app.route('/logout')
@@ -93,6 +203,43 @@ def logout():
     session.clear()
     flash('You have been logged out', 'success')
     return redirect(url_for('index'))
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        try:
+            # Get form data
+            username = request.form['username']
+            email = request.form['email']
+            password = request.form['password']
+
+            # Check if username or email already exists
+            if User.query.filter_by(username=username).first():
+                return jsonify({'error': 'Username already exists'}), 400
+            
+            if User.query.filter_by(email=email).first():
+                return jsonify({'error': 'Email already exists'}), 400
+
+            # Create new user with hashed password
+            hashed_password = generate_password_hash(password)
+            new_user = User(
+                username=username,
+                email=email,
+                password=hashed_password
+            )
+
+            # Add user to database
+            db.session.add(new_user)
+            db.session.commit()
+
+            return jsonify({'message': 'User registered successfully'})
+
+        except Exception as e:
+            db.session.rollback()
+            print(f"Registration error: {str(e)}")
+            return jsonify({'error': 'Registration failed'}), 500
+
+    return render_template('register.html')
 
 # Error handlers
 @app.errorhandler(404)

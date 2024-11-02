@@ -28,8 +28,8 @@
                     </li>
                     <li><a href="{{ url_for('book') }}">
                         {% if session.get('user_id') %}
-                            {% set has_bookings = get_user_bookings() %}
-                            {% if has_bookings %}
+                            {% set bookings = get_user_bookings() %}
+                            {% if bookings %}
                                 Bookings
                             {% else %}
                                 Book
