@@ -60,23 +60,28 @@
                 {% if bookings %}
                     <div class="existing-bookings">
                         {% for booking in bookings %}
-                            <div class="booking-card">
-                                <h3>Booking for {{ booking.name }}</h3>
-                                <div class="booking-details">
-                                    <p><strong>Date:</strong> {{ booking.date }}</p>
-                                    <p><strong>Time:</strong> {{ booking.time }}</p>
-                                    <p><strong>Guests:</strong> {{ booking.guests }}</p>
-                                    {% if booking.special_requests %}
-                                        <p><strong>Special Requests:</strong> {{ booking.special_requests }}</p>
-                                    {% endif %}
+                            <div class="booking-card" id="booking-card-{{ booking.id }}">
+                                <!-- Regular booking view -->
+                                <div class="booking-view">
+                                    <h3>Booking for {{ booking.name }}</h3>
+                                    <div class="booking-details">
+                                        <p><strong>Date:</strong> <span data-field="date">{{ booking.date }}</span></p>
+                                        <p><strong>Time:</strong> <span data-field="time">{{ booking.time }}</span></p>
+                                        <p><strong>Guests:</strong> <span data-field="guests">{{ booking.guests }}</span></p>
+                                        {% if booking.special_requests %}
+                                            <p><strong>Special Requests:</strong> <span data-field="special-requests">{{ booking.special_requests }}</span></p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="booking-actions">
+                                        <button class="btn edit-btn" onclick="toggleEditForm('{{ booking.id }}')">Edit Booking</button>
+                                        <form action="{{ url_for('delete_booking', booking_id=booking.id) }}" method="POST" style="display: inline;">
+                                            <button type="submit" class="btn cancel-btn" onclick="return confirm('Are you sure you want to cancel this booking?')">Cancel Booking</button>
+                                        </form>
+                                    </div>
                                 </div>
-                                <div class="booking-actions">
-                                    <button onclick="showEditForm({{ booking.id }})" class="btn edit-btn">Edit Booking</button>
-                                    <button onclick="confirmCancel({{ booking.id }})" class="btn cancel-btn">Cancel Booking</button>
-                                </div>
-                                
-                                <!-- Edit form (hidden by default) -->
-                                <div id="edit-form-{{ booking.id }}" class="edit-form" style="display: none;">
+
+                                <!-- Edit form for this specific booking -->
+                                <div class="edit-form" id="edit-form-{{ booking.id }}" style="display: none;">
                                     <h4>Edit Booking</h4>
                                     <form action="{{ url_for('edit_booking', booking_id=booking.id) }}" method="POST">
                                         <div class="form-group">
@@ -84,9 +89,9 @@
                                             <input type="date" id="edit-date-{{ booking.id }}" name="date" value="{{ booking.date }}" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="time-{{ booking.id }}">Time:</label>
-                                            <select id="time-{{ booking.id }}" name="time" required data-current-time="{{ booking.time }}">
-                                                <option value="">Select a time</option>
+                                            <label for="edit-time-{{ booking.id }}">Time:</label>
+                                            <select id="edit-time-{{ booking.id }}" name="time" data-current-time="{{ booking.time }}" required>
+                                                <!-- Time slots will be generated here -->
                                             </select>
                                         </div>
                                         <div class="form-group">
@@ -99,7 +104,7 @@
                                         </div>
                                         <div class="form-actions">
                                             <button type="submit" class="btn save-btn">Save Changes</button>
-                                            <button type="button" onclick="hideEditForm({{ booking.id }})" class="btn cancel-edit-btn">Cancel</button>
+                                            <button type="button" class="btn cancel-btn" onclick="toggleEditForm({{ booking.id }})">Cancel</button>
                                         </div>
                                     </form>
                                 </div>
@@ -191,12 +196,31 @@
         const today = new Date().toISOString().split('T')[0];
         dateInput.min = today;
 
-        function showEditForm(bookingId) {
-            document.getElementById(`edit-form-${bookingId}`).style.display = 'block';
-        }
-
-        function hideEditForm(bookingId) {
-            document.getElementById(`edit-form-${bookingId}`).style.display = 'none';
+        function toggleEditForm(bookingId) {
+            // Get the specific booking card and its components
+            const bookingCard = document.getElementById(`booking-card-${bookingId}`);
+            const bookingView = bookingCard.querySelector('.booking-view');
+            const editForm = document.getElementById(`edit-form-${bookingId}`);
+            
+            if (bookingCard && bookingView && editForm) {
+                // Toggle visibility
+                if (editForm.style.display === 'none') {
+                    // Show edit form, hide booking view
+                    bookingView.style.display = 'none';
+                    editForm.style.display = 'block';
+                    
+                    // Generate time slots for this specific booking
+                    const timeSelect = editForm.querySelector('select[name="time"]');
+                    if (timeSelect) {
+                        timeSelect.innerHTML = '';
+                        generateTimeSlots(`edit-time-${bookingId}`, timeSelect.getAttribute('data-current-time'));
+                    }
+                } else {
+                    // Hide edit form, show booking view
+                    editForm.style.display = 'none';
+                    bookingView.style.display = 'block';
+                }
+            }
         }
 
         function confirmCancel(bookingId) {
@@ -226,9 +250,9 @@
         });
 
         // Function to validate date and time
-        function validateDateTime() {
-            const dateInput = document.getElementById('date');
-            const timeInput = document.getElementById('time');
+        function validateDateTime(dateInput, timeInput) {
+            if (!dateInput || !timeInput) return true; // Skip validation if inputs don't exist
+            
             const now = new Date();
             const selected = new Date(dateInput.value + 'T' + timeInput.value);
 
@@ -248,22 +272,82 @@
         });
 
         // Add validation to edit forms
-        document.querySelectorAll('.edit-form').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                const dateInput = this.querySelector('input[type="date"]');
-                const timeInput = this.querySelector('input[type="time"]');
-                if (!validateDateTime(dateInput.value, timeInput.value)) {
-                    e.preventDefault();
+        document.querySelectorAll('.edit-form form').forEach(form => {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                try {
+                    const formData = new FormData(this);
+                    const response = await fetch(this.action, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: formData,
+                        credentials: 'same-origin'
+                    });
+
+                    // Check if we got redirected to login page
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                        return;
+                    }
+
+                    // Check for JSON response
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        throw new Error('Session expired. Please refresh the page and try again.');
+                    }
+
+                    const result = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(result.error || 'Failed to update booking');
+                    }
+
+                    // Update the booking display
+                    const bookingId = this.closest('.edit-form').id.split('-')[2];
+                    const bookingCard = document.getElementById(`booking-card-${bookingId}`);
+                    const bookingView = bookingCard.querySelector('.booking-view');
+                    
+                    // Update the booking details
+                    bookingView.querySelector('[data-field="date"]').textContent = result.date;
+                    bookingView.querySelector('[data-field="time"]').textContent = result.time;
+                    bookingView.querySelector('[data-field="guests"]').textContent = result.guests;
+                    
+                    if (result.special_requests) {
+                        const specialRequestsElem = bookingView.querySelector('[data-field="special-requests"]');
+                        if (specialRequestsElem) {
+                            specialRequestsElem.textContent = result.special_requests;
+                            specialRequestsElem.parentElement.style.display = 'block';
+                        }
+                    }
+
+                    // Show success message and toggle view
+                    alert('Booking updated successfully!');
+                    toggleEditForm(bookingId);
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    if (error.message.includes('Session expired')) {
+                        window.location.href = '{{ url_for("login") }}';
+                    } else {
+                        alert(error.message || 'Error updating booking. Please try again.');
+                    }
                 }
             });
         });
 
         // Set minimum time if date is today
         function updateMinTime(dateInput, timeInput) {
+            if (!dateInput || !timeInput) return; // Skip if inputs don't exist
+            
             const selectedDate = dateInput.value;
-            const now = new Date();
+            const today = new Date().toISOString().split('T')[0];
             
             if (selectedDate === today) {
+                const now = new Date();
                 const hours = String(now.getHours()).padStart(2, '0');
                 const minutes = String(now.getMinutes()).padStart(2, '0');
                 timeInput.min = `${hours}:${minutes}`;
@@ -310,7 +394,7 @@
         generateTimeSlots('time');
 
         // Generate time slots for each edit form
-        document.querySelectorAll('[id^="time-"]').forEach(select => {
+        document.querySelectorAll('[id^="edit-time-"]').forEach(select => {
             const bookingId = select.id.split('-')[1];
             const currentTime = select.getAttribute('data-current-time');
             generateTimeSlots(select.id, currentTime);

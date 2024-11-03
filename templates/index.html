@@ -1,18 +1,41 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="background-color: red; color: white; padding: 10px; margin: 10px;">
-    TEST UPDATE: {{ datetime.now() }}
+<div class="hero-container">
+    <div class="hero-image">
+        <img src="{{ url_for('static', filename='assets/images/img1.jpg') }}" alt="Hero Image 1">
+    </div>
+    <div class="hero-image">
+        <img src="{{ url_for('static', filename='assets/images/img2.jpg') }}" alt="Hero Image 2">
+    </div>
+    <div class="hero-image">
+        <img src="{{ url_for('static', filename='assets/images/img3.jpg') }}" alt="Hero Image 3">
+    </div>
+    <div class="hero-image">
+        <img src="{{ url_for('static', filename='assets/images/img4.jpg') }}" alt="Hero Image 4">
+    </div>
 </div>
 
-<div class="hero-container">
-    <!-- ... hero container content ... -->
-</div>
-<h1>Welcome to JR Cateringggggg</h1>
-<p>Version: {{ version }}</p>
-<p>Last Updated: {{ datetime.now() }}</p>
+<h1>Welcome to JR Catering</h1>
 <p>We are a catering company that specializes in providing high-quality food and service to our clients.</p>
 <section id="container">
-    <!-- ... container content ... -->
+    <div class="card" onclick="window.location.href='{{ url_for('food_menu') }}'">
+        <img src="{{ url_for('static', filename='assets/images/food.jpg') }}" alt="Food Menu">
+        <div class="card-content">
+            <h2>Food Menu</h2>
+        </div>
+    </div>
+    <div class="card" onclick="window.location.href='{{ url_for('drinks_menu') }}'">
+        <img src="{{ url_for('static', filename='assets/images/drinks.jpg') }}" alt="Drinks Menu">
+        <div class="card-content">
+            <h2>Drinks Menu</h2>
+        </div>
+    </div>
+    <div class="card" onclick="window.location.href='{{ url_for('book') }}'">
+        <img src="{{ url_for('static', filename='assets/images/table.jpg') }}" alt="Book a Table">
+        <div class="card-content">
+            <h2>Book a Table</h2>
+        </div>
+    </div>
 </section>
 {% endblock %}

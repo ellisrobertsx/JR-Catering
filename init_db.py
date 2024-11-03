@@ -69,6 +69,18 @@ def init_db():
             # Add food items
             foods = [
                 FoodItem(
+                    name='Garlic Bread',
+                    description='Fresh baked bread with garlic butter',
+                    price=4.99,
+                    category='Starters'
+                ),
+                FoodItem(
+                    name='Caesar Salad',
+                    description='Crisp romaine lettuce, parmesan, croutons, and Caesar dressing',
+                    price=9.99,
+                    category='Starters'
+                ),
+                FoodItem(
                     name='Classic Burger',
                     description='6oz beef patty with lettuce, tomato, and our special sauce',
                     price=12.99,
@@ -79,18 +91,6 @@ def init_db():
                     description='Beer-battered cod with hand-cut chips and mushy peas',
                     price=14.99,
                     category='Mains'
-                ),
-                FoodItem(
-                    name='Caesar Salad',
-                    description='Crisp romaine lettuce, parmesan, croutons, and Caesar dressing',
-                    price=9.99,
-                    category='Starters'
-                ),
-                FoodItem(
-                    name='Garlic Bread',
-                    description='Fresh baked bread with garlic butter',
-                    price=4.99,
-                    category='Starters'
                 ),
                 FoodItem(
                     name='Chocolate Brownie',

@@ -5,6 +5,10 @@ import os
 from sqlalchemy import text
 from extensions import db
 from models import User, MenuItem, DrinkItem, Booking, Contact, FoodItem
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
@@ -53,23 +57,42 @@ def utility_processor():
 
 @app.route('/')
 def index():
-    # Pass datetime to the template
-    return render_template('index.html', datetime=datetime)
+    logger.debug("Rendering index page")
+    return render_template('index.html')
 
 @app.route('/menu')
 def menu():
-    food_items = MenuItem.query.filter_by(category='food').all()
-    drink_items = MenuItem.query.filter_by(category='drink').all()
-    return render_template('menu.html', food_items=food_items, drink_items=drink_items)
+    try:
+        logger.debug("Fetching menu items")
+        food_items = FoodItem.query.all()
+        drink_items = DrinkItem.query.all()
+        logger.debug(f"Found {len(food_items)} food items and {len(drink_items)} drink items")
+        return render_template('menu.html', food_items=food_items, drink_items=drink_items)
+    except Exception as e:
+        logger.error(f"Error in menu: {str(e)}")
+        return render_template('menu.html', food_items=[], drink_items=[])
 
 @app.route('/food_menu')
 def food_menu():
     try:
-        food_items = FoodItem.query.order_by(FoodItem.category).all()
-        return render_template('food_menu.html', food_items=food_items)
+        # Get all food items and group by category in the desired order
+        categories = ['Starters', 'Mains', 'Desserts']
+        food_items = FoodItem.query.all()
+        
+        # Create a dictionary to store items by category
+        menu_items = {}
+        for category in categories:
+            menu_items[category] = [item for item in food_items if item.category == category]
+        
+        # Debug print
+        print(f"Found {len(food_items)} food items")
+        for category, items in menu_items.items():
+            print(f"{category}: {len(items)} items")
+            
+        return render_template('food_menu.html', menu_items=menu_items)
     except Exception as e:
-        print(f"Error in food_menu: {str(e)}")
-        return render_template('food_menu.html', food_items=[])
+        print(f"Error in food_menu route: {str(e)}")
+        return render_template('food_menu.html', menu_items={})
 
 @app.route('/drinks_menu')
 def drinks_menu():
@@ -126,27 +149,39 @@ def book():
 
 @app.route('/edit_booking/<int:booking_id>', methods=['POST'])
 def edit_booking(booking_id):
+    # Check if user is logged in
     if 'user_id' not in session:
-        return jsonify({'error': 'Please login'}), 401
-
-    booking = Booking.query.get_or_404(booking_id)
-    if booking.user_id != session['user_id']:
-        return jsonify({'error': 'Unauthorized'}), 403
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'error': 'Please login to continue'}), 401
+        return redirect(url_for('login'))
 
     try:
+        booking = Booking.query.get_or_404(booking_id)
+        
+        # Verify booking belongs to user
+        if booking.user_id != session['user_id']:
+            return jsonify({'error': 'Unauthorized access'}), 403
+
+        # Update booking details
         booking.date = datetime.strptime(request.form['date'], '%Y-%m-%d').date()
         booking.time = request.form['time']
         booking.guests = int(request.form['guests'])
         booking.special_requests = request.form.get('special-requests', '')
         
         db.session.commit()
-        flash('Booking updated successfully!', 'success')
-        return redirect(url_for('book'))
+        
+        return jsonify({
+            'success': True,
+            'date': booking.date.strftime('%Y-%m-%d'),
+            'time': booking.time,
+            'guests': booking.guests,
+            'special_requests': booking.special_requests
+        })
+
     except Exception as e:
-        print(f"Edit booking error: {str(e)}")
         db.session.rollback()
-        flash('Error updating booking', 'error')
-        return redirect(url_for('book'))
+        print(f"Edit booking error: {str(e)}")
+        return jsonify({'error': 'Failed to update booking'}), 500
 
 @app.route('/delete_booking/<int:booking_id>', methods=['POST'])
 def delete_booking(booking_id):
@@ -245,10 +280,6 @@ def add_header(response):
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'
     return response
-
-@app.context_processor
-def inject_version():
-    return {'version': datetime.now().strftime('%Y%m%d-%H%M%S')}
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

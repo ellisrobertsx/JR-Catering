@@ -2,20 +2,21 @@
 
 {% block content %}
 <div class="menu-container">
-    <h2>Food Menu</h2>
-    
-    {% if food_items %}
-        {% for category, items in food_items|groupby('category') %}
+    <h1>Food Menu</h1>
+    {% if menu_items %}
+        {% for category, items in menu_items.items() %}
             <div class="menu-section">
-                <h3><span>{{ category }}</span></h3>
+                <div class="section-title">
+                    <span class="line"></span>
+                    <h2>{{ category }}</h2>
+                    <span class="line"></span>
+                </div>
                 <div class="menu-items">
                     {% for item in items %}
                         <div class="menu-item">
-                            <h3>
-                                {{ item.name }}
-                                <span class="price">£{{ "%.2f"|format(item.price) }}</span>
-                            </h3>
+                            <h3>{{ item.name }}</h3>
                             <p>{{ item.description }}</p>
+                            <span class="price">£{{ "%.2f"|format(item.price) }}</span>
                         </div>
                     {% endfor %}
                 </div>
