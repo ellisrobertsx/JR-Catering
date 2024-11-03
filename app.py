@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from sqlalchemy import text
@@ -21,6 +21,8 @@ print(f"Using database URL: {database_url[:8]}...{database_url[-8:]}")  # Log pa
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.environ.get('SECRET_KEY', 'dev')
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 db = SQLAlchemy(app)
 
@@ -55,7 +57,11 @@ def get_user_bookings():
 # Add the function to the template context
 @app.context_processor
 def utility_processor():
-    return dict(get_user_bookings=get_user_bookings)
+    def versioned_url_for(endpoint, **values):
+        if endpoint == 'static':
+            values['v'] = '2'  # Change this version number when you update static files
+        return url_for(endpoint, **values)
+    return dict(url_for=versioned_url_for, get_user_bookings=get_user_bookings)
 
 @app.route('/')
 def index():
@@ -250,6 +256,13 @@ def not_found_error(error):
 def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
+
+@app.after_request
+def add_header(response):
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '-1'
+    return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
