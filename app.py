@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, make_response
-from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from sqlalchemy import text
+from extensions import db
+from models import User, MenuItem, DrinkItem, Booking, Contact, FoodItem
 
 app = Flask(__name__)
 
@@ -16,7 +17,7 @@ if not database_url:
 if database_url.startswith('postgres://'):
     database_url = database_url.replace('postgres://', 'postgresql://', 1)
 
-print(f"Using database URL: {database_url[:8]}...{database_url[-8:]}")  # Log partial URL for debugging
+print(f"Using database URL: {database_url[:8]}...{database_url[-8:]}")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -24,21 +25,8 @@ app.secret_key = os.environ.get('SECRET_KEY', 'dev')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
-db = SQLAlchemy(app)
-
-# Import models
-from models import User, MenuItem, DrinkItem, Booking, Contact
-
-# Add this with your other models
-class FoodItem(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    price = db.Column(db.Float, nullable=False)
-    category = db.Column(db.String(50), nullable=False)
-
-    def __repr__(self):
-        return f'<FoodItem {self.name}>'
+# Initialize the db with the app
+db.init_app(app)
 
 # Create tables
 with app.app_context():
@@ -57,15 +45,16 @@ def get_user_bookings():
 # Add the function to the template context
 @app.context_processor
 def utility_processor():
-    def versioned_url_for(endpoint, **values):
-        if endpoint == 'static':
-            values['v'] = '2'  # Change this version number when you update static files
-        return url_for(endpoint, **values)
-    return dict(url_for=versioned_url_for, get_user_bookings=get_user_bookings)
+    return {
+        'datetime': datetime,
+        'version': datetime.now().strftime('%Y%m%d-%H%M%S'),
+        'get_user_bookings': get_user_bookings
+    }
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # Pass datetime to the template
+    return render_template('index.html', datetime=datetime)
 
 @app.route('/menu')
 def menu():
@@ -89,24 +78,17 @@ def drinks_menu():
         drink_items = DrinkItem.query.order_by(DrinkItem.category).all()
         print(f"Found {len(drink_items)} drink items")
         
-        if not drink_items:
-            print("No drink items found in database")
-            # Let's check if the table exists and has the right structure
-            with db.engine.connect() as conn:
-                result = conn.execute(text("SELECT table_name FROM information_schema.tables WHERE table_name='drink_item'"))
-                if result.fetchone():
-                    print("drink_item table exists")
-                    # Check table structure
-                    result = conn.execute(text("SELECT column_name FROM information_schema.columns WHERE table_name='drink_item'"))
-                    columns = [row[0] for row in result]
-                    print("Table columns:", columns)
-                else:
-                    print("drink_item table does not exist")
-                    
-        return render_template('drinks_menu.html', drink_items=drink_items)
+        # Group items by category
+        menu_items = {}
+        for item in drink_items:
+            if item.category not in menu_items:
+                menu_items[item.category] = []
+            menu_items[item.category].append(item)
+        
+        return render_template('drinks_menu.html', menu_items=menu_items)
     except Exception as e:
         print(f"Error in drinks_menu: {str(e)}")
-        return render_template('drinks_menu.html', drink_items=[])
+        return render_template('drinks_menu.html', menu_items={})
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
@@ -259,10 +241,14 @@ def internal_error(error):
 
 @app.after_request
 def add_header(response):
-    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
     response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '-1'
+    response.headers['Expires'] = '0'
     return response
+
+@app.context_processor
+def inject_version():
+    return {'version': datetime.now().strftime('%Y%m%d-%H%M%S')}
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

@@ -1,10 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div style="background-color: red; color: white; padding: 10px; margin: 10px;">
+    TEST UPDATE: {{ datetime.now() }}
+</div>
+
 <div class="hero-container">
     <!-- ... hero container content ... -->
 </div>
 <h1>Welcome to JR Cateringggggg</h1>
+<p>Version: {{ version }}</p>
+<p>Last Updated: {{ datetime.now() }}</p>
 <p>We are a catering company that specializes in providing high-quality food and service to our clients.</p>
 <section id="container">
     <!-- ... container content ... -->
