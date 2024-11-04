@@ -9,7 +9,10 @@
     </div>
     
     {% if 'user_id' not in session %}
-        <p>Please <a href="{{ url_for('login') }}">log in</a> to view and manage your bookings.</p>
+        <div class="login-prompt">
+            <p>Please log in to view and manage your bookings.</p>
+            <a href="{{ url_for('login') }}" class="btn primary-btn">Login</a>
+        </div>
     {% else %}
         <!-- Add New Booking Button -->
         <div class="booking-actions" style="text-align: center; margin: 2rem 0;">
@@ -76,22 +79,33 @@
                         <!-- Edit form (hidden by default) -->
                         <div class="edit-form" id="edit-form-{{ booking.id }}" style="display: none;">
                             <form onsubmit="updateBooking(event, {{ booking.id }})">
-                                <p><strong>Booking ID:</strong> {{ booking.id }}</p>
-                                <p>
-                                    <strong>Date:</strong>
+                                <div class="form-group">
+                                    <label for="name-{{ booking.id }}">Name:</label>
+                                    <input type="text" id="name-{{ booking.id }}" name="name" value="{{ booking.name }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email-{{ booking.id }}">Email:</label>
+                                    <input type="email" id="email-{{ booking.id }}" name="email" value="{{ booking.email }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone-{{ booking.id }}">Phone:</label>
+                                    <input type="tel" id="phone-{{ booking.id }}" name="phone" value="{{ booking.phone }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="date-{{ booking.id }}">Date:</label>
                                     <input type="date" id="date-{{ booking.id }}" name="date" value="{{ booking.date }}" required>
-                                </p>
-                                <p>
-                                    <strong>Time:</strong>
+                                </div>
+                                <div class="form-group">
+                                    <label for="time-{{ booking.id }}">Time:</label>
                                     <input type="time" id="time-{{ booking.id }}" name="time" value="{{ booking.time }}" required>
-                                </p>
-                                <p>
-                                    <strong>Number of Guests:</strong>
-                                    <input type="number" id="guests-{{ booking.id }}" name="guests" value="{{ booking.guests }}" min="1" required>
-                                </p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="guests-{{ booking.id }}">Number of Guests:</label>
+                                    <input type="number" id="guests-{{ booking.id }}" name="guests" value="{{ booking.guests }}" min="1" max="20" required>
+                                </div>
                                 <div class="booking-actions">
-                                    <button type="submit" class="btn edit-btn">Save Changes</button>
-                                    <button type="button" class="btn cancel-btn" onclick="toggleEditForm('{{ booking.id }}')">Cancel</button>
+                                    <button type="submit" class="btn save-btn">Save Changes</button>
+                                    <button type="button" class="btn cancel-btn" onclick="toggleEditForm({{ booking.id }})">Cancel</button>
                                 </div>
                             </form>
                         </div>
@@ -170,28 +184,36 @@ function toggleEditForm(bookingId) {
     const displayDiv = document.getElementById(`booking-display-${bookingId}`);
     const editForm = document.getElementById(`edit-form-${bookingId}`);
     
-    if (editForm.style.display === 'none') {
-        displayDiv.style.display = 'none';
-        editForm.style.display = 'block';
+    if (displayDiv && editForm) {
+        if (editForm.style.display === 'none') {
+            displayDiv.style.display = 'none';
+            editForm.style.display = 'block';
+        } else {
+            displayDiv.style.display = 'block';
+            editForm.style.display = 'none';
+        }
     } else {
-        displayDiv.style.display = 'block';
-        editForm.style.display = 'none';
+        console.error('Could not find display or edit form elements');
     }
 }
 
 function updateBooking(event, bookingId) {
     event.preventDefault();
     
+    const nameValue = document.getElementById(`name-${bookingId}`).value;
+    const emailValue = document.getElementById(`email-${bookingId}`).value;
+    const phoneValue = document.getElementById(`phone-${bookingId}`).value;
     const dateValue = document.getElementById(`date-${bookingId}`).value;
     const timeValue = document.getElementById(`time-${bookingId}`).value;
     const guestsValue = document.getElementById(`guests-${bookingId}`).value;
 
-    console.log('Sending update:', { dateValue, timeValue, guestsValue });  // Debug log
-
     const bookingData = {
+        name: nameValue,
+        email: emailValue,
+        phone: phoneValue,
         date: dateValue,
         time: timeValue,
-        guests: guestsValue
+        guests: parseInt(guestsValue)
     };
 
     fetch(`/edit_booking/${bookingId}`, {
@@ -203,7 +225,6 @@ function updateBooking(event, bookingId) {
         body: JSON.stringify(bookingData)
     })
     .then(response => {
-        console.log('Response status:', response.status);  // Debug log
         if (!response.ok) {
             return response.json().then(data => {
                 throw new Error(data.error || 'Failed to update booking');
@@ -212,15 +233,14 @@ function updateBooking(event, bookingId) {
         return response.json();
     })
     .then(data => {
-        console.log('Response data:', data);  // Debug log
         if (data.success) {
-            // Update the display
+            // Update only the necessary display information
             const infoDiv = document.getElementById(`booking-info-${bookingId}`);
             infoDiv.innerHTML = `
                 <p><strong>Booking ID:</strong> ${bookingId}</p>
-                <p><strong>Date:</strong> ${data.date}</p>
-                <p><strong>Time:</strong> ${data.time}</p>
-                <p><strong>Number of Guests:</strong> ${data.guests}</p>
+                <p><strong>Date:</strong> ${bookingData.date}</p>
+                <p><strong>Time:</strong> ${bookingData.time}</p>
+                <p><strong>Number of Guests:</strong> ${bookingData.guests}</p>
             `;
             toggleEditForm(bookingId);
             alert('Booking updated successfully!');
@@ -365,5 +385,7 @@ function submitNewBooking(event) {
         submitButton.textContent = 'Make Booking';
     });
 }
+
+
 </script>
 {% endblock %}

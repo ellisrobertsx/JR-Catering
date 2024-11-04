@@ -5,12 +5,28 @@
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         {% for category, message in messages %}
-            <div class="flash-message {{ category }}">
+            <div class="flash-message {{ category }}" id="flash-message">
                 {{ message }}
             </div>
         {% endfor %}
     {% endif %}
 {% endwith %}
+
+<!-- Add this script at the bottom of your content block -->
+<script>
+    // Function to hide flash messages after 3 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        const flashMessage = document.getElementById('flash-message');
+        if (flashMessage) {
+            setTimeout(function() {
+                flashMessage.style.opacity = '0';
+                setTimeout(function() {
+                    flashMessage.style.display = 'none';
+                }, 600); // Wait for fade out animation to complete
+            }, 3000); // Message shows for 3 seconds
+        }
+    });
+</script>
 
 <div class="form-container">
     <h2>Contact Us</h2>

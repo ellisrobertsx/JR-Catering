@@ -420,6 +420,31 @@ footer {
     opacity: 0.8;
 }
 
+.login-prompt {
+    text-align: center;
+    max-width: 400px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background-color: var(--background-color);
+    border-radius: 8px;
+}
+
+.login-prompt p {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.login-prompt .primary-btn {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+}
+
+.login-prompt .primary-btn:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-2px);
+}
+
 /* Form Styling */
 .form-container {
     max-width: 600px;
@@ -468,6 +493,11 @@ form textarea:focus {
 form textarea {
     resize: vertical;
     min-height: 80px;
+}
+
+.flash-message {
+    transition: opacity 0.6s ease-in-out;
+    opacity: 1;
 }
 
 form button {
@@ -614,6 +644,85 @@ form button:hover {
     text-align: center;
 }
 
+.booking-card {
+    background-color: var(--secondary-color);
+    border: 1px solid var(--accent-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
+}
+
+.booking-display .booking-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;  /* Consistent gap between buttons */
+    margin: 1rem 0 0.5rem;  /* Reduced bottom margin */
+}
+
+.booking-display .booking-actions {
+    display: flex;
+    gap: 0.5rem;  /* Reduced gap between buttons */
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.booking-display .booking-actions .btn {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    min-width: 120px;
+    transition: background-color 0.3s ease;
+}
+
+/* Style for the Save Changes/Cancel buttons in edit form */
+.edit-form .booking-actions {
+    display: flex;
+    gap: 0.5rem;  /* Reduced gap between buttons */
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.edit-form .booking-actions .btn {
+    background-color: var(--accent-color);
+    color: white;  /* White text */
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover states for all these buttons */
+.booking-actions .btn:hover {
+    background-color: var(--hover-color);
+    color: white;
+}
+
+
+
+
+
+.booking-display .booking-actions .btn:hover {
+    background-color: var(--hover-color);
+    color: white;
+}
+
+/* Remove any conflicting styles */
+.edit-btn, .cancel-btn {
+    margin: 0 !important;  /* Override any existing margins */
+    background-color: var(--accent-color) !important;  /* Override any existing background colors */
+}
+
+.edit-btn:hover, .cancel-btn:hover {
+    background-color: var(--hover-color) !important;
+    color: var(--text-color) !important;
+}
+
 /* Registration Form Styling */
 .register-container {
     width: 100%;
@@ -667,6 +776,55 @@ form button:hover {
     outline: none;
     border-color: var(--accent-color);
     box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+}
+
+.hero-image,
+.image-wrapper,
+.hero-image img {
+        height: 300px;
+    width: 100%;
+}
+
+/* Mobile-first hero image styles */
+.hero-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 30px;
+    overflow: hidden; /* Prevent any overflow */
+}
+
+.hero-image {
+    width: 100%;
+    height: 400px;
+    margin: 0 auto;
+    display: none;
+    background-color: var(--background-color);
+    position: relative;
+    border-radius: 15px;  /* Rounded corners */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);  /* Subtle shadow */
+    border: 2px solid var(--accent-color);  /* Gold border */
+    overflow: hidden;  /* Keep rounded corners on the image */
+}
+
+
+.image-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;  /* Smooth zoom effect */
 }
 
 .register-form button {
@@ -735,10 +893,65 @@ form button:hover {
 
 .booking-actions {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    gap: 50px;  /* Significantly increased gap between buttons */
+    margin: 40px 0;  /* Increased vertical margin around the button group */
+}
+
+/* Style individual buttons */
+.booking-actions .btn {
     width: 100%;
-    margin: 2rem 0;
+    padding: 15px 20px;  /* Slightly larger padding */
+    margin: 0;
+    font-size: 16px;  /* Slightly larger font */
+}
+
+/* Additional spacing for cancel button */
+.booking-actions .cancel-btn {
+    margin-top: 20px;  /* Extra space above cancel button */
+}
+
+/* Optional: Add a divider between buttons */
+.booking-actions .btn:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 20px;
+}
+
+#new-booking-form-element {
+    text-align: center;  /* Center the buttons container */
+}
+
+#new-booking-form-element .btn {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: auto;  /* Override any previous width settings */
+    min-width: 120px;  /* Ensure buttons are same width */
+    transition: background-color 0.3s ease;
+}
+
+#new-booking-form-element .booking-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;  /* Space between buttons */
+    margin-top: 1.5rem;  /* Space above buttons */
+}
+
+
+#new-booking-form-element .btn:hover {
+    background-color: var(--hover-color);
+}
+
+.save-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #45a049;
 }
 
 .primary-btn {
@@ -761,8 +974,29 @@ form button:hover {
 
 .edit-form {
     background-color: var(--secondary-color);
-    padding: 20px;
+    color: var(--text-color);
+    padding: 2rem;
     border-radius: 8px;
+    margin: 1rem 0;
+    text-align: center;
+    border: 2px solid var(--accent-color);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.edit-form .form-group {
+    margin-bottom: 1.5rem;
+    text-align: center;
+    position: relative;
+}
+
+.edit-form label {
+    color: var(--accent-color);
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .edit-form p {
@@ -770,13 +1004,33 @@ form button:hover {
     color: var(--text-color);
 }
 
-.edit-form input {
+.edit-form input,
+.edit-form select,
+.edit-form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 2px solid var(--accent-color);
+    border-radius: 4px;
+    font-size: 16px;
     background-color: var(--primary-color);
     color: var(--text-color);
-    border: 1px solid var(--accent-color);
-    padding: 4px 8px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.edit-form button {
+    margin: 0 5px;
+    padding: 6px 12px;
     border-radius: 4px;
-    margin-left: 8px;
+    cursor: pointer;
+    min-width: 100px;
+    font-size: 14px;
+}
+
+.edit-form select option {
+    background-color: var(--primary-color);
+    color: var(--text-color);
 }
 
 .primary-btn {
@@ -796,9 +1050,24 @@ form button:hover {
 }
 
 
-.edit-form input:focus {
+.edit-form input:focus,
+.edit-form select:focus,
+.edit-form textarea:focus {
     outline: none;
-    border-color: var(--accent-color);
+    border-color: #ffd700;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+.edit-form input:hover,
+.edit-form select:hover,
+.edit-form textarea:hover {
+    border-color: #ffd700;
+}
+
+.edit-form select option {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    padding: 10px;
 }
 
 .btn {
@@ -817,6 +1086,8 @@ form button:hover {
     margin-right: 10px;
 }
 
+/* Style for new booking form buttons container */
+
 #new-booking-form {
     margin-bottom: 2rem;
     background-color: var(--secondary-color);
@@ -832,7 +1103,7 @@ form button:hover {
 }
 
 .cancel-btn {
-    background-color: #e74c3c;
+    background-color: #f44336;
     color: white;
 }
 
@@ -841,7 +1112,7 @@ form button:hover {
 }
 
 .cancel-btn:hover {
-    background-color: #ff5252;
+    background-color: #da190b;
 }
 
 .no-bookings {
@@ -926,17 +1197,20 @@ form button:hover {
     text-align: center;
 }
 
-/* Media query for desktop screens */
+
+
+/* Desktop styles (768px and above) */
 @media screen and (min-width: 768px) {
+    /* Main content */
     main {
         padding: 40px;
     }
-    
+
+    /* Container styles */
     #container {
         display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
         flex-wrap: wrap;
+        justify-content: space-between;
     }
 
     #container > div {
@@ -948,6 +1222,7 @@ form button:hover {
         height: 300px;
     }
 
+    /* Navigation styles */
     .burger-btn {
         display: none;
     }
@@ -955,8 +1230,6 @@ form button:hover {
     nav {
         display: flex;
         align-items: center;
-        justify-content: flex-end;
-        margin-left: auto;
     }
 
     .nav-links {
@@ -969,11 +1242,11 @@ form button:hover {
         border: none;
         opacity: 1;
         visibility: visible;
-        justify-content: flex-end;
+        transform: none;
     }
 
     .nav-links li {
-        margin-left: 30px;
+        margin: 0 0 0 30px;
         display: inline-block;
         border: none;
         padding: 0;
@@ -989,38 +1262,13 @@ form button:hover {
         color: var(--text-color);
     }
 
-    .header-content {
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    .dropdown-content {
-        position: absolute;
-        width: auto;
-        min-width: 160px;
-        background-color: var(--primary-color);
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        z-index: 1;
-        margin-top: 0;
-        padding: 15px;
-        border-radius: 8px;
-    }
-
-    .dropdown-content a {
-        padding: 5px 15px;
-        white-space: nowrap;
-    }
-
-    .form-container, .map-container {
+    /* Form styles */
+    .form-container,
+    .booking-container,
+    .login-form,
+    .contact-form {
         max-width: 600px;
-        margin: 40px auto;
         padding: 30px;
-        border-radius: 15px;
-    }
-
-    .form-container h2, .map-container h2 {
-        font-size: 1.8em;
-        margin-bottom: 30px;
     }
 
     form label {
@@ -1044,10 +1292,12 @@ form button:hover {
         font-size: 16px;
     }
 
+    /* Map styles */
     .map-container iframe {
         height: 450px;
     }
-    
+
+    /* Contact and opening hours */
     .contact-info,
     .opening-hours {
         max-width: 600px;
@@ -1059,114 +1309,29 @@ form button:hover {
         font-size: 2em;
     }
 
-    .login-container {
-        padding: 20px;
-    }
-
-    .login-container h2 {
-        font-size: 1.5em;
-    }
-
-    .login-form input[type="text"],
-    .login-form input[type="password"],
-    .login-form button {
-        padding: 12px 20px;
-        font-size: 16px;
-    }
-
-    register-form button {
-        padding: 12px 20px;
-        font-size: 16px;
-    }
-
-    .booking-form button {
-        padding: 12px 20px;
-        font-size: 16px;
-    }
-
-    /* Navigation desktop styles */
-    .burger-btn {
-        display: none;
-    }
-
-    nav {
-        display: flex;
-        align-items: center;
-    }
-
-    .nav-links {
-        display: flex;
-        position: static;
-        width: auto;
-        background: none;
-        padding: 0;
-        box-shadow: none;
-        opacity: 1;
-        visibility: visible;
-        transform: none;
-    }
-
-    .nav-links li {
-        margin: 0 0 0 20px;
-        display: inline-block;
-    }
-
-    /* Hero image desktop styles */
-    .hero-image,
-    .hero-image img {
-        height: 500px;
-    }
-
-    /* Container desktop styles */
-    #container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-
-    #container > div {
-        width: calc(33.333% - 20px);
-    }
-
-    /* Form desktop styles */
-    .form-container,
-    .booking-container,
-    .login-form,
-    .contact-form {
-        max-width: 600px;
-        padding: 30px;
-    }
-
-    /* Desktop header alignment */
+    /* Header styles */
     .header-content {
-        align-items: flex-end;  /* Align items to bottom */
-    }
-
-    /* Desktop nav styles */
-    nav {
-        display: flex;
+        max-width: 1200px;
+        margin: 0 auto;
         align-items: flex-end;
-        justify-content: flex-end;
     }
 
-    /* Show nav links on desktop */
-    .nav-links {
-        display: flex !important;
-        position: static;
+    /* Dropdown styles */
+    .dropdown-content {
+        position: absolute;
         width: auto;
-        background: none;
-        padding: 0;
-        box-shadow: none;
-        border: none;
-        opacity: 1;
-        visibility: visible;
+        min-width: 160px;
+        background-color: var(--primary-color);
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        margin-top: 0;
+        padding: 15px;
+        border-radius: 8px;
     }
 
-    .nav-links li {
-        margin: 0 0 0 30px;
-        display: inline-block;
-        border: none;
-        padding: 0;
+    .dropdown-content a {
+        padding: 5px 15px;
+        white-space: nowrap;
     }
 }
 
@@ -1240,17 +1405,11 @@ form button:hover {
     border: 1px solid var(--accent-color);
     border-radius: 8px;
     padding: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
 }
-.booking-card {
-    background-color: var(--secondary-color);
-    border: 1px solid var(--accent-color);
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+
 
 /* Optional: Add hover effect to make it more interactive */
 .booking-card:hover {
@@ -1304,528 +1463,3 @@ form button:hover {
 
 
 
-.edit-btn, .cancel-btn {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.edit-btn {
-    background-color: #4a90e2;
-    color: white;
-}
-
-.edit-btn:hover {
-    background-color: #357abd;
-}
-
-.cancel-btn {
-    background-color: #e74c3c;
-    color: white;
-}
-
-.cancel-btn:hover {
-    background-color: #c0392b;
-}
-
-.edit-form {
-    background-color: #333333;  /* Match site background */
-    color: white;  /* White text */
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin: 1rem 0;
-    text-align: center;  /* Center text */
-    border: 2px solid #4a4a4a;  /* Match the booking form border */
-}
-
-.form-actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-.save-btn {
-    background-color: #0e7309;
-    color: white;
-}
-
-.save-btn:hover {
-    background-color: #27ae60;
-}
-
-.cancel-edit-btn {
-    background-color: #a23b2c;
-    color: white;
-}
-
-.cancel-edit-btn:hover {
-    background-color: #7f8c8d;
-}
-
-.flash-messages {
-    list-style: none;
-    padding: 0;
-    margin: 1rem 0;
-}
-
-.flash-message {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 10px 20px;
-    border-radius: 4px;
-    text-align: center;
-}
-
-.flash-message.success {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.flash-message.error {
-    background-color: #f44336;
-    color: white;
-}
-
-.form-group select {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-    color: #333;
-    background-color: #333333;
-    color: white;
-}
-
-/* Add hover and focus states */
-.form-group select:hover {
-    border-color: #999;
-}
-
-.form-group select:focus {
-    outline: none;
-    border-color: #4a4a4a;
-    box-shadow: 0 0 5px rgba(74, 74, 74, 0.2);
-}
-
-/* Style the options in the dropdown */
-.form-group select option {
-    background-color: #333333;
-    color: white;
-}
-
-.bookings-container h2 {
-    color: #ffd700;  /* Same gold color as the JR Catering title */
-    text-align: center;
-    margin-bottom: 2rem;
-    font-size: 2em;
-}
-
-
-
-/* Style form inputs in edit form */
-.edit-form .form-group {
-    margin-bottom: 1rem;
-    text-align: center;
-}
-
-.edit-form label {
-    color: white;
-    display: block;
-    margin-bottom: 0.5rem;
-}
-
-.edit-form input,
-.edit-form select,
-.edit-form textarea {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-    background-color: #333333;
-    color: white;
-}
-
-/* Style the edit form buttons */
-.edit-form button {
-    margin: 0 5px;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-/* Style the options in the dropdown for edit form */
-.edit-form select option {
-    background-color: #333333;
-    color: white;
-}
-
-/* Update the login form and booking form styles */
-.login-form,
-.booking-form-container,
-.contact-form {
-    max-width: 400px;
-    margin: 2rem auto;
-    padding: 2rem;
-    border-radius: 8px;
-    background-color: #4a4a4a;  /* Grey background like contact form */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-/* Form group styles */
-.form-group {
-    margin-bottom: 1rem;
-}
-
-/* Label styles */
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: white;
-    font-weight: bold;
-}
-
-/* Input styles */
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #666;  /* Darker border */
-    border-radius: 4px;
-    font-size: 16px;
-    background-color: #333333;  /* Dark background for inputs */
-    color: white;
-}
-
-/* Button styles */
-.login-form button,
-.booking-form-container button,
-.contact-form button {
-    background-color: #333333;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    width: 100%;
-}
-
-/* Button hover effect */
-.login-form button:hover,
-.booking-form-container button:hover,
-.contact-form button:hover {
-    background-color: #ffd700;  /* Gold color on hover */
-    color: #333333;
-}
-
-/* Center the login message and register link */
-.login-message, 
-.register-link {
-    text-align: center;
-    margin: 1rem 0;
-    color: white;
-}
-
-/* Style links within forms */
-.login-form a,
-.booking-form-container a {
-    color: #ffd700;  /* Gold color for links */
-    text-decoration: none;
-}
-
-.login-form a:hover,
-.booking-form-container a:hover {
-    text-decoration: underline;
-}
-
-.hero-image {
-    max-width: 800px;  /* Container width */
-    height: 400px;     /* Fixed height for all images */
-    margin: 0 auto;    /* Center the container */
-    display: none;     /* Initially hidden for carousel */
-}
-
-.hero-image img {
-    width: 100%;
-    height: 400px;     /* Fixed height matching container */
-    object-fit: contain;  /* Show full image without distortion */
-}
-
-/* For mobile screens */
-@media screen and (max-width: 768px) {
-    .hero-image,
-    .hero-image img {
-        height: 300px;  /* Fixed height for mobile */
-    }
-}
-
-.hero-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 10px;
-}
-
-.hero-image {
-    width: 100%;
-    height: 500px;  /* Set exact height */
-    display: none;
-}
-
-.image-wrapper {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.hero-image img {
-    width: 800px;     /* Set exact width */
-    height: 500px;    /* Set exact height */
-    object-fit: contain;
-}
-
-/* For mobile screens */
-@media screen and (max-width: 768px) {
-    .hero-image,
-    .image-wrapper,
-    .hero-image img {
-        height: 300px;
-        width: 100%;
-    }
-}
-
-/* Mobile-first hero image styles */
-.hero-container {
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 20px 10px;
-}
-
-.hero-image {
-    width: 100%;
-    height: 300px;
-    display: none;
-}
-
-.image-wrapper {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-}
-
-.hero-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;  /* Changed to cover to fill container */
-}
-
-/* Desktop styles */
-@media screen and (min-width: 768px) {
-    .hero-container {
-        max-width: 800px;
-        padding: 20px;
-    }
-
-    .hero-image {
-        height: 500px;  /* Larger height for desktop */
-    }
-
-    .image-wrapper {
-        padding: 20px;
-    }
-}
-
-.flash-message {
-    padding: 10px 20px;
-    margin: 10px 0;
-    border-radius: 4px;
-    text-align: center;
-}
-
-.flash-message.success {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.flash-message.error {
-    background-color: #f44336;
-    color: white;
-}
-
-/* Form container styles */
-.form-container {
-    max-width: 600px;
-    margin: 40px auto;
-    padding: 30px;
-    background-color: var(--secondary-color);
-    border-radius: 8px;
-}
-
-/* Flash message styles */
-.flash-message {
-    max-width: 600px;  /* Match form width exactly */
-    margin: 20px auto;
-    padding: 10px 20px;
-    border-radius: 4px;
-    text-align: center;
-}
-
-.flash-message.success {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.flash-message.error {
-    background-color: #f44336;
-    color: white;
-}
-
-/* Add these styles */
-.error-container {
-    text-align: center;
-    padding: 40px 20px;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.error-container h1 {
-    color: var(--accent-color);
-    margin-bottom: 20px;
-}
-
-.error-container .btn {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: var(--accent-color);
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    margin-top: 20px;
-}
-
-/* Menu styles */
-.menu-container {
-    padding: 1rem;
-    margin: 0 auto;
-    text-align: center;
-    background-color: var(--background-color);
-}
-
-.menu-container h1 {
-    color: var(--accent-color);
-    margin-bottom: 2rem;
-    font-size: 2rem;
-}
-
-.menu-section {
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-}
-
-.menu-section h2 {
-    color: var(--accent-color);
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-}
-
-.menu-items {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    margin-top: 1rem;
-}
-
-.menu-item {
-    background: var(--background-color);
-    padding: 1rem;
-    text-align: center;
-}
-
-.menu-item h3 {
-    color: var(--accent-color);
-    margin-bottom: 0.5rem;
-    font-size: 1.2rem;
-}
-
-.menu-item p {
-    color: var(--text-color);
-    margin-bottom: 1rem;
-    font-size: 1rem;
-    line-height: 1.4;
-}
-
-.menu-item .price {
-    display: block;
-    color: var(--accent-color);
-    font-weight: bold;
-    font-size: 1.2rem;
-}
-
-/* Login styles */
-.login-container {
-    max-width: 400px;
-    margin: 40px auto;
-    padding: 20px;
-}
-
-.login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.form-group input {
-    padding: 8px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-}
-
-.btn {
-    background: var(--accent-color);
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-}
-
-.btn:hover {
-    opacity: 0.9;
-}
-
-.error {
-    color: #ff0000;
-    margin: 10px 0;
-    padding: 10px;
-    background-color: rgba(255, 0, 0, 0.1);
-    border-radius: 4px;
-}
-
-.success {
-    color: #00ff00;
-    margin: 10px 0;
-    padding: 10px;
-    background-color: rgba(0, 255, 0, 0.1);
-    border-radius: 4px;
-}

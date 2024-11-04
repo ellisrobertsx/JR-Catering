@@ -1,62 +1,68 @@
 {% extends "base.html" %}
 
 {% block content %}
-<main>
-    <h1>Register</h1>
-    <form id="register-form" method="POST">
+<div class="form-container">
+    <h2>Register</h2>
+    <form id="register-form">
         <div class="form-group">
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required 
-                   minlength="3" maxlength="80" pattern="[a-zA-Z0-9_-]+">
-            <small>Username must be 3-80 characters long, containing only letters, numbers, underscores, and hyphens.</small>
+            <input type="text" id="username" name="username" required>
         </div>
-        
+
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
         </div>
-        
+
         <div class="form-group">
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required 
-                   minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}">
-            <small>Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, and one number.</small>
+            <input type="password" id="password" name="password" required>
         </div>
-        
+
         <div class="form-group">
-            <label for="confirm-password">Confirm Password:</label>
-            <input type="password" id="confirm-password" name="confirm-password" required>
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
         </div>
-        
+
         <button type="submit">Register</button>
     </form>
-    <div id="message"></div>
-</main>
+    <div id="error-message" class="error-message"></div>
+</div>
 
 <script>
-    document.getElementById('register-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        fetch('/register', {
+document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const password = formData.get('password');
+    const confirmPassword = formData.get('confirm_password');
+    const errorDiv = document.getElementById('error-message');
+    
+    // Clear any existing error messages
+    errorDiv.textContent = '';
+    
+    // Check if passwords match
+    if (password !== confirmPassword) {
+        errorDiv.textContent = 'Passwords do not match';
+        return;
+    }
+    
+    try {
+        const response = await fetch('/register', {
             method: 'POST',
-            body: new FormData(this)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                document.getElementById('message').innerHTML = 
-                    `<div class="error">${data.error}</div>`;
-            } else {
-                document.getElementById('message').innerHTML = 
-                    `<div class="success">${data.message}</div>`;
-                // Redirect to login page after successful registration
-                setTimeout(() => window.location.href = '/login', 2000);
-            }
-        })
-        .catch(error => {
-            document.getElementById('message').innerHTML = 
-                '<div class="error">Registration failed. Please try again.</div>';
+            body: formData
         });
-    });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            window.location.href = '/login';
+        } else {
+            errorDiv.textContent = data.error;
+        }
+    } catch (error) {
+        errorDiv.textContent = 'An error occurred during registration';
+    }
+});
 </script>
 {% endblock %}

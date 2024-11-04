@@ -109,6 +109,39 @@ def drinks_menu():
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
+    if request.method == 'POST':
+        try:
+            print("Received contact form submission")
+            # Get form data
+            name = request.form['name']
+            phone = request.form['phone']
+            email = request.form['email']
+            message = request.form['message']
+            
+            print(f"Form data: {name}, {email}, {phone}, {message}")
+
+            # Create new contact entry
+            new_contact = Contact(
+                name=name,
+                phone=phone,
+                email=email,
+                message=message
+            )
+
+            # Save to database
+            db.session.add(new_contact)
+            db.session.commit()
+            print("Successfully saved contact form submission")
+
+            flash('Thank you for your message! We will get back to you soon.', 'success')
+            return redirect(url_for('contact'))
+
+        except Exception as e:
+            print(f"Error saving contact form: {str(e)}")
+            db.session.rollback()
+            flash('Sorry, there was an error sending your message. Please try again.', 'error')
+            return redirect(url_for('contact'))
+
     return render_template('contact.html')
 
 @app.route('/book')
@@ -175,32 +208,32 @@ def edit_booking(booking_id):
 
     try:
         data = request.get_json()
-        print(f"Received data: {data}")  # Debug print
-        
         booking = Booking.query.get_or_404(booking_id)
         
         if booking.user_id != session['user_id']:
             return jsonify({'error': 'Unauthorized'}), 403
 
-        # Update booking
+        # Update booking with all fields
+        booking.name = data['name']
+        booking.email = data['email']
+        booking.phone = data['phone']
         booking.date = datetime.strptime(data['date'], '%Y-%m-%d').date()
         booking.time = data['time']
         booking.guests = int(data['guests'])
         
-        print(f"Updated booking: Date={booking.date}, Time={booking.time}, Guests={booking.guests}")  # Debug print
-        
         db.session.commit()
-        print("Database committed successfully")  # Debug print
 
         return jsonify({
             'success': True,
+            'name': data['name'],
+            'email': data['email'],
+            'phone': data['phone'],
             'date': data['date'],
             'time': data['time'],
             'guests': data['guests']
         })
 
     except Exception as e:
-        print(f"Error in edit_booking: {str(e)}")  # Debug print
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
@@ -255,6 +288,11 @@ def register():
             username = request.form['username']
             email = request.form['email']
             password = request.form['password']
+            confirm_password = request.form['confirm_password']
+
+            # Check if passwords match
+            if password != confirm_password:
+                return jsonify({'error': 'Passwords do not match'}), 400
 
             # Check if username or email already exists
             if User.query.filter_by(username=username).first():
@@ -313,6 +351,7 @@ def check_db():
     except Exception as e:
         print(f"Error in check_db: {str(e)}")
         return str(e)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
