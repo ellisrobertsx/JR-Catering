@@ -479,6 +479,7 @@ form button {
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    text-decoration: none;
 }
 
 form button:hover {
@@ -730,6 +731,124 @@ form button:hover {
     background-color: var(--secondary-color);
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.booking-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 2rem 0;
+}
+
+.primary-btn {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.primary-btn:hover {
+    background-color: #ffd700;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.edit-form {
+    background-color: var(--secondary-color);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.edit-form p {
+    margin: 8px 0;
+    color: var(--text-color);
+}
+
+.edit-form input {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: 1px solid var(--accent-color);
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+}
+
+.primary-btn {
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 20px 0;
+}
+
+.primary-btn:hover {
+    background-color: #ffd700;
+    opacity: 0.9;
+}
+
+
+.edit-form input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    text-decoration: none;  /* Remove underline */
+}
+
+.edit-btn {
+    background-color: #0e7309;
+    color: white;
+    margin-right: 10px;
+}
+
+#new-booking-form {
+    margin-bottom: 2rem;
+    background-color: var(--secondary-color);
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--accent-color);
+}
+
+#new-booking-form h2 {
+    color: var(--accent-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.cancel-btn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: var(--hover-color);
+}
+
+.cancel-btn:hover {
+    background-color: #ff5252;
+}
+
+.no-bookings {
+    text-align: center;
+    color: var(--text-color);
+    margin: 20px 0;
+    font-style: italic;
 }
 
 .booking-container h2 {
@@ -1117,13 +1236,20 @@ form button:hover {
 }
 
 .booking-card {
-    background-color: var(--primary-color);
-    border: 2px solid var(--accent-color);
+    background-color: var(--secondary-color);
+    border: 1px solid var(--accent-color);
     border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1rem;
+    padding: 20px;
+    margin-bottom: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 100%;
+}
+.booking-card {
+    background-color: var(--secondary-color);
+    border: 1px solid var(--accent-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Optional: Add hover effect to make it more interactive */
@@ -1133,20 +1259,17 @@ form button:hover {
 }
 
 .booking-info {
-    margin-bottom: 1rem;
+    margin-bottom: 15px;
 }
 
 .booking-info p {
-    margin: 0.5rem 0;
+    margin: 8px 0;
     color: var(--text-color);
-    font-size: 0.9rem;
 }
 
 .booking-info strong {
     color: var(--accent-color);
-    display: inline-block;
-    width: 100%;
-    margin-bottom: 0.2rem;
+    margin-right: 8px;
 }
 
 .booking-details p {
@@ -1159,12 +1282,6 @@ form button:hover {
     color: white;
 }
 
-.booking-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    width: 100%;
-}
 
 .no-bookings {
     text-align: center;
@@ -1172,22 +1289,7 @@ form button:hover {
     margin: 2rem 0;
 }
 
-.primary-btn {
-    display: block;
-    width: fit-content;
-    margin: 2rem auto;
-    padding: 1rem 2rem;
-    background-color: #4a4a4a;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
 
-.primary-btn:hover {
-    background-color: #2d2d2d;
-}
 
 .booking-form-container {
     max-width: 600px;
@@ -1200,12 +1302,7 @@ form button:hover {
 
 /* Add to your existing CSS */
 
-.booking-actions {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1rem;
-}
+
 
 .edit-btn, .cancel-btn {
     padding: 0.5rem 1rem;
@@ -1327,16 +1424,7 @@ form button:hover {
     font-size: 2em;
 }
 
-/* Style for the edit form */
-.edit-form {
-    background-color: #333333;  /* Match site background */
-    color: white;  /* White text */
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin: 1rem 0;
-    text-align: center;  /* Center text */
-    border: 2px solid #4a4a4a;  /* Match the booking form border */
-}
+
 
 /* Style form inputs in edit form */
 .edit-form .form-group {

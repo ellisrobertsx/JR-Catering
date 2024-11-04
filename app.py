@@ -1,4 +1,3 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, make_response
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -6,22 +5,32 @@ from sqlalchemy import text
 from extensions import db
 from models import User, MenuItem, DrinkItem, Booking, Contact, FoodItem
 import logging
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
+from models import Booking
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+# Move this function to the top, before any routes
+def get_user_bookings():
+    if 'user_id' not in session:
+        return False
+    try:
+        booking = Booking.query.filter_by(user_id=session['user_id']).first()
+        return booking is not None
+    except Exception as e:
+        print(f"Error in get_user_bookings: {str(e)}")
+        return False
+
 app = Flask(__name__)
 
-# Database configuration with better error handling
+# Database configuration
 database_url = os.environ.get('DATABASE_URL')
 if not database_url:
     raise RuntimeError('DATABASE_URL environment variable is not set!')
 
-# Convert postgres:// to postgresql://
 if database_url.startswith('postgres://'):
     database_url = database_url.replace('postgres://', 'postgresql://', 1)
-
-print(f"Using database URL: {database_url[:8]}...{database_url[-8:]}")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -29,32 +38,17 @@ app.secret_key = os.environ.get('SECRET_KEY', 'dev')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
-# Initialize the db with the app
+# Initialize extensions
 db.init_app(app)
 
 # Create tables
 with app.app_context():
     db.create_all()
 
+# Add the function to Jinja environment AFTER creating the app
+app.jinja_env.globals.update(get_user_bookings=get_user_bookings)
+
 # Routes
-def get_user_bookings():
-    if 'user_id' in session:
-        try:
-            return Booking.query.filter_by(user_id=session['user_id']).all()
-        except Exception as e:
-            print(f"Error getting bookings: {str(e)}")
-            return []
-    return []
-
-# Add the function to the template context
-@app.context_processor
-def utility_processor():
-    return {
-        'datetime': datetime,
-        'version': datetime.now().strftime('%Y%m%d-%H%M%S'),
-        'get_user_bookings': get_user_bookings
-    }
-
 @app.route('/')
 def index():
     logger.debug("Rendering index page")
@@ -117,91 +111,117 @@ def drinks_menu():
 def contact():
     return render_template('contact.html')
 
-@app.route('/book', methods=['GET', 'POST'])
+@app.route('/book')
 def book():
     if 'user_id' not in session:
-        flash('Please login to make a booking', 'error')
-        return redirect(url_for('login'))
-
-    if request.method == 'POST':
-        try:
-            new_booking = Booking(
-                user_id=session['user_id'],
-                name=request.form['name'],
-                email=request.form['email'],
-                phone=request.form['phone'],
-                date=datetime.strptime(request.form['date'], '%Y-%m-%d').date(),
-                time=request.form['time'],
-                guests=int(request.form['guests']),
-                special_requests=request.form.get('special-requests', '')
-            )
-            db.session.add(new_booking)
-            db.session.commit()
-            
-            return render_template('booking_confirmation.html', booking=new_booking)
-        except Exception as e:
-            print(f"Booking error: {str(e)}")
-            flash('Error creating booking. Please try again.', 'error')
-            db.session.rollback()
+        return render_template('book.html')
     
-    user_bookings = Booking.query.filter_by(user_id=session['user_id']).all()
-    return render_template('book.html', bookings=user_bookings)
+    # Get user's bookings
+    bookings = Booking.query.filter_by(user_id=session['user_id']).all()
+    return render_template('book.html', bookings=bookings)
 
-@app.route('/edit_booking/<int:booking_id>', methods=['POST'])
-def edit_booking(booking_id):
-    # Check if user is logged in
+@app.route('/create_booking', methods=['POST'])
+def create_booking():
     if 'user_id' not in session:
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return jsonify({'error': 'Please login to continue'}), 401
-        return redirect(url_for('login'))
+        return jsonify({'error': 'Please login to make a booking'}), 401
 
     try:
-        booking = Booking.query.get_or_404(booking_id)
+        data = request.get_json()
+        logger.info(f"Received booking data: {data}")
         
-        # Verify booking belongs to user
-        if booking.user_id != session['user_id']:
-            return jsonify({'error': 'Unauthorized access'}), 403
+        # Validate required fields
+        required_fields = ['name', 'email', 'phone', 'date', 'time', 'guests']
+        if not all(key in data for key in required_fields):
+            missing_fields = [field for field in required_fields if field not in data]
+            return jsonify({'error': f'Missing required fields: {", ".join(missing_fields)}'}), 400
 
-        # Update booking details
-        booking.date = datetime.strptime(request.form['date'], '%Y-%m-%d').date()
-        booking.time = request.form['time']
-        booking.guests = int(request.form['guests'])
-        booking.special_requests = request.form.get('special-requests', '')
+        # Create new booking
+        new_booking = Booking(
+            user_id=session['user_id'],
+            name=data['name'],
+            email=data['email'],
+            phone=data['phone'],
+            date=datetime.strptime(data['date'], '%Y-%m-%d').date(),
+            time=data['time'],
+            guests=int(data['guests']),
+            special_requests=data.get('special_requests', '')
+        )
         
+        db.session.add(new_booking)
         db.session.commit()
         
         return jsonify({
             'success': True,
-            'date': booking.date.strftime('%Y-%m-%d'),
-            'time': booking.time,
-            'guests': booking.guests,
-            'special_requests': booking.special_requests
+            'booking': {
+                'id': new_booking.id,
+                'name': new_booking.name,
+                'email': new_booking.email,
+                'phone': new_booking.phone,
+                'date': data['date'],
+                'time': data['time'],
+                'guests': data['guests']
+            }
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error creating booking: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/edit_booking/<int:booking_id>', methods=['POST'])
+def edit_booking(booking_id):
+    if 'user_id' not in session:
+        return jsonify({'error': 'Please login'}), 401
+
+    try:
+        data = request.get_json()
+        print(f"Received data: {data}")  # Debug print
+        
+        booking = Booking.query.get_or_404(booking_id)
+        
+        if booking.user_id != session['user_id']:
+            return jsonify({'error': 'Unauthorized'}), 403
+
+        # Update booking
+        booking.date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+        booking.time = data['time']
+        booking.guests = int(data['guests'])
+        
+        print(f"Updated booking: Date={booking.date}, Time={booking.time}, Guests={booking.guests}")  # Debug print
+        
+        db.session.commit()
+        print("Database committed successfully")  # Debug print
+
+        return jsonify({
+            'success': True,
+            'date': data['date'],
+            'time': data['time'],
+            'guests': data['guests']
         })
 
     except Exception as e:
+        print(f"Error in edit_booking: {str(e)}")  # Debug print
         db.session.rollback()
-        print(f"Edit booking error: {str(e)}")
-        return jsonify({'error': 'Failed to update booking'}), 500
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/delete_booking/<int:booking_id>', methods=['POST'])
 def delete_booking(booking_id):
     if 'user_id' not in session:
         return jsonify({'error': 'Please login'}), 401
 
-    booking = Booking.query.get_or_404(booking_id)
-    if booking.user_id != session['user_id']:
-        return jsonify({'error': 'Unauthorized'}), 403
-
     try:
+        booking = Booking.query.get_or_404(booking_id)
+        if booking.user_id != session['user_id']:
+            return jsonify({'error': 'Unauthorized'}), 403
+
         db.session.delete(booking)
         db.session.commit()
-        flash('Booking cancelled successfully!', 'success')
+        
+        return jsonify({'success': True, 'message': 'Booking cancelled successfully'})
+        
     except Exception as e:
-        print(f"Delete booking error: {str(e)}")
         db.session.rollback()
-        flash('Error cancelling booking', 'error')
-    
-    return redirect(url_for('book'))
+        return jsonify({'error': 'Failed to cancel booking'}), 500
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -281,5 +301,19 @@ def add_header(response):
     response.headers['Expires'] = '0'
     return response
 
+@app.route('/check_db')
+def check_db():
+    try:
+        with db.engine.connect() as conn:
+            result = conn.execute(text("SELECT * FROM bookings LIMIT 0;"))
+            columns = result.keys()
+            return jsonify({
+                'columns': list(columns)
+            })
+    except Exception as e:
+        print(f"Error in check_db: {str(e)}")
+        return str(e)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+
