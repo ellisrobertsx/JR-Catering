@@ -181,19 +181,42 @@ document.querySelector('#new-booking-form form').addEventListener('submit', func
 });
 
 function toggleEditForm(bookingId) {
-    const displayDiv = document.getElementById(`booking-display-${bookingId}`);
-    const editForm = document.getElementById(`edit-form-${bookingId}`);
+    // Get only the specific booking card
+    const bookingCard = document.querySelector(`.booking-card[data-booking-id="${bookingId}"]`);
     
-    if (displayDiv && editForm) {
-        if (editForm.style.display === 'none') {
+    if (!bookingCard) {
+        console.error('Booking card not found');
+        return;
+    }
+
+    // Get elements within this specific booking card
+    const displayDiv = bookingCard.querySelector('.booking-display');
+    const editForm = bookingCard.querySelector('.edit-form');
+    
+    if (!displayDiv || !editForm) {
+        console.error('Display or edit form elements not found');
+        return;
+    }
+
+    // Toggle only this specific booking's edit form
+    if (editForm.style.display === 'none' || editForm.style.display === '') {
+        displayDiv.style.opacity = '0';
+        setTimeout(() => {
             displayDiv.style.display = 'none';
             editForm.style.display = 'block';
-        } else {
-            displayDiv.style.display = 'block';
-            editForm.style.display = 'none';
-        }
+            setTimeout(() => {
+                editForm.style.opacity = '1';
+            }, 50);
+        }, 300);
     } else {
-        console.error('Could not find display or edit form elements');
+        editForm.style.opacity = '0';
+        setTimeout(() => {
+            editForm.style.display = 'none';
+            displayDiv.style.display = 'block';
+            setTimeout(() => {
+                displayDiv.style.opacity = '1';
+            }, 50);
+        }, 300);
     }
 }
 
@@ -367,6 +390,40 @@ function submitNewBooking(event) {
                         <button class="btn cancel-btn" onclick="deleteBooking(${data.booking.id})">Cancel Booking</button>
                     </div>
                 </div>
+                
+                <!-- Add the edit form template -->
+                <div class="edit-form" id="edit-form-${data.booking.id}" style="display: none;">
+                    <form onsubmit="updateBooking(event, ${data.booking.id})">
+                        <div class="form-group">
+                            <label for="name-${data.booking.id}">Name:</label>
+                            <input type="text" id="name-${data.booking.id}" name="name" value="${data.booking.name}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email-${data.booking.id}">Email:</label>
+                            <input type="email" id="email-${data.booking.id}" name="email" value="${data.booking.email}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone-${data.booking.id}">Phone:</label>
+                            <input type="tel" id="phone-${data.booking.id}" name="phone" value="${data.booking.phone}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="date-${data.booking.id}">Date:</label>
+                            <input type="date" id="date-${data.booking.id}" name="date" value="${data.booking.date}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="time-${data.booking.id}">Time:</label>
+                            <input type="time" id="time-${data.booking.id}" name="time" value="${data.booking.time}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="guests-${data.booking.id}">Number of Guests:</label>
+                            <input type="number" id="guests-${data.booking.id}" name="guests" value="${data.booking.guests}" min="1" max="20" required>
+                        </div>
+                        <div class="booking-actions">
+                            <button type="submit" class="btn save-btn">Save Changes</button>
+                            <button type="button" class="btn cancel-btn" onclick="toggleEditForm(${data.booking.id})">Cancel</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         `;
         
@@ -389,3 +446,4 @@ function submitNewBooking(event) {
 
 </script>
 {% endblock %}
+
