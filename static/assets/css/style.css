@@ -416,6 +416,13 @@ footer {
     color: inherit;
 }
 
+.bookings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+
 .book-table a:hover {
     opacity: 0.8;
 }
@@ -517,13 +524,16 @@ form label {
 }
 
 .booking-card {
-    position: relative;
     background-color: var(--primary-color);
     border: 2px solid var(--accent-color);
     border-radius: 8px;
     padding: 20px;
-    margin-bottom: 20px;
-    transition: all 0.3s ease;
+    height: fit-content;
+}
+
+.booking-display {
+    display: block;
+    width: 100%;
 }
 
 
@@ -570,7 +580,7 @@ form button:hover {
 /* Map Container Styles */
 .map-container {
     width: 100%;
-    max-width: 100%;
+    max-width: 600px;
     margin: 20px auto;
     padding: 20px;
     background-color: var(--secondary-color);
@@ -1037,7 +1047,7 @@ form button:hover {
 }
 
 .edit-form {
-    position: static; /* Changed from absolute to static */
+    position: relative; /* Changed from absolute to static */
     width: 100%;
     background-color: var(--secondary-color);
     border-radius: 8px;
@@ -1359,17 +1369,11 @@ form button:hover {
     }
 
     .booking-card {
-        height: auto;
         margin-bottom: 0;
     }
 
     /* Ensure consistent spacing within booking cards */
-    .booking-display {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
+    
 
     .menu-container {
         position: relative;
@@ -1480,9 +1484,6 @@ form button:hover {
         color: var(--text-color);
     }
 
-    .booking-info {
-        margin-bottom: 1rem;
-    }
 
     .booking-info strong {
         color: var(--accent-color);

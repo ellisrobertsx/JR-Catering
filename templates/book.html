@@ -181,44 +181,34 @@ document.querySelector('#new-booking-form form').addEventListener('submit', func
 });
 
 function toggleEditForm(bookingId) {
-    // Get only the specific booking card
-    const bookingCard = document.querySelector(`.booking-card[data-booking-id="${bookingId}"]`);
+    // Get all booking cards
+    const allBookingCards = document.querySelectorAll('.booking-card');
     
-    if (!bookingCard) {
-        console.error('Booking card not found');
-        return;
-    }
-
-    // Get elements within this specific booking card
-    const displayDiv = bookingCard.querySelector('.booking-display');
-    const editForm = bookingCard.querySelector('.edit-form');
-    
-    if (!displayDiv || !editForm) {
-        console.error('Display or edit form elements not found');
-        return;
-    }
-
-    // Toggle only this specific booking's edit form
-    if (editForm.style.display === 'none' || editForm.style.display === '') {
-        displayDiv.style.opacity = '0';
-        setTimeout(() => {
-            displayDiv.style.display = 'none';
-            editForm.style.display = 'block';
-            setTimeout(() => {
-                editForm.style.opacity = '1';
-            }, 50);
-        }, 300);
-    } else {
-        editForm.style.opacity = '0';
-        setTimeout(() => {
+    // First, hide all edit forms and show all displays
+    allBookingCards.forEach(card => {
+        const display = card.querySelector('.booking-display');
+        const editForm = card.querySelector('.edit-form');
+        if (card.getAttribute('data-booking-id') != bookingId) {
+            display.style.display = 'block';
             editForm.style.display = 'none';
-            displayDiv.style.display = 'block';
-            setTimeout(() => {
-                displayDiv.style.opacity = '1';
-            }, 50);
-        }, 300);
+        }
+    });
+
+    // Then toggle the selected booking's form
+    const selectedDisplay = document.getElementById(`booking-display-${bookingId}`);
+    const selectedEditForm = document.getElementById(`edit-form-${bookingId}`);
+
+    if (selectedDisplay && selectedEditForm) {
+        if (selectedEditForm.style.display === 'none' || selectedEditForm.style.display === '') {
+            selectedDisplay.style.display = 'none';
+            selectedEditForm.style.display = 'block';
+        } else {
+            selectedEditForm.style.display = 'none';
+            selectedDisplay.style.display = 'block';
+        }
     }
 }
+
 
 function updateBooking(event, bookingId) {
     event.preventDefault();
