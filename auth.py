@@ -5,7 +5,17 @@ from datetime import datetime, timedelta
 from database import Session, User
 from os import getenv
 
+
+@app.after_request
+def add_header(response):
+    response.cache_control.max_age = 300  
+    response.cache_control.public = True
+    return response
+
+
 SECRET_KEY = getenv('SECRET_KEY')
+
+
 
 def token_required(f):
     @wraps(f)

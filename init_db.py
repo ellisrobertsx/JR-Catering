@@ -66,7 +66,6 @@ def init_db():
                 )
             ]
             
-            # Add food items
             foods = [
                 FoodItem(
                     name='Garlic Bread',
@@ -106,17 +105,14 @@ def init_db():
                 )
             ]
             
-            # Add all items to the session
             for drink in drinks:
                 db.session.add(drink)
             for food in foods:
                 db.session.add(food)
 
-            # Commit the changes
             db.session.commit()
             print("Successfully committed all changes")
             
-            # Verify the data was added
             all_drinks = DrinkItem.query.all()
             all_foods = FoodItem.query.all()
             print(f"\nVerification: Found {len(all_drinks)} drinks and {len(all_foods)} food items in database")

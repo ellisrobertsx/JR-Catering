@@ -1,5 +1,4 @@
-![Alt text](image.png)
-
+![JR Catering Homepage](static/assets/images/readme-images/jr-catering-overall.png)
 # JR Catering Website
 
 ## Description
@@ -21,6 +20,55 @@ A full-stack restaurant booking and catering management system that allows users
   - Manage user accounts
   - Handle booking requests
   - Update menu items
+
+### Homepage
+The homepage welcomes users with:
+- Clean, modern design
+- Navigation menu for easy access to all sections
+- Featured menu items
+- About us section
+- Call-to-action buttons for booking and contact
+- Responsive design that works on all
+
+### Booking System
+Comprehensive booking management:
+- User-friendly booking form
+- Date and time selection
+- Guest number specification
+- Special requests field
+- Real-time availability checking
+- View existing bookings
+- Edit booking functionality
+- Cancel booking option
+- Booking history
+
+### User Authentication
+Secure user account management:
+- User registration
+- Login system
+- Password reset functionality
+- Personal information storage
+- Session management
+- Security features
+
+### Contact Page
+Interactive contact features:
+- Contact form with email integration
+- Business hours display
+- Location information
+- Google Maps integration
+- Phone and email contact options
+- Social media links
+- Direct messaging system
+
+### Menu Page
+Interactive menu display featuring:
+- Categorized food sections
+- Detailed descriptions of each dish
+- Pricing information
+- Special dietary indicators (Vegetarian, Vegan, Gluten-Free)
+- High-quality food images
+- Daily specials section
 
 ## Technologies Used- 
 - Frontend:
@@ -76,7 +124,7 @@ A full-stack restaurant booking and catering management system that allows users
 ### CSS
 - W3C Validator
 
-![Alt text](jr-catering-css.png)
+![CSS Validation](static/assets/images/readme-images/css-jr-catering-css.png)
 
 ## Future Features
 - Online payment integration
@@ -87,11 +135,3 @@ A full-stack restaurant booking and catering management system that allows users
 ## Credits
 - Mentor: [Mo Shami]
 - Code Institute
-
-## License
-This project is licensed under the MIT License - see the LICENSE.md file for details
-
-## Contact
-- Email: [Your Email]
-- LinkedIn: [Your LinkedIn]
-- Project Link: [GitHub Repository URL]
