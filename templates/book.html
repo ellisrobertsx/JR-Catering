@@ -247,7 +247,6 @@ function updateBooking(event, bookingId) {
     })
     .then(data => {
         if (data.success) {
-            // Update only the necessary display information
             const infoDiv = document.getElementById(`booking-info-${bookingId}`);
             infoDiv.innerHTML = `
                 <p><strong>Booking ID:</strong> ${bookingId}</p>
@@ -300,7 +299,6 @@ function deleteBooking(bookingId) {
     }
 }
 
-// Add this new function for submitting the booking
 function submitNewBooking(event) {
     event.preventDefault();
     
@@ -333,7 +331,6 @@ function submitNewBooking(event) {
         special_requests: specialRequestsValue
     };
 
-    // Show loading state
     const submitButton = event.target.querySelector('button[type="submit"]');
     submitButton.disabled = true;
     submitButton.textContent = 'Creating booking...';
@@ -418,8 +415,8 @@ function submitNewBooking(event) {
         `;
         
         bookingsGrid.insertAdjacentHTML('afterbegin', newBookingCard);
-        toggleNewBookingForm(); // Hide the form
-        document.getElementById('new-booking-form-element').reset(); // Reset form
+        toggleNewBookingForm(); // 
+        document.getElementById('new-booking-form-element').reset(); 
         alert('Booking created successfully!');
     })
     .catch(error => {
@@ -427,7 +424,7 @@ function submitNewBooking(event) {
         alert(error.message || 'Error creating booking. Please try again.');
     })
     .finally(() => {
-        // Reset button state
+       
         submitButton.disabled = false;
         submitButton.textContent = 'Make Booking';
     });

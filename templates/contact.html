@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Add this section for flash messages -->
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         {% for category, message in messages %}
@@ -12,9 +11,7 @@
     {% endif %}
 {% endwith %}
 
-<!-- Add this script at the bottom of your content block -->
 <script>
-    // Function to hide flash messages after 3 seconds
     document.addEventListener('DOMContentLoaded', function() {
         const flashMessage = document.getElementById('flash-message');
         if (flashMessage) {
@@ -22,8 +19,8 @@
                 flashMessage.style.opacity = '0';
                 setTimeout(function() {
                     flashMessage.style.display = 'none';
-                }, 600); // Wait for fade out animation to complete
-            }, 3000); // Message shows for 3 seconds
+                }, 600);
+            }, 3000); 
         }
     });
 </script>

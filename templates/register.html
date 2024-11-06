@@ -38,10 +38,8 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
     const confirmPassword = formData.get('confirm_password');
     const errorDiv = document.getElementById('error-message');
     
-    // Clear any existing error messages
     errorDiv.textContent = '';
     
-    // Check if passwords match
     if (password !== confirmPassword) {
         errorDiv.textContent = 'Passwords do not match';
         return;

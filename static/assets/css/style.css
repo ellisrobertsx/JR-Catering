@@ -1,7 +1,7 @@
 :root {
     --primary-color: #333333;
     --secondary-color: #4a4a4a;
-    --accent-color: #d4af37;  /* Gold */
+    --accent-color: #d4af37;  
     --text-color: #f0f0f0;
     --background-color: #1a1a1a;
     --hover-color: #555555;
@@ -324,7 +324,7 @@ footer {
     font-size: 1.2rem;
 }
 
-/* Section title with lines */
+
 .section-title {
     display: flex;
     align-items: center;
@@ -357,18 +357,17 @@ footer {
     margin-bottom: 1rem;
 }
 
-/* Add more spacing between sections */
+
 .menu-section {
     margin-bottom: 3rem;
     padding-bottom: 2rem;
 }
 
-/* Last section doesn't need bottom margin */
+
 .menu-section:last-child {
     margin-bottom: 0;
 }
 
-/* Dropdown styles */
 .dropdown {
     position: relative;
 }
@@ -386,7 +385,7 @@ footer {
 }
 
 .dropdown-content a {
-    padding: 10px 30px;  /* Added left padding for indentation */
+    padding: 10px 30px;  
     display: block;
     text-align: center;
     color: var(--text-color);
@@ -479,7 +478,7 @@ form textarea {
     background-color: var(--primary-color);
     color: var(--text-color);
     font-size: 14px;
-    text-align: center;  /* Center input text */
+    text-align: center;  
 }
 
 form label {
@@ -488,12 +487,12 @@ form label {
     color: var(--text-color);
     font-weight: bold;
     font-size: 0.9em;
-    text-align: center;  /* Center labels */
+    text-align: center; 
 }
 
 .form-group {
     margin-bottom: 20px;
-    text-align: center;  /* Center form groups */
+    text-align: center;  
 }
 
 form {
@@ -506,7 +505,7 @@ form button {
     width: auto;
     min-width: 120px;
     padding: 10px 15px;
-    margin: 0 auto;  /* Center button */
+    margin: 0 auto;  
     background-color: var(--accent-color);
     color: var(--primary-color);
     border: none;
@@ -577,7 +576,7 @@ form button:hover {
     background-color: var(--hover-color);
 }
 
-/* Map Container Styles */
+
 .map-container {
     width: 100%;
     max-width: 600px;
@@ -685,8 +684,8 @@ form button:hover {
 
 .login-form button {
     display: inline-block;
-    width: auto;  /* Changed from 100% */
-    min-width: 120px;  /* Ensure a minimum width */
+    width: auto;  
+    min-width: 120px;  
     padding: 10px 15px;
     background-color: var(--accent-color);
     color: var(--primary-color);
@@ -709,7 +708,7 @@ form button:hover {
 .booking-display .booking-actions {
     display: flex;
     flex-direction: column;
-    gap: 10px;  /* Space between buttons */
+    gap: 10px; 
     padding: 10px;
 }
 
@@ -724,16 +723,15 @@ form button:hover {
     transition: background-color 0.3s ease;
 }
 
-/* Style for the Save Changes/Cancel buttons in edit form */
+
 .edit-form .booking-actions {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-top: 10px;  /* Add some space above the buttons */
-    margin-bottom: 20px;  /* Add some space below the buttons */
+    margin-top: 10px;  
+    margin-bottom: 20px;  
 }
 
-/* Hover states for all these buttons */
 .booking-actions .btn:hover {
     background-color: var(--hover-color);
     color: white;
@@ -744,7 +742,6 @@ form button:hover {
     color: white;
 }
 
-/* Registration Form Styling */
 .register-container {
     width: 100%;
     max-width: 400px;
@@ -806,13 +803,12 @@ form button:hover {
     width: 100%;
 }
 
-/* Mobile-first hero image styles */
 .hero-container {
     width: 100%;
     max-width: 900px;
     margin: 0 auto;
     padding: 20px 30px;
-    overflow: hidden; /* Prevent any overflow */
+    overflow: hidden; 
 }
 
 .hero-image {
@@ -822,10 +818,10 @@ form button:hover {
     display: none;
     background-color: var(--background-color);
     position: relative;
-    border-radius: 15px;  /* Rounded corners */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);  /* Subtle shadow */
-    border: 2px solid var(--accent-color);  /* Gold border */
-    overflow: hidden;  /* Keep rounded corners on the image */
+    border-radius: 15px; 
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);  
+    border: 2px solid var(--accent-color);  
+    overflow: hidden;  
 }
 
 
@@ -845,7 +841,7 @@ form button:hover {
     height: 100%;
     object-fit: cover;
     object-position: center;
-    transition: transform 0.3s ease;  /* Smooth zoom effect */
+    transition: transform 0.3s ease; 
 }
 
 .register-form button {
@@ -866,7 +862,6 @@ form button:hover {
     background-color: var(--hover-color);
 }
 
-/* Center the button */
 .register-form {
     text-align: center;
 }
@@ -901,7 +896,6 @@ form button:hover {
     border-radius: 4px;
 }
 
-/* Booking Form Styling */
 .booking-container {
     width: 100%;
     max-width: 600px;
@@ -924,16 +918,14 @@ form button:hover {
     margin: 2rem auto;
 }
 
-/* Style individual buttons */
 .booking-actions .btn {
     width: 100%;
-    padding: 15px;  /* Slightly larger padding */
+    padding: 15px;  
     margin: 0;
-    font-size: 16px;  /* Slightly larger font */
+    font-size: 16px;  
 }
 
 
-/* Optional: Add a divider between buttons */
 .booking-actions .btn:not(:last-child) {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     
@@ -970,14 +962,14 @@ form button:hover {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin-bottom: 15px;  /* Add gap between buttons */
+    margin-bottom: 15px;  
 }
 
 #new-booking-form-element .booking-actions {
     display: flex;
     justify-content: center;
-    gap: 1rem;  /* Space between buttons */
-    margin-top: 1.5rem;  /* Space above buttons */
+    gap: 1rem;  
+    margin-top: 1.5rem; 
 }
 
 
@@ -986,7 +978,6 @@ form button:hover {
     color: var(--text-color);
 }
 
-/* Base button styles - applies to all buttons */
 .btn, 
 .primary-btn, 
 .edit-btn, 
@@ -1015,7 +1006,6 @@ form button:hover {
     
 }
 
-/* Style for edit form buttons */
 .edit-form .booking-actions .btn {
     width: 100%;
     padding: 10px 15px;
@@ -1034,7 +1024,6 @@ form button:hover {
     color: var(--text-color);
 }
 
-/* Hover state for all buttons */
 .btn:hover, 
 .primary-btn:hover, 
 .edit-btn:hover, 
@@ -1047,7 +1036,7 @@ form button:hover {
 }
 
 .edit-form {
-    position: relative; /* Changed from absolute to static */
+    position: relative; 
     width: 100%;
     background-color: var(--secondary-color);
     border-radius: 8px;
@@ -1144,7 +1133,6 @@ form button:hover {
     transition: all 0.3s ease;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
-/* Style for new booking form buttons container */
 
 #new-booking-form {
     margin-bottom: 2rem;
@@ -1220,14 +1208,12 @@ form button:hover {
     resize: vertical;
 }
 
-/* Desktop styles (768px and above) */
 @media screen and (min-width: 768px) {
     /* Main content */
     main {
         padding: 40px;
     }
 
-    /* Container styles */
     #container {
         display: flex;
         flex-wrap: wrap;
@@ -1243,7 +1229,6 @@ form button:hover {
         height: 300px;
     }
 
-    /* Navigation styles */
     .burger-btn {
         display: none;
     }
@@ -1283,7 +1268,6 @@ form button:hover {
         color: var(--text-color);
     }
 
-    /* Form styles */
     .form-container,
     .booking-container,
     .login-form,
@@ -1313,12 +1297,10 @@ form button:hover {
         font-size: 16px;
     }
 
-    /* Map styles */
     .map-container iframe {
         height: 450px;
     }
 
-    /* Contact and opening hours */
     .contact-info,
     .opening-hours {
         max-width: 600px;
@@ -1334,7 +1316,6 @@ form button:hover {
         margin-bottom: 20px;
     }
 
-    /* Header styles */
     .header-content {
         max-width: 1200px;
         margin: 0 auto;
@@ -1343,7 +1324,6 @@ form button:hover {
 
     
 
-    /* Dropdown styles */
     .dropdown-content {
         position: absolute;
         width: auto;
@@ -1361,7 +1341,6 @@ form button:hover {
         white-space: nowrap;
     }
 
-    /* Booking grid layout for desktop */
     .bookings-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -1372,7 +1351,6 @@ form button:hover {
         margin-bottom: 0;
     }
 
-    /* Ensure consistent spacing within booking cards */
     
 
     .menu-container {
@@ -1394,18 +1372,10 @@ form button:hover {
         min-width: 200px;
         padding: 15px 30px;
         font-size: 1.1em;
-        margin: 0 auto;  /* Center the button */
-        display: block;  /* Make it a block element */
+        margin: 0 auto; 
+        display: block;  
     }
     
-    /* Consistent button sizing */
-   
-    
-   
-
-
-/* Add these styles to your existing CSS */
-
     .confirmation-container {
         max-width: 800px;
         margin: 2rem auto;
@@ -1456,7 +1426,6 @@ form button:hover {
         background-color: #2d2d2d;
     }
 
-/* Add to your existing CSS */
 
     .bookings-container {
         max-width: 1200px;
@@ -1473,10 +1442,9 @@ form button:hover {
 
 
 
-/* Optional: Add hover effect to make it more interactive */
     .booking-card:hover {
-        border-color: #ffd700;  /* Change border color to gold on hover */
-        transition: border-color 0.3s ease;  /* Smooth transition for hover effect */
+        border-color: #ffd700; 
+        transition: border-color 0.3s ease;  
     }
 
     .booking-info p {
