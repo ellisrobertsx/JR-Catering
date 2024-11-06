@@ -1,4 +1,4 @@
-![JR Catering Homepage]<img src="static/assets/images/readme-images/jr-catering-overall.png" alt="JR Catering Homepage" width="800"/>
+<img src="static/readme-images/jr-catering-overall.png" alt="JR Catering Homepage" width="800"/>
 # JR Catering Website
 
 ## Description
@@ -124,7 +124,7 @@ Interactive menu display featuring:
 ### CSS
 - W3C Validator
 
-<img src="static/assets/images/readme-images/jr-catering-css.png" alt="JR Catering CSS" width="800"/>
+<img src="static/readme-images/jr-catering-css.png" alt="JR Catering CSS" width="800"/>
 ## Future Features
 - Online payment integration
 - SMS notifications
