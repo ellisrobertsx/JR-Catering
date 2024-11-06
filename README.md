@@ -1,8 +1,49 @@
 <img src="static/readme-images/jr-catering-overall.png" alt="JR Catering Homepage" width="800"/>
+
 # JR Catering Website
 
 ## Description
 A full-stack restaurant booking and catering management system that allows users to create accounts, make reservations, and manage their bookings. The website also provides information about the catering services, menu options, and contact details.
+
+## Table of Contents
+
+1. [Description](#description)
+2. [Features](#features)
+   - [Homepage](#homepage)
+   - [Menu Page](#menu-page)
+   - [Booking System](#booking-system)
+   - [User Authentication](#user-authentication)
+   - [Contact Page](#contact-page)
+   - [Admin Dashboard](#admin-dashboard)
+
+3. [Technologies Used](#technologies-used)
+   - [Frontend](#frontend)
+   - [Backend](#backend)
+   - [Deployment](#deployment)
+
+4. [Installation & Setup](#installation--setup)
+   - [Local Development](#local-development)
+   - [Environment Variables](#environment-variables)
+   - [Database Setup](#database-setup)
+
+5. [Deployment](#deployment)
+   - [Heroku Deployment](#heroku-deployment)
+   - [Local Deployment](#local-deployment)
+   - [Dependencies](#dependencies)
+
+6. [Testing](#testing)
+   - [Manual Testing](#manual-testing)
+   - [Automated Testing](#automated-testing)
+   - [Validation](#validation)
+
+7. [Credits](#credits)
+   - [Content](#content)
+   - [Media](#media)
+   - [Acknowledgments](#acknowledgments)
+
+8. [Future Features](#future-features)
+
+9. [Contact](#contact)
 
 ## Features
   - User Authentication (Register/Login)
@@ -93,6 +134,51 @@ Interactive menu display featuring:
 4. Set up the database
 5. Run the application
 
+
+## Deployment
+
+### Heroku Deployment
+The site was deployed to Heroku. The steps to deploy are as follows:
+
+1. Create a new Heroku app:
+   - Log in to Heroku
+   - Click "New" from the dashboard
+   - Select "Create new app"
+   - Enter a unique app name
+   - Choose your region (EU or USA)
+   - Click "Create app"
+
+2. Set up environment variables:
+   - From your app dashboard, click on "Settings"
+   - Click "Reveal Config Vars"
+   - Add the following config vars:
+     - `SECRET_KEY`: Your secret key
+     - `DATABASE_URL`: Your database URL
+     - `CLOUDINARY_URL`: Your Cloudinary URL (if using Cloudinary)
+     - `PORT`: 8000
+
+3. Prepare the application:
+   - In your GitHub repository, create a `requirements.txt`:
+     ```
+     pip freeze > requirements.txt
+     ```
+   - Create a `Procfile` in the root directory:
+     ```
+     web: gunicorn app:app
+     ```
+
+4. Connect to GitHub:
+   - Go to the "Deploy" tab in your Heroku dashboard
+   - Select "GitHub" as the deployment method
+   - Connect to your GitHub repository
+   - Choose the branch you want to deploy
+
+5. Deploy:
+   - Choose "Enable Automatic Deploys" for automatic deployment when you push to GitHub
+   - Click "Deploy Branch" for manual deployment
+
+
+
 ## Usage
 ### User Features
 - Register for an account or log in
@@ -125,6 +211,7 @@ Interactive menu display featuring:
 - W3C Validator
 
 <img src="static/readme-images/jr-catering-css.png" alt="JR Catering CSS" width="800"/>
+
 ## Future Features
 - Online payment integration
 - SMS notifications
