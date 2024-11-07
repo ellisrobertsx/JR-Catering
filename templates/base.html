@@ -3,17 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JR Catering</title>
+    <meta name="description" content="JR Catering - Professional catering services in Peterhead offering quality food and drinks">
+    <meta name="theme-color" content="#333333">
+    
+    <!-- Preload critical assets -->
     <link rel="preload" href="{{ url_for('static', filename='assets/css/style.css') }}" as="style">
     <link rel="preload" href="{{ url_for('static', filename='assets/js/script.js') }}" as="script">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css', v=2) }}">
-    <script src="https://kit.fontawesome.com/3388b1b6ae.js" crossorigin="anonymous"></script>
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://kit.fontawesome.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <title>{% block title %}JR Catering{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="dns-prefetch" href="https://kit.fontawesome.com">
+    <link rel="dns-prefetch" href="https://www.google.com">
 </head>
 <body>
     <header>
@@ -80,6 +85,7 @@
         <p id="footer-text">&copy; 2024 JR Catering. All rights reserved.</p>
     </footer>
 
-    <script src="{{ url_for('static', filename='assets/js/script.js', v=2) }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/script.js') }}" defer></script>
+    <script src="https://kit.fontawesome.com/3388b1b6ae.js" crossorigin="anonymous" defer></script>
 </body>
 </html> 

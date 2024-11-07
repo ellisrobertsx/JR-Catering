@@ -5,8 +5,10 @@ from sqlalchemy import text
 from extensions import db
 from models import User, MenuItem, DrinkItem, Booking, Contact, FoodItem
 import logging
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_from_directory
 from models import Booking
+from flask_compress import Compress
+from flask_caching import Cache
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -47,6 +49,34 @@ with app.app_context():
 
 # Add the function to Jinja environment AFTER creating the app
 app.jinja_env.globals.update(get_user_bookings=get_user_bookings)
+
+# Initialize compression
+compress = Compress()
+
+# Configure caching
+cache = Cache(config={
+    'CACHE_TYPE': 'simple',
+    'CACHE_DEFAULT_TIMEOUT': 300
+})
+
+# Enable compression
+compress.init_app(app)
+cache.init_app(app)
+
+# Add security headers
+@app.after_request
+def add_security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    
+    # Cache static assets
+    if request.path.startswith('/static/'):
+        response.cache_control.max_age = 31536000  # 1 year
+        response.cache_control.public = True
+        
+    return response
 
 # Routes
 @app.route('/')
@@ -329,15 +359,8 @@ def not_found_error(error):
 
 @app.errorhandler(500)
 def internal_error(error):
-    db.session.rollback()
     return render_template('500.html'), 500
 
-@app.after_request
-def add_header(response):
-    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
-    return response
 
 @app.route('/check_db')
 def check_db():
@@ -352,6 +375,10 @@ def check_db():
         print(f"Error in check_db: {str(e)}")
         return str(e)
 
+# Serve manifest.json
+@app.route('/manifest.json')
+def manifest():
+    return send_from_directory('static', 'manifest.json')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

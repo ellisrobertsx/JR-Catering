@@ -174,7 +174,7 @@ The design follows key principles to ensure a great user experience:
 - Accessibility: WCAG compliance for all users
 - Simplicity: Clean, uncluttered design
 
-## Technologies Used- 
+## Technologies Used 
 - Frontend:
   - HTML5
   - CSS3

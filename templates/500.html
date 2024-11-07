@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Server Error</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="error-container">
     <h1>500 - Server Error</h1>
     <p>Something went wrong: {{ error if error else 'Unknown error' }}</p>
-    <a href="{{ url_for('index') }}">Return to Home</a>
-</body>
-</html> 
+    <a href="{{ url_for('index') }}" class="btn">Return to Home</a>
+</div>
+{% endblock %} 
