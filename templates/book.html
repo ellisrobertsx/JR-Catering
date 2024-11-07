@@ -129,6 +129,7 @@ function setMinDate() {
     dateInput.min = `${yyyy}-${mm}-${dd}`;
 }
 
+
 // Generate time slots in 5-minute intervals
 function generateTimeSlots() {
     const timeSelect = document.getElementById('time');
@@ -165,7 +166,7 @@ function toggleNewBookingForm() {
 }
 
 // Add validation for the selected date and time
-document.querySelector('#new-booking-form form').addEventListener('submit', function(event) {
+document.querySelector('#new-booking-form-element').addEventListener('submit', function(event) {
     const selectedDate = new Date(document.getElementById('date').value);
     const selectedTime = document.getElementById('time').value;
     const now = new Date();
@@ -194,6 +195,13 @@ function toggleEditForm(bookingId) {
         }
     });
 
+
+    // Call these functions when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        setMinDate();       
+        generateTimeSlots();
+    });
+
     // Then toggle the selected booking's form
     const selectedDisplay = document.getElementById(`booking-display-${bookingId}`);
     const selectedEditForm = document.getElementById(`edit-form-${bookingId}`);
@@ -208,7 +216,6 @@ function toggleEditForm(bookingId) {
         }
     }
 }
-
 
 function updateBooking(event, bookingId) {
     event.preventDefault();

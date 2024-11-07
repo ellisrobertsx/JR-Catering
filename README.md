@@ -14,7 +14,7 @@ A full-stack restaurant booking and catering management system that allows users
    - [Booking System](#booking-system)
    - [User Authentication](#user-authentication)
    - [Contact Page](#contact-page)
-   - [Admin Dashboard](#admin-dashboard)
+   
 
 3. [Technologies Used](#technologies-used)
    - [Frontend](#frontend)
