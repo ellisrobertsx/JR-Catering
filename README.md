@@ -100,7 +100,7 @@ Interactive contact features:
 - Google Maps integration
 - Phone and email contact options
 - Social media links
-- Direct messaging system
+
 
 ### Menu Page
 Interactive menu display featuring:
@@ -108,8 +108,64 @@ Interactive menu display featuring:
 - Detailed descriptions of each dish
 - Pricing information
 - Special dietary indicators (Vegetarian, Vegan, Gluten-Free)
-- High-quality food images
-- Daily specials section
+
+
+## Design
+
+### Color Scheme
+The website uses a carefully selected color palette to create a professional and appetizing atmosphere:
+- Primary Color (#4A4A4A): Used for main text and headers, providing clear readability
+- Secondary Color (#E8B23D): Adds warmth and represents the culinary theme
+- Accent Color (#2C5530): Used for buttons and call-to-action elements
+- Background Color (#FFFFFF): Clean white background to enhance content visibility
+- Footer Color (#333333): Dark footer for contrast and professional finish
+
+### Typography
+- Primary Font: 'Roboto' - Used for body text and general content for its excellent readability
+- Secondary Font: 'Playfair Display' - Used for headers and titles to add elegance
+- Accent Font: 'Dancing Script' - Used sparingly for special text elements to add a touch of sophistication
+
+### Layout
+The website follows a clean, modern layout structure:
+- Fixed navigation bar for easy access to all sections
+- Hero section with striking imagery and clear call-to-action
+- Grid-based menu layout for easy scanning
+- Card-based design for booking management
+- Responsive columns that adapt to different screen sizes
+- Consistent spacing and padding throughout
+
+### Images
+- High-quality food photography to showcase menu items
+- Professional restaurant ambiance shots
+- Optimized images for fast loading times
+- Alt text for accessibility
+- Responsive image sizing for different devices
+
+### User Interface Elements
+- Interactive buttons with hover effects
+- Form inputs with clear labels and validation feedback
+- Modal windows for important actions
+- Toast notifications for user feedback
+- Loading spinners for processing states
+- Consistent button styling across the site
+
+### Responsive Design
+The website is fully responsive across all devices:
+- Mobile-first approach
+- Breakpoints at common device sizes
+- Flexible grid system
+- Collapsible navigation menu for mobile
+- Optimized images for different screen sizes
+- Touch-friendly elements for mobile users
+
+### Design Principles
+The design follows key principles to ensure a great user experience:
+- Hierarchy: Clear visual hierarchy to guide users
+- Consistency: Consistent styling throughout
+- Contrast: Good contrast for readability
+- White Space: Appropriate spacing for clean layout
+- Accessibility: WCAG compliance for all users
+- Simplicity: Clean, uncluttered design
 
 ## Technologies Used- 
 - Frontend:
