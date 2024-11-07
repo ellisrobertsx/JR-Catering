@@ -97,7 +97,9 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="time-{{ booking.id }}">Time:</label>
-                                    <input type="time" id="time-{{ booking.id }}" name="time" value="{{ booking.time }}" required>
+                                    <select id="time-{{ booking.id }}" name="time" required>
+                                        <option value="">Select a time</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="guests-{{ booking.id }}">Number of Guests:</label>
@@ -119,27 +121,27 @@
 </div>
 
 <script>
-// Set minimum date to today
-function setMinDate() {
-    const dateInput = document.getElementById('date');
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
+// Set minimum date to tomorrow
+function setMinDate(inputId) {
+    const dateInput = document.getElementById(inputId);
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1); // Allow booking only from tomorrow onwards
+    const yyyy = tomorrow.getFullYear();
+    const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+    const dd = String(tomorrow.getDate()).padStart(2, '0');
     dateInput.min = `${yyyy}-${mm}-${dd}`;
 }
 
-
 // Generate time slots in 5-minute intervals
-function generateTimeSlots() {
-    const timeSelect = document.getElementById('time');
+function generateTimeSlots(selectId) {
+    const timeSelect = document.getElementById(selectId);
     timeSelect.innerHTML = '<option value="">Select a time</option>';
     
     // Restaurant hours (adjust these as needed)
     const startHour = 11; // 11 AM
     const endHour = 22;   // 10 PM
     
-    for (let hour = startHour; hour <= endHour; hour++) {
+    for (let hour = startHour; hour < endHour; hour++) {
         for (let minute = 0; minute < 60; minute += 5) {
             const formattedHour = String(hour).padStart(2, '0');
             const formattedMinute = String(minute).padStart(2, '0');
@@ -158,14 +160,32 @@ function toggleNewBookingForm() {
     const form = document.getElementById('new-booking-form');
     if (form.style.display === 'none') {
         form.style.display = 'block';
-        setMinDate();
-        generateTimeSlots();
+        setMinDate('date');
+        generateTimeSlots('time');
     } else {
         form.style.display = 'none';
     }
 }
 
-// Add validation for the selected date and time
+// Initialize date and time inputs for edit form
+function toggleEditForm(bookingId) {
+    const selectedDisplay = document.getElementById(`booking-display-${bookingId}`);
+    const selectedEditForm = document.getElementById(`edit-form-${bookingId}`);
+
+    if (selectedDisplay && selectedEditForm) {
+        if (selectedEditForm.style.display === 'none' || selectedEditForm.style.display === '') {
+            selectedDisplay.style.display = 'none';
+            selectedEditForm.style.display = 'block';
+            setMinDate(`date-${bookingId}`);
+            generateTimeSlots(`time-${bookingId}`);
+        } else {
+            selectedEditForm.style.display = 'none';
+            selectedDisplay.style.display = 'block';
+        }
+    }
+}
+
+// Validate date and time on form submission
 document.querySelector('#new-booking-form-element').addEventListener('submit', function(event) {
     const selectedDate = new Date(document.getElementById('date').value);
     const selectedTime = document.getElementById('time').value;
@@ -175,47 +195,17 @@ document.querySelector('#new-booking-form-element').addEventListener('submit', f
     const [hours, minutes] = selectedTime.split(':');
     selectedDate.setHours(parseInt(hours), parseInt(minutes));
     
-    if (selectedDate < now) {
+    if (selectedDate <= now) { // Ensure booking is at least a day in advance
         event.preventDefault();
         alert('Please select a future date and time.');
     }
 });
 
-function toggleEditForm(bookingId) {
-    // Get all booking cards
-    const allBookingCards = document.querySelectorAll('.booking-card');
-    
-    // First, hide all edit forms and show all displays
-    allBookingCards.forEach(card => {
-        const display = card.querySelector('.booking-display');
-        const editForm = card.querySelector('.edit-form');
-        if (card.getAttribute('data-booking-id') != bookingId) {
-            display.style.display = 'block';
-            editForm.style.display = 'none';
-        }
-    });
-
-
-    // Call these functions when the page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        setMinDate();       
-        generateTimeSlots();
-    });
-
-    // Then toggle the selected booking's form
-    const selectedDisplay = document.getElementById(`booking-display-${bookingId}`);
-    const selectedEditForm = document.getElementById(`edit-form-${bookingId}`);
-
-    if (selectedDisplay && selectedEditForm) {
-        if (selectedEditForm.style.display === 'none' || selectedEditForm.style.display === '') {
-            selectedDisplay.style.display = 'none';
-            selectedEditForm.style.display = 'block';
-        } else {
-            selectedEditForm.style.display = 'none';
-            selectedDisplay.style.display = 'block';
-        }
-    }
-}
+// Call these functions when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    setMinDate('date');
+    generateTimeSlots('time');
+});
 
 function updateBooking(event, bookingId) {
     event.preventDefault();
