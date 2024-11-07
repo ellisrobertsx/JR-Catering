@@ -217,6 +217,61 @@ The design follows key principles to ensure a great user experience:
     I got this to work by adding a function to update the database when the form is submitted with debug statements to check where the error was coming from.
 
 
+## User Stories
+
+### First Time Visitor Goals
+1. As a first time visitor, I want to:
+   - Understand the purpose of the website immediately
+   - Navigate the site easily and find important information
+   - View the menu and pricing without needing to register
+   - Find contact information and business hours easily
+   - See reviews or testimonials from other customers
+   - Access the site on my mobile device
+
+2. As a potential customer, I want to:
+   - Check availability for specific dates and times
+   - View detailed menu options and prices
+   - Find information about special dietary requirements
+   - See photos of the food and venue
+   - Find location and parking information
+   - Contact the business with questions
+
+### Returning Visitor Goals
+1. As a returning visitor, I want to:
+   - Log in to my account easily
+   - View my booking history
+   - Make new bookings quickly
+   - Modify or cancel existing bookings
+   - Save my preferences and contact details
+   - Contact customer service if needed
+
+### Frequent User Goals
+1. As a frequent user, I want to:
+   - Manage multiple bookings efficiently
+   - Receive notifications about my bookings
+   - Access special offers or loyalty rewards
+   - Update my personal information easily
+   - View my booking history
+   - Get personalized recommendations
+
+### Business Owner Goals
+1. As the business owner, I want to:
+   - Manage bookings efficiently
+   - Update menu items and prices easily
+   - View booking statistics and reports
+   - Manage user accounts and permissions
+   - Respond to customer inquiries
+   - Update business information and special offers
+
+### Admin User Goals
+1. As an admin user, I want to:
+   - Access the admin dashboard securely
+   - Manage all user bookings
+   - Handle customer inquiries
+   - Update website content
+   - Monitor system performance
+   - Generate business reports
+
 ## Deployment
 
 ### Heroku Deployment
