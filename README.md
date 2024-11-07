@@ -10,40 +10,47 @@ A full-stack restaurant booking and catering management system that allows users
 1. [Description](#description)
 2. [Features](#features)
    - [Homepage](#homepage)
-   - [Menu Page](#menu-page)
    - [Booking System](#booking-system)
    - [User Authentication](#user-authentication)
    - [Contact Page](#contact-page)
-   
+   - [Menu Page](#menu-page)
 
-3. [Technologies Used](#technologies-used)
-   - [Frontend](#frontend)
-   - [Backend](#backend)
-   - [Deployment](#deployment)
+3. [Design](#design)
+   - [Color Scheme](#color-scheme)
+   - [Typography](#typography)
+   - [Layout](#layout)
+   - [Images](#images)
+   - [User Interface Elements](#user-interface-elements)
+   - [Responsive Design](#responsive-design)
+   - [Design Principles](#design-principles)
 
-4. [Installation & Setup](#installation--setup)
-   - [Local Development](#local-development)
-   - [Environment Variables](#environment-variables)
-   - [Database Setup](#database-setup)
+4. [Technologies Used](#technologies-used)
 
-5. [Deployment](#deployment)
+5. [Installation & Setup](#installation--setup)
+
+6. [Libraries and Tools](#libraries-and-tools)
+
+7. [Bugs](#bugs)
+
+8. [User Stories](#user-stories)
+   - [First Time Visitor Goals](#first-time-visitor-goals)
+   - [Returning Visitor Goals](#returning-visitor-goals)
+   - [Business Owner Goals](#business-owner-goals)
+   - [Admin User Goals](#admin-user-goals)
+
+9. [Deployment](#deployment)
    - [Heroku Deployment](#heroku-deployment)
-   - [Local Deployment](#local-deployment)
-   - [Dependencies](#dependencies)
 
-6. [Testing](#testing)
-   - [Manual Testing](#manual-testing)
-   - [Automated Testing](#automated-testing)
-   - [Validation](#validation)
+10. [Usage](#usage)
+    - [User Features](#user-features)
+    - [Admin Features](#admin-features)
 
-7. [Credits](#credits)
-   - [Content](#content)
-   - [Media](#media)
-   - [Acknowledgments](#acknowledgments)
+11. [Testing](#testing)
+    - [Manual Testing](#manual-testing)
 
-8. [Future Features](#future-features)
+12. [Future Features](#future-features)
 
-9. [Contact](#contact)
+13. [Credits](#credits)
 
 ## Features
   - User Authentication (Register/Login)
@@ -225,7 +232,6 @@ The design follows key principles to ensure a great user experience:
    - Navigate the site easily and find important information
    - View the menu and pricing without needing to register
    - Find contact information and business hours easily
-   - See reviews or testimonials from other customers
    - Access the site on my mobile device
 
 2. As a potential customer, I want to:
@@ -244,15 +250,6 @@ The design follows key principles to ensure a great user experience:
    - Modify or cancel existing bookings
    - Save my preferences and contact details
    - Contact customer service if needed
-
-### Frequent User Goals
-1. As a frequent user, I want to:
-   - Manage multiple bookings efficiently
-   - Receive notifications about my bookings
-   - Access special offers or loyalty rewards
-   - Update my personal information easily
-   - View my booking history
-   - Get personalized recommendations
 
 ### Business Owner Goals
 1. As the business owner, I want to:
