@@ -54,9 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
             heroImages[currentImageIndex].style.display = 'block';
         }, 3000);
     }
-});
 
-document.addEventListener('DOMContentLoaded', () => {
     const lazyImages = document.querySelectorAll('img[loading="lazy"]');
     
     const imageObserver = new IntersectionObserver((entries, observer) => {
