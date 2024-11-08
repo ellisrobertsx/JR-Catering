@@ -54,15 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
             heroImages[currentImageIndex].style.display = 'block';
         }, 3000);
     }
-
-    try {
-        heroSlider();  // Now safe to call on any page
-    } catch (error) {
-        console.log('Hero slider initialization error:', error);
-    }
 });
 
-// Use IntersectionObserver for lazy loading
 document.addEventListener('DOMContentLoaded', () => {
     const lazyImages = document.querySelectorAll('img[loading="lazy"]');
     
