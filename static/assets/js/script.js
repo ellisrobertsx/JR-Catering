@@ -43,9 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     const heroImages = document.querySelectorAll('.hero-image');
-    let currentImageIndex = 0;
-
     if (heroImages.length > 0) {
+        let currentImageIndex = 0;
         heroImages[0].style.display = 'block';
 
         setInterval(() => {
@@ -56,17 +55,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const lazyImages = document.querySelectorAll('img[loading="lazy"]');
-    
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                observer.unobserve(img);
-            }
+    if (lazyImages.length > 0) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    observer.unobserve(img);
+                }
+            });
         });
-    });
-    
-    lazyImages.forEach(img => imageObserver.observe(img));
+        
+        lazyImages.forEach(img => imageObserver.observe(img));
+    }
 });
   
