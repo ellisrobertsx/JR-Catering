@@ -54,6 +54,12 @@ document.addEventListener('DOMContentLoaded', function() {
             heroImages[currentImageIndex].style.display = 'block';
         }, 3000);
     }
+
+    try {
+        heroSlider();  // Now safe to call on any page
+    } catch (error) {
+        console.log('Hero slider initialization error:', error);
+    }
 });
 
 // Use IntersectionObserver for lazy loading
@@ -74,16 +80,20 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Hero slider
     const heroSlider = () => {
-        const heroImages = document.querySelectorAll('.hero-image');
-        let currentImageIndex = 0;
+        const heroSlider = document.querySelector('.hero-slider');
+        // Check if hero slider exists before proceeding
+        if (!heroSlider) return;  // Exit if no slider found
+
+        const slides = heroSlider.querySelectorAll('.slide');
+        let currentSlide = 0;
         
-        heroImages[0].classList.add('active');
+        slides[currentSlide].classList.add('active');
         
         setInterval(() => {
-            heroImages[currentImageIndex].classList.remove('active');
-            currentImageIndex = (currentImageIndex + 1) % heroImages.length;
-            heroImages[currentImageIndex].classList.add('active');
-        }, 3000);
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }, 5000);
     };
     
     heroSlider();

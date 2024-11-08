@@ -286,18 +286,25 @@ def delete_booking(booking_id):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        
-        user = User.query.filter_by(username=username).first()
-        
-        if user and check_password_hash(user.password, password):
-            session['user_id'] = user.id
-            session['username'] = user.username
-            return redirect(url_for('index'))  
-        
-        flash('Invalid username or password', 'error')
-        return redirect(url_for('login'))
+        try:
+            username = request.form['username']
+            password = request.form['password']
+            
+            user = User.query.filter_by(username=username).first()
+            
+            if user and check_password_hash(user.password, password):
+                session['user_id'] = user.id
+                session['username'] = user.username
+                flash('Successfully logged in!', 'success')
+                return redirect(url_for('index'))
+            
+            flash('Invalid username or password', 'error')
+            return redirect(url_for('login'))
+            
+        except Exception as e:
+            print(f"Login error: {str(e)}")
+            flash('An error occurred during login', 'error')
+            return redirect(url_for('login'))
         
     return render_template('login.html')
 
