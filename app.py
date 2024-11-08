@@ -287,8 +287,12 @@ def delete_booking(booking_id):
 def login():
     if request.method == 'POST':
         try:
-            username = request.form['username']
-            password = request.form['password']
+            username = request.form.get('username')
+            password = request.form.get('password')
+            
+            if not username or not password:
+                flash('Please provide both username and password', 'error')
+                return redirect(url_for('login'))
             
             user = User.query.filter_by(username=username).first()
             
@@ -302,7 +306,7 @@ def login():
             return redirect(url_for('login'))
             
         except Exception as e:
-            print(f"Login error: {str(e)}")
+            logger.error(f"Login error: {str(e)}")
             flash('An error occurred during login', 'error')
             return redirect(url_for('login'))
         
