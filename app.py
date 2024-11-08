@@ -39,6 +39,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.environ.get('SECRET_KEY', 'dev')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 
 # Initialize extensions
 db.init_app(app)
@@ -290,26 +294,32 @@ def login():
             username = request.form.get('username')
             password = request.form.get('password')
             
+            logger.debug(f"Login attempt for username: {username}")
+            
             if not username or not password:
+                logger.warning("Missing username or password")
                 flash('Please provide both username and password', 'error')
                 return redirect(url_for('login'))
             
             user = User.query.filter_by(username=username).first()
             
             if user and check_password_hash(user.password, password):
+                logger.info(f"Successful login for user: {username}")
                 session['user_id'] = user.id
                 session['username'] = user.username
                 flash('Successfully logged in!', 'success')
                 return redirect(url_for('index'))
             
+            logger.warning(f"Failed login attempt for username: {username}")
             flash('Invalid username or password', 'error')
             return redirect(url_for('login'))
             
         except Exception as e:
-            logger.error(f"Login error: {str(e)}")
+            logger.error(f"Login error: {str(e)}", exc_info=True)
             flash('An error occurred during login', 'error')
             return redirect(url_for('login'))
-        
+    
+    # GET request
     return render_template('login.html')
 
 @app.route('/logout')
