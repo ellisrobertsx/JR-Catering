@@ -77,24 +77,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     lazyImages.forEach(img => imageObserver.observe(img));
-    
-    // Hero slider
-    const heroSlider = () => {
-        const heroSlider = document.querySelector('.hero-slider');
-        // Check if hero slider exists before proceeding
-        if (!heroSlider) return;  // Exit if no slider found
-
-        const slides = heroSlider.querySelectorAll('.slide');
-        let currentSlide = 0;
-        
-        slides[currentSlide].classList.add('active');
-        
-        setInterval(() => {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (currentSlide + 1) % slides.length;
-            slides[currentSlide].classList.add('active');
-        }, 5000);
-    };
-    
-    heroSlider();
-}); 
+});
+  
