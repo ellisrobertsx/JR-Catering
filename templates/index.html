@@ -3,36 +3,117 @@
 {% block content %}
 <div class="hero-container">
     <div class="hero-image">
-        <img src="{{ url_for('static', filename='assets/images/img1.jpg') }}" alt="Hero Image 1">
+        <picture>
+            <source 
+                srcset="{{ url_for('static', filename='assets/images/img1.webp') }}" 
+                type="image/webp">
+            <img 
+                src="{{ url_for('static', filename='assets/images/img1.webp') }}" 
+                alt="Hero Image 1 - Showcasing our catering service"
+                width="900"
+                height="400"
+                loading="eager"
+                decoding="async"
+                fetchpriority="high">
+        </picture>
     </div>
     <div class="hero-image">
-        <img src="{{ url_for('static', filename='assets/images/img2.jpg') }}" alt="Hero Image 2">
+        <picture>
+            <source 
+                srcset="{{ url_for('static', filename='assets/images/img2.webp') }}" 
+                type="image/webp">
+            <img 
+                src="{{ url_for('static', filename='assets/images/img2.webp') }}" 
+                alt="Hero Image 2 - Featured dishes"
+                width="900"
+                height="400"
+                loading="lazy"
+                decoding="async">
+        </picture>
     </div>
     <div class="hero-image">
-        <img src="{{ url_for('static', filename='assets/images/img3.jpg') }}" alt="Hero Image 3">
+        <picture>
+            <source 
+                srcset="{{ url_for('static', filename='assets/images/img3.webp') }}" 
+                type="image/webp">
+            <img 
+                src="{{ url_for('static', filename='assets/images/img3.webp') }}" 
+                alt="Hero Image 3 - Catering setup"
+                width="900"
+                height="400"
+                loading="lazy"
+                decoding="async">
+        </picture>
     </div>
     <div class="hero-image">
-        <img src="{{ url_for('static', filename='assets/images/img4.jpg') }}" alt="Hero Image 4">
+        <picture>
+            <source 
+                srcset="{{ url_for('static', filename='assets/images/img4.webp') }}" 
+                type="image/webp">
+            <img 
+                src="{{ url_for('static', filename='assets/images/img4.webp') }}" 
+                alt="Hero Image 4 - Event catering"
+                width="900"
+                height="400"
+                loading="lazy"
+                decoding="async">
+        </picture>
     </div>
 </div>
 
 <h1>Welcome to JR Catering</h1>
 <p>We are a catering company that specializes in providing high-quality food and service to our clients.</p>
+
 <section id="container">
-    <div class="card" onclick="window.location.href='{{ url_for('food_menu') }}'">
-        <img src="{{ url_for('static', filename='assets/images/food.jpg') }}" alt="Food Menu">
+    <div class="card" role="button" tabindex="0" onclick="window.location.href='{{ url_for('food_menu') }}'" onkeypress="if(event.key==='Enter') window.location.href='{{ url_for('food_menu') }}'">
+        <picture>
+            <source 
+                srcset="{{ url_for('static', filename='assets/images/food.webp') }}" 
+                type="image/webp">
+            <img 
+                src="{{ url_for('static', filename='assets/images/food.webp') }}" 
+                alt="View our food menu - Various dishes available"
+                width="300"
+                height="200"
+                loading="lazy"
+                decoding="async">
+        </picture>
         <div class="card-content">
             <h2>Food Menu</h2>
         </div>
     </div>
-    <div class="card" onclick="window.location.href='{{ url_for('drinks_menu') }}'">
-        <img src="{{ url_for('static', filename='assets/images/drinks.jpg') }}" alt="Drinks Menu">
+
+    <div class="card" role="button" tabindex="0" onclick="window.location.href='{{ url_for('drinks_menu') }}'" onkeypress="if(event.key==='Enter') window.location.href='{{ url_for('drinks_menu') }}'">
+        <picture>
+            <source 
+                srcset="{{ url_for('static', filename='assets/images/drinks.webp') }}" 
+                type="image/webp">
+            <img 
+                    src="{{ url_for('static', filename='assets/images/drinks.webp') }}" 
+                alt="View our drinks menu - Selection of beverages"
+                width="300"
+                height="200"
+                loading="lazy"
+                decoding="async">
+        </picture>
         <div class="card-content">
             <h2>Drinks Menu</h2>
         </div>
     </div>
-    <div class="card" onclick="window.location.href='{{ url_for('book') }}'">
-        <img src="{{ url_for('static', filename='assets/images/table.jpg') }}" alt="Book a Table">
+
+    <div class="card" role="button" tabindex="0" onclick="window.location.href='{{ url_for('book') }}'" onkeypress="if(event.key==='Enter') window.location.href='{{ url_for('book') }}'">
+        <picture>
+            <source 
+                srcset="{{ url_for('static', filename='assets/images/table.webp') }}" 
+                type="image/webp">
+            <img 
+                src="{{ url_for('static', filename='assets/images/table.webp') }}" 
+                alt="Book a table - Make your reservation"
+                width="300"
+                height="200"
+                loading="lazy"
+                decoding="async">
+        </picture>
         <div class="card-content">
             <h2>Book a Table</h2>
         </div>

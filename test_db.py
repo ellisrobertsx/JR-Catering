@@ -5,7 +5,6 @@ import os
 
 app = Flask(__name__)
 
-# Your Heroku database URL
 database_url = "postgres://uahl64ocac54vj:p5342a746bcc924b8263b1db85dd318543649ae3b749d3172444d051382f285aa@cbdhrtd93854d5.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d5e8o09ku16d72"
 
 # Convert postgres:// to postgresql://
@@ -19,7 +18,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# Define models to match your existing tables
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)

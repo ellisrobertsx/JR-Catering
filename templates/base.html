@@ -6,19 +6,28 @@
     <meta name="description" content="JR Catering - Professional catering services in Peterhead offering quality food and drinks">
     <meta name="theme-color" content="#333333">
     
-    <!-- Preload critical assets -->
+    <style>
+        :root {
+            --primary-color: #333333;
+            --secondary-color: #4a4a4a;
+            --accent-color: #d4af37;
+            --text-color: #f0f0f0;
+            --background-color: #1a1a1a;
+            --hover-color: #555555;
+        }
+    </style>
     <link rel="preload" href="{{ url_for('static', filename='assets/css/style.css') }}" as="style">
     <link rel="preload" href="{{ url_for('static', filename='assets/js/script.js') }}" as="script">
     
-    <!-- Preconnect to external domains -->
-    <link rel="preconnect" href="https://kit.fontawesome.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}" media="print" onload="this.media='all'">
+    
+    <link rel="preconnect" href="https://kit.fontawesome.com" crossorigin>
+    <link rel="dns-prefetch" href="https://kit.fontawesome.com">
+    
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='assets/images/icon-192.png') }}">
     
     <title>{% block title %}JR Catering{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <link rel="dns-prefetch" href="https://kit.fontawesome.com">
-    <link rel="dns-prefetch" href="https://www.google.com">
 </head>
 <body>
     <header>
@@ -85,7 +94,11 @@
         <p id="footer-text">&copy; 2024 JR Catering. All rights reserved.</p>
     </footer>
 
+    <script type="module">
+        document.documentElement.classList.remove('no-js');
+    </script>
+
     <script src="{{ url_for('static', filename='assets/js/script.js') }}" defer></script>
-    <script src="https://kit.fontawesome.com/3388b1b6ae.js" crossorigin="anonymous" defer></script>
+    <script src="https://kit.fontawesome.com/3388b1b6ae.js" crossorigin defer></script>
 </body>
 </html> 

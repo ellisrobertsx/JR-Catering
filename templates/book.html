@@ -121,11 +121,10 @@
 </div>
 
 <script>
-// Set minimum date to tomorrow
 function setMinDate(inputId) {
     const dateInput = document.getElementById(inputId);
     const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1); // Allow booking only from tomorrow onwards
+    tomorrow.setDate(tomorrow.getDate() + 1); // 
     const yyyy = tomorrow.getFullYear();
     const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
     const dd = String(tomorrow.getDate()).padStart(2, '0');
@@ -137,9 +136,8 @@ function generateTimeSlots(selectId) {
     const timeSelect = document.getElementById(selectId);
     timeSelect.innerHTML = '<option value="">Select a time</option>';
     
-    // Restaurant hours (adjust these as needed)
-    const startHour = 11; // 11 AM
-    const endHour = 22;   // 10 PM
+    const startHour = 11; 
+    const endHour = 22;   
     
     for (let hour = startHour; hour < endHour; hour++) {
         for (let minute = 0; minute < 60; minute += 5) {
@@ -191,17 +189,15 @@ document.querySelector('#new-booking-form-element').addEventListener('submit', f
     const selectedTime = document.getElementById('time').value;
     const now = new Date();
     
-    // Combine date and time for comparison
     const [hours, minutes] = selectedTime.split(':');
     selectedDate.setHours(parseInt(hours), parseInt(minutes));
     
-    if (selectedDate <= now) { // Ensure booking is at least a day in advance
+    if (selectedDate <= now) { 
         event.preventDefault();
         alert('Please select a future date and time.');
     }
 });
 
-// Call these functions when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     setMinDate('date');
     generateTimeSlots('time');
@@ -271,15 +267,13 @@ function deleteBooking(bookingId) {
         })
         .then(response => {
             if (response.ok) {
-                // Remove the booking card from the page
                 const bookingCard = document.querySelector(`.booking-card[data-booking-id="${bookingId}"]`);
                 if (bookingCard) {
                     bookingCard.remove();
                     
-                    // Check if there are any bookings left
                     const remainingBookings = document.querySelectorAll('.booking-card');
                     if (remainingBookings.length === 0) {
-                        // If no bookings left, show "no bookings" message
+                        
                         const bookingsContainer = document.querySelector('.bookings-grid');
                         bookingsContainer.innerHTML = '<p class="no-bookings">You have no current bookings.</p>';
                     }
@@ -352,7 +346,6 @@ function submitNewBooking(event) {
     .then(data => {
         console.log('Server Response Data:', data);
         
-        // Create new booking card
         const bookingsGrid = document.querySelector('.bookings-grid');
         const noBookingsMessage = document.querySelector('.no-bookings');
         

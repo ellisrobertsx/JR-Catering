@@ -5,17 +5,16 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Get form values
+      
         const formData = new FormData(form);
         
-        // Check if passwords match
         if (formData.get('password') !== formData.get('confirm-password')) {
             message.textContent = 'Passwords do not match';
             message.className = 'error';
             return;
         }
         
-        // Submit form
+        
         fetch('/register', {
             method: 'POST',
             body: formData

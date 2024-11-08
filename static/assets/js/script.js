@@ -1,3 +1,11 @@
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => console.log('ServiceWorker registered'))
+            .catch(err => console.log('ServiceWorker registration failed: ', err));
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const burgerBtn = document.getElementById('burger-btn');
     const navLinks = document.getElementById('nav-links');
@@ -46,4 +54,37 @@ document.addEventListener('DOMContentLoaded', function() {
             heroImages[currentImageIndex].style.display = 'block';
         }, 3000);
     }
+});
+
+// Use IntersectionObserver for lazy loading
+document.addEventListener('DOMContentLoaded', () => {
+    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+    
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                observer.unobserve(img);
+            }
+        });
+    });
+    
+    lazyImages.forEach(img => imageObserver.observe(img));
+    
+    // Hero slider
+    const heroSlider = () => {
+        const heroImages = document.querySelectorAll('.hero-image');
+        let currentImageIndex = 0;
+        
+        heroImages[0].classList.add('active');
+        
+        setInterval(() => {
+            heroImages[currentImageIndex].classList.remove('active');
+            currentImageIndex = (currentImageIndex + 1) % heroImages.length;
+            heroImages[currentImageIndex].classList.add('active');
+        }, 3000);
+    };
+    
+    heroSlider();
 }); 

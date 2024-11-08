@@ -9,11 +9,11 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from models import Booking
 from flask_compress import Compress
 from flask_caching import Cache
+from PIL import Image
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Move this function to the top, before any routes
 def get_user_bookings():
     if 'user_id' not in session:
         return False
@@ -47,7 +47,6 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-# Add the function to Jinja environment AFTER creating the app
 app.jinja_env.globals.update(get_user_bookings=get_user_bookings)
 
 # Initialize compression
@@ -63,7 +62,6 @@ cache = Cache(config={
 compress.init_app(app)
 cache.init_app(app)
 
-# Add security headers
 @app.after_request
 def add_security_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -243,7 +241,6 @@ def edit_booking(booking_id):
         if booking.user_id != session['user_id']:
             return jsonify({'error': 'Unauthorized'}), 403
 
-        # Update booking with all fields
         booking.name = data['name']
         booking.email = data['email']
         booking.phone = data['phone']
@@ -297,7 +294,7 @@ def login():
         if user and check_password_hash(user.password, password):
             session['user_id'] = user.id
             session['username'] = user.username
-            return redirect(url_for('index'))  # Redirect to index page directly
+            return redirect(url_for('index'))  
         
         flash('Invalid username or password', 'error')
         return redirect(url_for('login'))
@@ -375,10 +372,41 @@ def check_db():
         print(f"Error in check_db: {str(e)}")
         return str(e)
 
-# Serve manifest.json
 @app.route('/manifest.json')
 def manifest():
     return send_from_directory('static', 'manifest.json')
+
+def optimize_images():
+    img_dir = os.path.join('static', 'assets', 'images')
+    for filename in os.listdir(img_dir):
+        if filename.endswith(('.jpg', '.jpeg', '.png')):
+            img_path = os.path.join(img_dir, filename)
+            with Image.open(img_path) as img:
+                webp_path = os.path.splitext(img_path)[0] + '.webp'
+                img.save(webp_path, 'WEBP', quality=85)
+                
+                if img.size[0] > 1200 or img.size[1] > 1200:
+                    img.thumbnail((1200, 1200), Image.LANCZOS)
+                    img.save(img_path, quality=85, optimize=True)
+
+@app.after_request
+def add_headers(response):
+
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    
+    if request.path.startswith('/static/'):
+        response.headers['Cache-Control'] = 'public, max-age=31536000'
+    else:
+        response.headers['Cache-Control'] = 'public, max-age=300'
+    
+    return response
+
+# Serve service worker
+@app.route('/service-worker.js')
+def service_worker():
+    return send_from_directory('static/assets/js', 'service-worker.js')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
