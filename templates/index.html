@@ -115,7 +115,7 @@
                 decoding="async">
         </picture>
         <div class="card-content">
-            <h2>Book a Table</h2>
+            <h2>{% if session.get('user_id') and get_user_bookings() %}View Bookings{% else %}Book a Table{% endif %}</h2>
         </div>
     </div>
 </section>

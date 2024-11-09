@@ -5,26 +5,37 @@ from sqlalchemy import text
 from extensions import db
 from models import User, MenuItem, DrinkItem, Booking, Contact, FoodItem
 import logging
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_from_directory, g
 from models import Booking
 from flask_compress import Compress
 from flask_caching import Cache
 from PIL import Image
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField
+from wtforms.validators import DataRequired
+from passlib.hash import scrypt
+from functools import wraps
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+# Login required decorator
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 def get_user_bookings():
-    if 'user_id' not in session:
-        return False
-    try:
-        booking = Booking.query.filter_by(user_id=session['user_id']).first()
-        return booking is not None
-    except Exception as e:
-        print(f"Error in get_user_bookings: {str(e)}")
-        return False
+    if 'user_id' in session:
+        return Booking.query.filter_by(user_id=session['user_id']).first() is not None
+    return False
 
 app = Flask(__name__)
+app.secret_key = 'a28065075c5e0429da21e44f265b02e2'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev')
 
 # Database configuration
 database_url = os.environ.get('DATABASE_URL')
@@ -39,10 +50,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.environ.get('SECRET_KEY', 'dev')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['TEMPLATES_AUTO_RELOAD'] = True
-app.config['SESSION_COOKIE_SECURE'] = True
-app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
+app.config.update(
+    SESSION_COOKIE_SECURE=False,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+    PERMANENT_SESSION_LIFETIME=timedelta(days=7),
+    SESSION_REFRESH_EACH_REQUEST=True
+)
 
 # Initialize extensions
 db.init_app(app)
@@ -66,6 +80,21 @@ cache = Cache(config={
 compress.init_app(app)
 cache.init_app(app)
 
+@app.before_request
+def before_request():
+    # Ensure user session is valid
+    if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+        if user is None:
+            # If user doesn't exist, clear session
+            session.clear()
+
+@app.context_processor
+def inject_user():
+    return dict(
+        user=getattr(g, 'user', None)
+    )
+
 @app.after_request
 def add_security_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -80,10 +109,20 @@ def add_security_headers(response):
         
     return response
 
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+
 # Routes
 @app.route('/')
+@app.route('/index')
 def index():
-    logger.debug("Rendering index page")
+    # Clear any stale session data
+    if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+        if user is None:
+            session.clear()
+    
     return render_template('index.html')
 
 @app.route('/menu')
@@ -152,7 +191,6 @@ def contact():
             
             print(f"Form data: {name}, {email}, {phone}, {message}")
 
-            # Create new contact entry
             new_contact = Contact(
                 name=name,
                 phone=phone,
@@ -160,7 +198,6 @@ def contact():
                 message=message
             )
 
-            # Save to database
             db.session.add(new_contact)
             db.session.commit()
             print("Successfully saved contact form submission")
@@ -174,22 +211,23 @@ def contact():
             flash('Sorry, there was an error sending your message. Please try again.', 'error')
             return redirect(url_for('contact'))
 
-    return render_template('contact.html')
+    # Pass session data explicitly
+    return render_template('contact.html', session=session)
 
 @app.route('/book')
 def book():
-    if 'user_id' not in session:
-        return render_template('book.html')
+    if not session.get('user_id'):
+        return redirect(url_for('login'))
     
-    # Get user's bookings
     bookings = Booking.query.filter_by(user_id=session['user_id']).all()
     return render_template('book.html', bookings=bookings)
 
 @app.route('/create_booking', methods=['POST'])
+@login_required
 def create_booking():
     if 'user_id' not in session:
-        return jsonify({'error': 'Please login to make a booking'}), 401
-
+        return jsonify({'error': 'Please login to continue'}), 401
+        
     try:
         data = request.get_json()
         logger.info(f"Received booking data: {data}")
@@ -231,7 +269,7 @@ def create_booking():
     except Exception as e:
         db.session.rollback()
         logger.error(f"Error creating booking: {str(e)}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': 'Failed to create booking'}), 500
 
 @app.route('/edit_booking/<int:booking_id>', methods=['POST'])
 def edit_booking(booking_id):
@@ -290,57 +328,41 @@ def delete_booking(booking_id):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        try:
-            username = request.form.get('username')
-            password = request.form.get('password')
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        user = User.query.filter_by(username=username).first()
+        
+        if user and check_password_hash(user.password, password):
+            session.clear()
+            session['user_id'] = user.id
+            return redirect(url_for('index'))
             
-            logger.debug(f"Login attempt for username: {username}")
-            
-            if not username or not password:
-                logger.warning("Missing username or password")
-                flash('Please provide both username and password', 'error')
-                return redirect(url_for('login'))
-            
-            user = User.query.filter_by(username=username).first()
-            
-            if user and check_password_hash(user.password, password):
-                logger.info(f"Successful login for user: {username}")
-                session['user_id'] = user.id
-                session['username'] = user.username
-                flash('Successfully logged in!', 'success')
-                return redirect(url_for('index'))
-            
-            logger.warning(f"Failed login attempt for username: {username}")
-            flash('Invalid username or password', 'error')
-            return redirect(url_for('login'))
-            
-        except Exception as e:
-            logger.error(f"Login error: {str(e)}", exc_info=True)
-            flash('An error occurred during login', 'error')
-            return redirect(url_for('login'))
-    
-    # GET request
     return render_template('login.html')
 
 @app.route('/logout')
 def logout():
     session.clear()
-    flash('You have been logged out', 'success')
-    return redirect(url_for('index'))
+    g.user = None
+    
+    response = redirect(url_for('index'))
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    
+    return response
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         try:
-            # Get form data
             username = request.form['username']
             email = request.form['email']
             password = request.form['password']
-            confirm_password = request.form['confirm_password']
 
-            # Check if passwords match
-            if password != confirm_password:
-                return jsonify({'error': 'Passwords do not match'}), 400
+            # Validate input
+            if not username or not email or not password:
+                return jsonify({'error': 'All fields are required'}), 400
 
             # Check if username or email already exists
             if User.query.filter_by(username=username).first():
@@ -349,24 +371,24 @@ def register():
             if User.query.filter_by(email=email).first():
                 return jsonify({'error': 'Email already exists'}), 400
 
-            # Create new user with hashed password
-            hashed_password = generate_password_hash(password)
+            # Create new user with werkzeug's password hashing
+            hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
             new_user = User(
                 username=username,
                 email=email,
                 password=hashed_password
             )
 
-            # Add user to database
             db.session.add(new_user)
             db.session.commit()
 
-            return jsonify({'message': 'User registered successfully'})
+            print(f"User registered successfully: {username}")
+            return jsonify({'success': 'Registration successful'}), 200
 
         except Exception as e:
-            db.session.rollback()
             print(f"Registration error: {str(e)}")
-            return jsonify({'error': 'Registration failed'}), 500
+            db.session.rollback()
+            return jsonify({'error': 'Registration failed. Please try again.'}), 500
 
     return render_template('register.html')
 
@@ -427,6 +449,17 @@ def add_headers(response):
 @app.route('/service-worker.js')
 def service_worker():
     return send_from_directory('static/assets/js', 'service-worker.js')
+
+@app.after_request
+def add_header(response):
+    # Prevent caching of dynamic pages
+    if request.endpoint != 'static':
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '-1'
+    return response
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
