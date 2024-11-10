@@ -197,7 +197,9 @@ function toggleEditForm(bookingId) {
             // Initialize form elements
             setMinDate(`date-${bookingId}`);
             generateTimeSlots(`time-${bookingId}`);
-            document.getElementById(`time-${bookingId}`).value = document.getElementById(`booking-info-${bookingId}`).querySelector('p:nth-child(3)').textContent.split(': ')[1];
+            // Set the current time value
+            const currentTime = document.getElementById(`booking-info-${bookingId}`).querySelector('p:nth-child(3)').textContent.split(': ')[1];
+            document.getElementById(`time-${bookingId}`).value = currentTime;
             // Adjust grid layout
             targetCard.style.gridColumn = 'span 2';
         } else {
@@ -432,6 +434,8 @@ function submitNewBooking(event) {
         `;
         
         bookingsGrid.insertAdjacentHTML('afterbegin', newBookingCard);
+        generateTimeSlots(`time-${data.booking.id}`);
+        document.getElementById(`time-${data.booking.id}`).value = data.booking.time;
         toggleNewBookingForm();
         document.getElementById('new-booking-form-element').reset();
         alert('Booking created successfully!');
