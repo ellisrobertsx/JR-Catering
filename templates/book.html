@@ -61,11 +61,11 @@
         </div>
 
         <!-- Existing Bookings -->
-        <div class="bookings-grid">
+        <div class="unique-bookings-grid">
             {% if bookings %}
                 {% for booking in bookings %}
-                    <div class="booking-card" data-booking-id="{{ booking.id }}">
-                        <div class="booking-display" id="booking-display-{{ booking.id }}">
+                    <div class="unique-booking-card" data-booking-id="{{ booking.id }}">
+                        <div class="unique-booking-display" id="booking-display-{{ booking.id }}">
                             <div class="booking-info" id="booking-info-{{ booking.id }}">
                                 <p><strong>Booking ID:</strong> {{ booking.id }}</p>
                                 <p><strong>Date:</strong> {{ booking.date }}</p>
@@ -79,7 +79,7 @@
                         </div>
                         
                         <!-- Edit form (hidden by default) -->
-                        <div class="edit-form" id="edit-form-{{ booking.id }}" style="display: none;">
+                        <div class="unique-booking-edit-form" id="edit-form-{{ booking.id }}">
                             <form onsubmit="updateBooking(event, {{ booking.id }})">
                                 <div class="form-group">
                                     <label for="name-{{ booking.id }}">Name:</label>
@@ -167,20 +167,44 @@ function toggleNewBookingForm() {
     }
 }
 
-// Initialize date and time inputs for edit form
+// Replace the existing toggleEditForm function with this updated version
 function toggleEditForm(bookingId) {
-    const selectedDisplay = document.getElementById(`booking-display-${bookingId}`);
-    const selectedEditForm = document.getElementById(`edit-form-${bookingId}`);
+    // Get the specific booking card
+    const targetCard = document.querySelector(`.unique-booking-card[data-booking-id="${bookingId}"]`);
+    
+    // First, close all other edit forms
+    const allBookingCards = document.querySelectorAll('.unique-booking-card');
+    allBookingCards.forEach(card => {
+        if (card !== targetCard) {
+            card.classList.remove('editing');
+            const editForm = card.querySelector('.unique-booking-edit-form');
+            const displayForm = card.querySelector('.unique-booking-display');
+            if (editForm) editForm.style.display = 'none';
+            if (displayForm) displayForm.style.display = 'block';
+        }
+    });
 
-    if (selectedDisplay && selectedEditForm) {
-        if (selectedEditForm.style.display === 'none' || selectedEditForm.style.display === '') {
-            selectedDisplay.style.display = 'none';
-            selectedEditForm.style.display = 'block';
+    // Toggle the target card
+    if (targetCard) {
+        const isEditing = targetCard.classList.toggle('editing');
+        const editForm = targetCard.querySelector('.unique-booking-edit-form');
+        const displayForm = targetCard.querySelector('.unique-booking-display');
+
+        if (isEditing) {
+            // Opening edit form
+            editForm.style.display = 'block';
+            displayForm.style.display = 'none';
+            // Initialize form elements
             setMinDate(`date-${bookingId}`);
             generateTimeSlots(`time-${bookingId}`);
+            // Adjust grid layout
+            targetCard.style.gridColumn = 'span 2';
         } else {
-            selectedEditForm.style.display = 'none';
-            selectedDisplay.style.display = 'block';
+            // Closing edit form
+            editForm.style.display = 'none';
+            displayForm.style.display = 'block';
+            // Reset grid layout
+            targetCard.style.gridColumn = 'auto';
         }
     }
 }
@@ -269,15 +293,14 @@ function deleteBooking(bookingId) {
         })
         .then(response => {
             if (response.ok) {
-                const bookingCard = document.querySelector(`.booking-card[data-booking-id="${bookingId}"]`);
+                const bookingCard = document.querySelector(`.unique-booking-card[data-booking-id="${bookingId}"]`);
                 if (bookingCard) {
                     bookingCard.remove();
                     
-                    const remainingBookings = document.querySelectorAll('.booking-card');
+                    const remainingBookings = document.querySelectorAll('.unique-booking-card');
                     if (remainingBookings.length === 0) {
-                        
-                        const bookingsContainer = document.querySelector('.bookings-grid');
-                        bookingsContainer.innerHTML = '<p class="no-bookings">You have no current bookings.</p>';
+                        const bookingsGrid = document.querySelector('.unique-bookings-grid');
+                        bookingsGrid.innerHTML = '<p class="no-bookings">You have no current bookings.</p>';
                     }
                 }
                 alert('Booking cancelled successfully!');
@@ -356,22 +379,21 @@ function submitNewBooking(event) {
         }
 
         const newBookingCard = `
-            <div class="booking-card" data-booking-id="${data.booking.id}">
-                <div class="booking-display" id="booking-display-${data.booking.id}">
+            <div class="unique-booking-card" data-booking-id="${data.booking.id}">
+                <div class="unique-booking-display">
                     <div class="booking-info" id="booking-info-${data.booking.id}">
                         <p><strong>Booking ID:</strong> ${data.booking.id}</p>
                         <p><strong>Date:</strong> ${data.booking.date}</p>
                         <p><strong>Time:</strong> ${data.booking.time}</p>
                         <p><strong>Number of Guests:</strong> ${data.booking.guests}</p>
                     </div>
-                    <div class="booking-actions">
+                    <div class="unique-booking-actions">
                         <button class="btn edit-btn" onclick="toggleEditForm(${data.booking.id})">Edit Booking</button>
                         <button class="btn cancel-btn" onclick="deleteBooking(${data.booking.id})">Cancel Booking</button>
                     </div>
                 </div>
                 
-                <!-- Add the edit form template -->
-                <div class="edit-form" id="edit-form-${data.booking.id}" style="display: none;">
+                <div class="unique-booking-edit-form">
                     <form onsubmit="updateBooking(event, ${data.booking.id})">
                         <div class="form-group">
                             <label for="name-${data.booking.id}">Name:</label>
@@ -397,7 +419,7 @@ function submitNewBooking(event) {
                             <label for="guests-${data.booking.id}">Number of Guests:</label>
                             <input type="number" id="guests-${data.booking.id}" name="guests" value="${data.booking.guests}" min="1" max="20" required>
                         </div>
-                        <div class="booking-actions">
+                        <div class="unique-booking-actions">
                             <button type="submit" class="btn save-btn">Save Changes</button>
                             <button type="button" class="btn cancel-btn" onclick="toggleEditForm(${data.booking.id})">Cancel</button>
                         </div>

@@ -326,6 +326,22 @@ footer {
     font-size: 1.2rem;
 }
 
+.unique-booking-display {
+    display: block;
+}
+
+.unique-booking-edit-form {
+    display: none !important; /* Hide edit form by default */
+}
+
+.unique-booking-card.editing .unique-booking-display {
+    display: none !important;
+}
+
+.unique-booking-card.editing .unique-booking-edit-form {
+    display: block !important;
+}
+
 .menu-item p {
     color: var(--text-color);
     margin-bottom: 1rem;
@@ -338,6 +354,68 @@ footer {
     color: var(--accent-color);
     font-weight: bold;
     font-size: 1.2rem;
+}
+
+/* Base button styles */
+.unique-booking-card .btn,
+.unique-booking-actions .btn {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    text-align: center;
+}
+
+/* Edit button style */
+.btn.edit-btn {
+    background-color: var(--accent-color);
+}
+
+/* Save button style */
+.btn.save-btn {
+    background-color: var(--accent-color);
+}
+
+/* Cancel button style */
+.btn.cancel-btn {
+    background-color: var(--accent-color);
+}
+
+/* Hover states */
+.btn.edit-btn:hover,
+.btn.save-btn:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-1px);
+}
+
+.btn.cancel-btn:hover {
+    background-color: #c82333; /* Darker red on hover */
+    transform: translateY(-1px);
+}
+
+/* Button container spacing */
+.booking-actions,
+.unique-booking-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 15px;
+}
+
+/* Add some padding to the booking card */
+.unique-booking-card {
+    padding: 20px;
+}
+
+/* Add spacing between booking info and buttons */
+.booking-info {
+    margin-bottom: 15px;
 }
 
 
@@ -429,12 +507,6 @@ footer {
     padding: 0 2rem;
 }
 
-.booking-actions.center .primary-btn {
-    width: auto;
-    min-width: 200px;
-    max-width: 250px;
-    margin: 0 auto;
-}
 
 .card:hover {
     transform: scale(1.02);
@@ -447,16 +519,6 @@ footer {
 }
 
 
-.bookings-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    width: 95%;  
-    margin: 0 auto;
-    padding: 0;
-    margin-bottom: 4rem;
-    max-width: 600px;  
-} 
 
 .book-table a:hover {
     opacity: 0.8;
@@ -558,21 +620,38 @@ form label {
     font-size: 0.9em;
 }
 
-.booking-card {
-    width: 100%;
-    background-color: var(--secondary-color);
-    border: 1px solid var(--accent-color);
-    border-radius: 8px;
+.unique-bookings-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;  /* This adds vertical spacing between cards */
+    width: 95%;
+    margin: 0 auto;
+    margin-bottom: 2rem;
+}
+
+.unique-booking-card {
+    background: var(--secondary-color);
+    border: 2px solid var(--accent-color);
+    border-radius: 12px;
     padding: 1.5rem;
-}
-
-.booking-info {
-    padding: 0 0.5rem;  
-}
-
-.booking-display {
-    display: block;
     width: 100%;
+}
+
+.unique-booking-display {
+    display: block;
+}
+
+.unique-booking-edit-form {
+    display: none;
+}
+
+/* Edit state with correct class names */
+.unique-booking-card.editing .unique-booking-display {
+    display: none !important;
+}
+
+.unique-booking-card.editing .unique-booking-edit-form {
+    display: block !important;
 }
 
 
@@ -745,32 +824,6 @@ form button:hover {
 }
 
 
-.booking-display .booking-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 10px; 
-    padding: 10px;
-}
-
-#new-booking-form .booking-actions,
-.edit-form .booking-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 10px; 
-    padding: 10px;
-}
-
-.booking-display .booking-actions .btn {
-    background-color: var(--accent-color);
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    min-width: 120px;
-    transition: background-color 0.3s ease;
-}
-
 
 .booking-actions .btn:hover {
     background-color: var(--hover-color);
@@ -940,19 +993,14 @@ form button:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-
 .booking-actions .primary-btn {
     width: auto;
     min-width: 200px;
-    max-width: 250px;
-    margin: 2rem auto;
-}
-
-.booking-actions .btn {
-    width: 100%;
-    padding: 15px;  
-    margin: 0;
-    font-size: 16px;  
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    font-size: 16px;
+    text-align: center;
 }
 
 
@@ -1031,8 +1079,9 @@ form button:hover {
 .cancel-btn, 
 .save-btn,
 .booking-form button,
-.edit-form button
-.btn-save-btn {
+.btn-save-btn,
+.unique-booking-form button,
+.unique-booking-edit-form button {
     width: 100%;
     padding: 10px 20px;
     background-color: var(--accent-color);
@@ -1046,8 +1095,7 @@ form button:hover {
     
 }
 
-
-.edit-form .booking-actions .btn {
+.unique-booking-actions .btn {
     width: 100%;
     padding: 10px 15px;
     font-size: 14px;
@@ -1060,83 +1108,24 @@ form button:hover {
     margin: 0;
 }
 
-.edit-form .booking-actions .btn:hover {
-    background-color: var(--hover-color);
-    color: var(--text-color);
-}
 
 .btn:hover, 
 .primary-btn:hover, 
 .edit-btn:hover, 
 .cancel-btn:hover, 
 .save-btn:hover,
-.booking-form button:hover,
-.edit-form button:hover {
+.booking-form button:hover {
     background-color: var(--hover-color);
     color: var(--text-color);
 }
 
 
-.edit-form .form-group {
+.form-group {
     margin-bottom: 15px;
 }
 
-.edit-form label {
-    color: var(--accent-color);
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.edit-form p {
-    margin: 8px 0;
-    color: var(--text-color);
-}
-
-.edit-form input,
-.edit-form select,
-.edit-form textarea {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border: 2px solid var(--accent-color);
-    border-radius: 4px;
-    font-size: 16px;
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    text-align: center;
-    transition: all 0.3s ease;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.edit-form select option {
-    background-color: var(--primary-color);
-    color: var(--text-color);
-}
 
 
-.edit-form input:focus,
-.edit-form select:focus,
-.edit-form textarea:focus {
-    outline: none;
-    border-color: #ffd700;
-    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
-}
-
-.edit-form input:hover,
-.edit-form select:hover,
-.edit-form textarea:hover {
-    border-color: #ffd700;
-}
-
-.edit-form select option {
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    padding: 10px;
-}
 
 #new-booking-form input:focus,
 #new-booking-form select:focus,
@@ -1345,9 +1334,7 @@ form button:hover {
         font-size: 2em;
     }
 
-    .edit-form .form-group {
-        margin-bottom: 20px;
-    }
+    
 
     .header-content {
         max-width: 1200px;
@@ -1424,100 +1411,18 @@ form button:hover {
     .confirmation-actions .btn:hover {
         background-color: #2d2d2d;
     }
-    .bookings-grid {
+       
+    .unique-bookings-grid {
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: row;
+        align-items: flex-start;
         gap: 2rem;
-        width: 95%;
-        margin: 0 auto;
         padding: 2rem;
         max-width: 1200px;
-        margin-bottom: 4rem;
+        margin: 0 auto;
     }
 
-    .booking-card {
-        flex: 0 0 calc(25% - 1.5rem);
-        max-width: calc(25% - 1.5rem);
-        min-width: 250px;
-        background: var(--secondary-color);
-        border: 2px solid var(--accent-color);
-        border-radius: 12px;
-        padding: 1.5rem;
-        position: relative;
-        margin-bottom: 1rem;
-        height: auto;
-        transition: all 0.3s ease;
     }
-
-    /* Booking Display and Edit Form */
-    .booking-display {
-        width: 100%;
-        height: 100%;
-        background: var(--secondary-color);
-        border-radius: 12px;
-        padding: 1.5rem;
-        transition: all 0.3s ease;
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .edit-form {
-        width: 100%;
-        height: auto;
-        background: var(--secondary-color);
-        border: 2px solid var(--accent-color);
-        border-radius: 12px;
-        padding: 1.5rem;
-        transition: all 0.3s ease;
-        opacity: 0;
-        visibility: hidden;
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
-
-    /* Card State Changes */
-    .booking-card.editing .booking-display {
-        opacity: 0;
-        visibility: hidden;
-        height: 0;
-        padding: 0;
-        margin: 0;
-    }
-
-    .booking-card.editing .edit-form {
-        opacity: 1;
-        visibility: visible;
-        height: auto;
-    }
-
-    /* Form Elements */
-    .edit-form input,
-    .edit-form select,
-    .edit-form textarea {
-        width: 100%;
-        padding: 12px;
-        margin-bottom: 10px;
-        border: 2px solid var(--accent-color);
-        border-radius: 4px;
-        font-size: 16px;
-        background-color: var(--primary-color);
-        color: var(--text-color);
-        text-align: center;
-    }
-
-    .booking-info {
-        margin-bottom: 1rem;
-    }
-
-    .booking-actions {
-        display: flex;
-        flex-direction: column;
-        gap: 0.8rem;
-        width: 100%;
-    }ransform: translateX(-50%);
-    }
-    
     
 @media print {
     .no-print {
