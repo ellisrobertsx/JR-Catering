@@ -197,6 +197,7 @@ function toggleEditForm(bookingId) {
             // Initialize form elements
             setMinDate(`date-${bookingId}`);
             generateTimeSlots(`time-${bookingId}`);
+            document.getElementById(`time-${bookingId}`).value = document.getElementById(`booking-info-${bookingId}`).querySelector('p:nth-child(3)').textContent.split(': ')[1];
             // Adjust grid layout
             targetCard.style.gridColumn = 'span 2';
         } else {
@@ -371,7 +372,7 @@ function submitNewBooking(event) {
     .then(data => {
         console.log('Server Response Data:', data);
         
-        const bookingsGrid = document.querySelector('.bookings-grid');
+        const bookingsGrid = document.querySelector('.unique-bookings-grid');
         const noBookingsMessage = document.querySelector('.no-bookings');
         
         if (noBookingsMessage) {
@@ -413,7 +414,9 @@ function submitNewBooking(event) {
                         </div>
                         <div class="form-group">
                             <label for="time-${data.booking.id}">Time:</label>
-                            <input type="time" id="time-${data.booking.id}" name="time" value="${data.booking.time}" required>
+                            <select id="time-${data.booking.id}" name="time" required>
+                                <option value="">Select a time</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="guests-${data.booking.id}">Number of Guests:</label>
@@ -429,8 +432,8 @@ function submitNewBooking(event) {
         `;
         
         bookingsGrid.insertAdjacentHTML('afterbegin', newBookingCard);
-        toggleNewBookingForm(); // 
-        document.getElementById('new-booking-form-element').reset(); 
+        toggleNewBookingForm();
+        document.getElementById('new-booking-form-element').reset();
         alert('Booking created successfully!');
     })
     .catch(error => {

@@ -320,6 +320,8 @@ footer {
     text-align: center;
 }
 
+
+
 .menu-item h3 {
     color: var(--accent-color);
     margin-bottom: 0.5rem;
@@ -395,11 +397,10 @@ footer {
 }
 
 .btn.cancel-btn:hover {
-    background-color: #c82333; /* Darker red on hover */
+    background-color: #c82333; 
     transform: translateY(-1px);
 }
 
-/* Button container spacing */
 .booking-actions,
 .unique-booking-actions {
     display: flex;
@@ -408,12 +409,10 @@ footer {
     margin-top: 15px;
 }
 
-/* Add some padding to the booking card */
 .unique-booking-card {
     padding: 20px;
 }
 
-/* Add spacing between booking info and buttons */
 .booking-info {
     margin-bottom: 15px;
 }
@@ -549,7 +548,6 @@ footer {
     transform: translateY(-2px);
 }
 
-/* Form Styling */
 .form-container {
     max-width: 600px;
     margin: 40px auto;
@@ -623,7 +621,7 @@ form label {
 .unique-bookings-grid {
     display: flex;
     flex-direction: column;
-    gap: 2rem;  /* This adds vertical spacing between cards */
+    gap: 2rem;  
     width: 95%;
     margin: 0 auto;
     margin-bottom: 2rem;
@@ -1010,7 +1008,7 @@ form button:hover {
 }
 
 #new-booking-form-element select,
-#new-booking-form-element input[type="time"] {
+.unique-booking-edit-form select {
     width: 100%;
     padding: 12px;
     margin-bottom: 10px;
@@ -1024,6 +1022,15 @@ form button:hover {
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+/* Style focus and hover states for both forms */
+#new-booking-form-element select:focus,
+.unique-booking-edit-form select:focus,
+#new-booking-form-element select:hover,
+.unique-booking-edit-form select:hover {
+    border-color: var(--hover-color);
+    outline: none;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
 
 #new-booking-form-element {
     display: flex;
