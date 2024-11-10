@@ -86,7 +86,6 @@ def before_request():
     if 'user_id' in session:
         user = User.query.get(session['user_id'])
         if user is None:
-            # If user doesn't exist, clear session
             session.clear()
 
 @app.context_processor
@@ -102,7 +101,6 @@ def add_security_headers(response):
     response.headers['X-XSS-Protection'] = '1; mode=block'
     response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
     
-    # Cache static assets
     if request.path.startswith('/static/'):
         response.cache_control.max_age = 31536000  # 1 year
         response.cache_control.public = True
@@ -117,7 +115,6 @@ class LoginForm(FlaskForm):
 @app.route('/')
 @app.route('/index')
 def index():
-    # Clear any stale session data
     if 'user_id' in session:
         user = User.query.get(session['user_id'])
         if user is None:
@@ -140,16 +137,13 @@ def menu():
 @app.route('/food_menu')
 def food_menu():
     try:
-        # Get all food items and group by category in the desired order
         categories = ['Starters', 'Mains', 'Desserts']
         food_items = FoodItem.query.all()
         
-        # Create a dictionary to store items by category
         menu_items = {}
         for category in categories:
             menu_items[category] = [item for item in food_items if item.category == category]
         
-        # Debug print
         print(f"Found {len(food_items)} food items")
         for category, items in menu_items.items():
             print(f"{category}: {len(items)} items")
@@ -166,7 +160,6 @@ def drinks_menu():
         drink_items = DrinkItem.query.order_by(DrinkItem.category).all()
         print(f"Found {len(drink_items)} drink items")
         
-        # Group items by category
         menu_items = {}
         for item in drink_items:
             if item.category not in menu_items:
@@ -183,7 +176,6 @@ def contact():
     if request.method == 'POST':
         try:
             print("Received contact form submission")
-            # Get form data
             name = request.form['name']
             phone = request.form['phone']
             email = request.form['email']
@@ -211,7 +203,6 @@ def contact():
             flash('Sorry, there was an error sending your message. Please try again.', 'error')
             return redirect(url_for('contact'))
 
-    # Pass session data explicitly
     return render_template('contact.html', session=session)
 
 @app.route('/book')
@@ -232,13 +223,11 @@ def create_booking():
         data = request.get_json()
         logger.info(f"Received booking data: {data}")
         
-        # Validate required fields
         required_fields = ['name', 'email', 'phone', 'date', 'time', 'guests']
         if not all(key in data for key in required_fields):
             missing_fields = [field for field in required_fields if field not in data]
             return jsonify({'error': f'Missing required fields: {", ".join(missing_fields)}'}), 400
 
-        # Create new booking
         new_booking = Booking(
             user_id=session['user_id'],
             name=data['name'],

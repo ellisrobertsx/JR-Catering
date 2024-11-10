@@ -1022,7 +1022,6 @@ form button:hover {
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Style focus and hover states for both forms */
 #new-booking-form-element select:focus,
 .unique-booking-edit-form select:focus,
 #new-booking-form-element select:hover,
