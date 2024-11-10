@@ -1428,6 +1428,12 @@ form button:hover {
         margin: 0 auto;
     }
 
+    .unique-booking-card {
+        flex: 0 1 400px; /* Fixed width, don't grow, can shrink */
+        margin: 0; /* Remove margin auto */
+        width: 400px; /* Force consistent width */
+    }
+
     }
     
 @media print {
