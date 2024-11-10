@@ -19,6 +19,9 @@ from functools import wraps
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+app = Flask(__name__)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev')
+
 app.debug = False
 
 # Login required decorator
@@ -35,9 +38,7 @@ def get_user_bookings():
         return Booking.query.filter_by(user_id=session['user_id']).first() is not None
     return False
 
-app = Flask(__name__)
-app.secret_key = 'a28065075c5e0429da21e44f265b02e2'
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev')
+
 
 # Database configuration
 database_url = os.environ.get('DATABASE_URL')
