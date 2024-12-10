@@ -2,30 +2,37 @@ from app import app, db
 from models import User
 from werkzeug.security import generate_password_hash
 
-def create_test_user(username='testuser2', password='testpass', email='test2@example.com'):
+def create_admin():
     with app.app_context():
-        # Check if user already exists
-        existing_user = User.query.filter_by(username=username).first()
-        if existing_user:
-            print(f"User '{username}' already exists!")
-            return existing_user
+        # Check if user with ID 1 exists
+        admin = User.query.get(1)
+        if admin:
+            print(f"Admin user already exists with username: {admin.username}")
+            return admin
         
-        # Create new user
-        test_user = User(
-            username=username,
-            password=generate_password_hash(password),
-            email=email
+        # Create admin user with ID 1
+        admin_user = User(
+            id=1,  # This will be your admin ID
+            username='admin',
+            password=generate_password_hash('admin123'),  # Change this password!
+            email='admin@example.com'
         )
         
         try:
-            db.session.add(test_user)
+            db.session.add(admin_user)
             db.session.commit()
-            print(f"Test user '{username}' created successfully!")
-            return test_user
+            print("""
+Admin user created successfully!
+Username: admin
+Password: admin123
+            
+IMPORTANT: Please change these credentials after first login!
+            """)
+            return admin_user
         except Exception as e:
             db.session.rollback()
-            print(f"Error creating user: {str(e)}")
+            print(f"Error creating admin: {str(e)}")
             return None
 
 if __name__ == "__main__":
-    user = create_test_user() 
+    create_admin() 

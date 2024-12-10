@@ -1,0 +1,426 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <h1>Admin Panel</h1>
+    
+    <!-- Menu Items Section -->
+    <section class="admin-section">
+        <h2>Menu Management</h2>
+        <a href="{{ url_for('admin_menu') }}" class="btn">Add New Menu Item</a>
+        
+        <h3>Food Items</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in food_items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.description }}</td>
+                        <td>{{ item.category }}</td>
+                        <td>£{{ "%.2f"|format(item.price) }}</td>
+                        <td>
+                            <button onclick="editItem('food', {{ item.id }})" class="btn edit-btn">Edit</button>
+                            <form method="POST" style="display: inline;">
+                                <input type="hidden" name="action" value="delete_menu_item">
+                                <input type="hidden" name="item_type" value="food">
+                                <input type="hidden" name="item_id" value="{{ item.id }}">
+                                <button type="submit" class="btn delete-btn" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Drink Items</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in drink_items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.description }}</td>
+                        <td>{{ item.category }}</td>
+                        <td>£{{ "%.2f"|format(item.price) }}</td>
+                        <td>
+                            <button onclick="editItem('drink', {{ item.id }})" class="btn edit-btn">Edit</button>
+                            <form method="POST" style="display: inline;">
+                                <input type="hidden" name="action" value="delete_menu_item">
+                                <input type="hidden" name="item_type" value="drink">
+                                <input type="hidden" name="item_id" value="{{ item.id }}">
+                                <button type="submit" class="btn delete-btn" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Bookings Section -->
+    <section class="admin-section">
+        <h2>Bookings</h2>
+        
+        <!-- Add Filter Controls -->
+        <div class="booking-filters">
+            <div class="filter-group">
+                <label for="date-filter">Filter by Date:</label>
+                <input type="date" id="date-filter" class="filter-input" onchange="filterBookingsByDate()">
+                <button onclick="clearDateFilter()" class="btn clear-btn">Clear</button>
+            </div>
+            
+            <div class="filter-group">
+                <button onclick="togglePastBookings()" id="toggle-past-btn" class="btn toggle-btn">
+                    Hide Past Bookings
+                </button>
+            </div>
+        </div>
+
+        <!-- Add Past Bookings Section (Initially Hidden) -->
+        <div id="past-bookings" class="past-bookings" style="display: none;">
+            <h3>Past Bookings</h3>
+            <button onclick="togglePastBookingsVisibility()" class="btn toggle-visibility-btn">
+                Show/Hide Past Bookings
+            </button>
+            <div class="table-responsive" id="past-bookings-table" style="display: none;">
+                <!-- Past bookings will be moved here -->
+            </div>
+        </div>
+
+        <!-- Current Bookings Table -->
+        <div class="table-responsive" id="current-bookings">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Guests</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Special Requests</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                    <tr>
+                        <td data-label="Name">{{ booking.name }}</td>
+                        <td data-label="Date">{{ booking.date }}</td>
+                        <td data-label="Time">{{ booking.time }}</td>
+                        <td data-label="Guests">{{ booking.guests }}</td>
+                        <td data-label="Email">{{ booking.email }}</td>
+                        <td data-label="Phone">{{ booking.phone }}</td>
+                        {% if booking.special_requests %}
+                        <td>
+                            <div class="special-requests">
+                                <div class="message-content">
+                                    {{ booking.special_requests }}
+                                </div>
+                            </div>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Messages Section -->
+    <section class="admin-section">
+        <h2>Contact Messages</h2>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Message</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for message in messages %}
+                    <tr data-message-id="{{ message.id }}" class="{{ 'message-read' if message.is_read else 'message-unread' }}">
+                        <td>
+                            <input type="checkbox" 
+                                   class="read-checkbox" 
+                                   {{ 'checked' if message.is_read else '' }}
+                                   onchange="toggleMessageRead({{ message.id }}, this)">
+                        </td>
+                        <td>{{ message.name }}</td>
+                        <td>{{ message.email }}</td>
+                        <td>{{ message.phone }}</td>
+                        <td>{{ message.message }}</td>
+                        <td>
+                            <button onclick="deleteMessage({{ message.id }})" class="btn delete-btn">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<script>
+function editItem(type, id) {
+    const row = event.target.closest('tr');
+    const nameCell = row.cells[0];
+    const descriptionCell = row.cells[1];
+    const categoryCell = row.cells[2];
+    const priceCell = row.cells[3];
+    const actionsCell = row.cells[4];
+    
+    // Store original content
+    const originalName = nameCell.textContent;
+    const originalDescription = descriptionCell.textContent;
+    const originalCategory = categoryCell.textContent;
+    const originalPrice = parseFloat(priceCell.textContent.replace('£', ''));
+    
+    // Create edit form
+    nameCell.innerHTML = `<input type="text" value="${originalName}" class="edit-input">`;
+    descriptionCell.innerHTML = `<textarea class="edit-input">${originalDescription}</textarea>`;
+    
+    // Different category options based on type
+    if (type === 'food') {
+        categoryCell.innerHTML = `
+            <select class="edit-input">
+                <option value="Starters" ${originalCategory === 'Starters' ? 'selected' : ''}>Starters</option>
+                <option value="Main Course" ${originalCategory === 'Main Course' ? 'selected' : ''}>Main Course</option>
+                <option value="Desserts" ${originalCategory === 'Desserts' ? 'selected' : ''}>Desserts</option>
+            </select>`;
+    } else {
+        categoryCell.innerHTML = `
+            <select class="edit-input">
+                <option value="Wine" ${originalCategory === 'Wine' ? 'selected' : ''}>Wine</option>
+                <option value="Beer" ${originalCategory === 'Beer' ? 'selected' : ''}>Beer</option>
+                <option value="Cocktails" ${originalCategory === 'Cocktails' ? 'selected' : ''}>Cocktails</option>
+            </select>`;
+    }
+    
+    priceCell.innerHTML = `<input type="number" step="0.01" value="${originalPrice}" class="edit-input">`;
+    
+    // Replace edit/delete buttons with save/cancel
+    actionsCell.innerHTML = `
+        <button onclick="saveItem('${type}', ${id})" class="btn save-btn">Save</button>
+        <button onclick="cancelEdit('${type}', ${id}, '${originalName}', '${originalDescription}', '${originalCategory}', ${originalPrice})" class="btn cancel-btn">Cancel</button>
+    `;
+}
+
+function saveItem(type, id) {
+    const row = event.target.closest('tr');
+    const name = row.querySelector('input[type="text"]').value;
+    const description = row.querySelector('textarea').value;
+    const category = row.querySelector('select').value;
+    const price = row.querySelector('input[type="number"]').value;
+    
+    fetch('/admin/update_item', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            type: type,
+            id: id,
+            name: name,
+            description: description,
+            category: category,
+            price: price
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the row with new values
+            row.cells[0].textContent = name;
+            row.cells[1].textContent = description;
+            row.cells[2].textContent = category;
+            row.cells[3].textContent = `£${parseFloat(price).toFixed(2)}`;
+            // Restore the edit/delete buttons
+            row.cells[4].innerHTML = `
+                <button onclick="editItem('${type}', ${id})" class="btn edit-btn">Edit</button>
+                <form method="POST" style="display: inline;">
+                    <input type="hidden" name="action" value="delete_menu_item">
+                    <input type="hidden" name="item_type" value="${type}">
+                    <input type="hidden" name="item_id" value="${id}">
+                    <button type="submit" class="btn delete-btn" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+            `;
+        } else {
+            alert('Error updating item');
+        }
+    });
+}
+
+function cancelEdit(type, id, name, description, category, price) {
+    const row = event.target.closest('tr');
+    row.cells[0].textContent = name;
+    row.cells[1].textContent = description;
+    row.cells[2].textContent = category;
+    row.cells[3].textContent = `£${parseFloat(price).toFixed(2)}`;
+    row.cells[4].innerHTML = `
+        <button onclick="editItem('${type}', ${id})" class="btn edit-btn">Edit</button>
+        <form method="POST" style="display: inline;">
+            <input type="hidden" name="action" value="delete_menu_item">
+            <input type="hidden" name="item_type" value="${type}">
+            <input type="hidden" name="item_id" value="${id}">
+            <button type="submit" class="btn delete-btn" onclick="return confirm('Are you sure?')">Delete</button>
+        </form>
+    `;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const dateInput = document.getElementById('date-filter');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+    filterBookingsByDate();
+});
+
+function filterBookingsByDate() {
+    const filterDate = document.getElementById('date-filter').value;
+    const rows = document.querySelectorAll('#current-bookings tbody tr');
+    
+    rows.forEach(row => {
+        const bookingDate = row.querySelector('td:nth-child(2)').textContent;
+        if (bookingDate === filterDate) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+function clearDateFilter() {
+    const dateInput = document.getElementById('date-filter');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+    filterBookingsByDate();
+}
+
+function togglePastBookings() {
+    const currentDate = new Date();
+    const rows = document.querySelectorAll('#current-bookings tbody tr');
+    const pastBookingsTable = document.getElementById('past-bookings');
+    const pastBookingsTableBody = document.querySelector('#past-bookings table tbody') || 
+                                 document.querySelector('#past-bookings-table').appendChild(document.createElement('tbody'));
+    
+    rows.forEach(row => {
+        const bookingDate = new Date(row.querySelector('td:nth-child(2)').textContent);
+        const bookingTime = row.querySelector('td:nth-child(3)').textContent;
+        const [hours, minutes] = bookingTime.split(':');
+        bookingDate.setHours(hours, minutes);
+        
+        if (bookingDate < currentDate) {
+            // Move to past bookings
+            pastBookingsTableBody.appendChild(row.cloneNode(true));
+            row.remove();
+        }
+    });
+    
+    pastBookingsTable.style.display = 'block';
+    document.getElementById('toggle-past-btn').textContent = 'Show All Bookings';
+    document.getElementById('toggle-past-btn').onclick = showAllBookings;
+}
+
+function showAllBookings() {
+    const pastBookings = document.querySelectorAll('#past-bookings tbody tr');
+    const currentBookingsBody = document.querySelector('#current-bookings tbody');
+    
+    pastBookings.forEach(row => {
+        currentBookingsBody.appendChild(row.cloneNode(true));
+    });
+    
+    document.getElementById('past-bookings').style.display = 'none';
+    document.getElementById('toggle-past-btn').textContent = 'Hide Past Bookings';
+    document.getElementById('toggle-past-btn').onclick = togglePastBookings;
+}
+
+function togglePastBookingsVisibility() {
+    const pastBookingsTable = document.getElementById('past-bookings-table');
+    pastBookingsTable.style.display = pastBookingsTable.style.display === 'none' ? 'block' : 'none';
+}
+
+function toggleMessageRead(messageId, checkbox) {
+    fetch('/admin/toggle_message_read', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            message_id: messageId,
+            is_read: checkbox.checked
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const row = checkbox.closest('tr');
+            if (checkbox.checked) {
+                row.classList.remove('message-unread');
+                row.classList.add('message-read');
+            } else {
+                row.classList.remove('message-read');
+                row.classList.add('message-unread');
+            }
+        } else {
+            alert('Error updating message status');
+            checkbox.checked = !checkbox.checked; // Revert checkbox state
+        }
+    });
+}
+
+function deleteMessage(messageId) {
+    if (confirm('Are you sure you want to delete this message?')) {
+        fetch('/admin/delete_message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message_id: messageId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const row = document.querySelector(`tr[data-message-id="${messageId}"]`);
+                row.remove();
+            } else {
+                alert('Error deleting message');
+            }
+        });
+    }
+}
+</script>
+{% endblock %} 

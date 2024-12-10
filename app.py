@@ -328,6 +328,9 @@ def login():
         if user and check_password_hash(user.password, password):
             session.clear()
             session['user_id'] = user.id
+            # Redirect to admin panel if user is admin
+            if user.id == 1:
+                return redirect(url_for('admin_panel'))
             return redirect(url_for('index'))
             
     return render_template('login.html')
@@ -451,7 +454,134 @@ def add_header(response):
         response.headers['Expires'] = '-1'
     return response
 
+# ... existing imports ...
 
+# Add this after your other routes
+@app.route('/admin', methods=['GET', 'POST'])
+@login_required
+def admin_panel():
+    # Check if user is admin (user_id = 1)
+    if session.get('user_id') != 1:
+        flash('Unauthorized access', 'error')
+        return redirect(url_for('index'))
+    
+    # Get all data for admin
+    menu_items = MenuItem.query.all()
+    food_items = FoodItem.query.all()
+    drink_items = DrinkItem.query.all()
+    bookings = Booking.query.order_by(Booking.date.desc()).all()
+    messages = Contact.query.order_by(Contact.id.desc()).all()
+    
+    return render_template('admin_panel.html', 
+                         menu_items=menu_items,
+                         food_items=food_items,
+                         drink_items=drink_items,
+                         bookings=bookings,
+                         messages=messages)
+
+@app.route('/admin_menu', methods=['GET', 'POST'])
+@login_required
+def admin_menu():
+    # Check if user is admin (user_id = 1)
+    if session.get('user_id') != 1:
+        flash('Unauthorized access', 'error')
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        menu_type = request.form.get('menu_type')
+        name = request.form.get('name')
+        description = request.form.get('description')
+        price = float(request.form.get('price'))
+        
+        if menu_type == 'food':
+            category = request.form.get('category')
+            new_item = FoodItem(name=name, description=description, price=price, category=category)
+        else:
+            category = request.form.get('drink_category')
+            new_item = DrinkItem(name=name, description=description, price=price, category=category)
+            
+        db.session.add(new_item)
+        db.session.commit()
+        flash('Menu item added successfully!', 'success')
+        return redirect(url_for('admin_panel'))
+        
+    return render_template('admin_menu.html')
+
+@app.route('/admin/update_item', methods=['POST'])
+@login_required
+def update_item():
+    if session.get('user_id') != 1:
+        return jsonify({'success': False, 'error': 'Unauthorized'}), 403
+    
+    try:
+        data = request.get_json()
+        item_type = data.get('type')
+        item_id = data.get('id')
+        
+        if item_type == 'food':
+            item = FoodItem.query.get(item_id)
+        else:
+            item = DrinkItem.query.get(item_id)
+            
+        if item:
+            item.name = data.get('name')
+            item.description = data.get('description')
+            item.category = data.get('category')
+            item.price = float(data.get('price'))
+            
+            db.session.commit()
+            return jsonify({'success': True})
+        
+        return jsonify({'success': False, 'error': 'Item not found'}), 404
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/admin/toggle_message_read', methods=['POST'])
+@login_required
+def toggle_message_read():
+    if session.get('user_id') != 1:
+        return jsonify({'success': False, 'error': 'Unauthorized'}), 403
+    
+    try:
+        data = request.get_json()
+        message_id = data.get('message_id')
+        is_read = data.get('is_read')
+        
+        message = Contact.query.get(message_id)
+        if message:
+            message.is_read = is_read
+            db.session.commit()
+            return jsonify({'success': True})
+            
+        return jsonify({'success': False, 'error': 'Message not found'}), 404
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/admin/delete_message', methods=['POST'])
+@login_required
+def delete_message():
+    if session.get('user_id') != 1:
+        return jsonify({'success': False, 'error': 'Unauthorized'}), 403
+    
+    try:
+        data = request.get_json()
+        message_id = data.get('message_id')
+        
+        message = Contact.query.get(message_id)
+        if message:
+            db.session.delete(message)
+            db.session.commit()
+            return jsonify({'success': True})
+            
+        return jsonify({'success': False, 'error': 'Message not found'}), 404
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

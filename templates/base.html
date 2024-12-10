@@ -28,6 +28,7 @@
     <link rel="apple-touch-icon" href="{{ url_for('static', filename='assets/images/icon-192.png') }}">
     
     <title>{% block title %}JR Catering{% endblock %}</title>
+    {% block head %}{% endblock %}
 </head>
 <body>
     <header>
@@ -54,6 +55,9 @@
                         {% endif %}
                     </li>
                     <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                    {% if session.get('user_id') == 1 %}
+                        <li><a href="{{ url_for('admin_panel') }}">Admin Panel</a></li>
+                    {% endif %}
                     <li>
                         {% if session.get('user_id') is none %}
                             <a href="{{ url_for('login') }}" class="nav-link">Login</a>

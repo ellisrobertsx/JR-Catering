@@ -1,17 +1,23 @@
 from app import app, db
 from models import User
+from werkzeug.security import generate_password_hash
 
-def check_user(username):
+def make_admin():
     with app.app_context():
-        user = User.query.filter_by(username=username).first()
+        # Get user with ID 1
+        user = User.query.get(1)
         if user:
-            print(f"User found:")
-            print(f"Username: {user.username}")
-            print(f"Email: {user.email}")
-            print(f"Password hash: {user.password}")
+            # Update their password
+            user.password = generate_password_hash('admin123')
+            db.session.commit()
+            print(f"""
+User {user.username} is now admin!
+Password has been set to: admin123
+
+IMPORTANT: Please change this password after login!
+            """)
         else:
-            print(f"No user found with username: {username}")
+            print("No user found with ID 1")
 
 if __name__ == "__main__":
-    username_to_check = input("Enter username to check: ")
-    check_user(username_to_check) 
+    make_admin() 

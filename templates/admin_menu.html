@@ -2,43 +2,57 @@
 
 {% block content %}
 <div class="admin-container">
-    <h1>Add Menu Item</h1>
+    <div class="section-title">
+        <span class="line"></span>
+        <h2>Add Menu Item</h2>
+        <span class="line"></span>
+    </div>
+    
     <form method="POST">
         <div class="form-group">
             <label for="menu_type">Menu Type:</label>
             <select id="menu_type" name="menu_type" required>
+                <option value="">Select Menu Type</option>
                 <option value="food">Food Menu</option>
                 <option value="drink">Drinks Menu</option>
             </select>
         </div>
+        
         <div class="form-group">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
         </div>
+        
         <div class="form-group">
             <label for="description">Description:</label>
             <textarea id="description" name="description" required></textarea>
         </div>
+        
         <div class="form-group">
             <label for="price">Price:</label>
             <input type="number" id="price" name="price" step="0.01" required>
         </div>
-        <div id="food_categories" class="category-select">
+        
+        <div id="food_categories" class="form-group category-select">
             <label for="category">Category:</label>
             <select id="category" name="category" required>
+                <option value="">Select Category</option>
                 <option value="Starters">Starters</option>
                 <option value="Main Course">Main Course</option>
                 <option value="Desserts">Desserts</option>
             </select>
         </div>
-        <div id="drink_categories" class="category-select" style="display:none;">
+        
+        <div id="drink_categories" class="form-group category-select" style="display:none;">
             <label for="drink_category">Category:</label>
             <select id="drink_category" name="drink_category">
+                <option value="">Select Category</option>
                 <option value="Wine">Wine</option>
                 <option value="Beer">Beer</option>
                 <option value="Cocktails">Cocktails</option>
             </select>
         </div>
+        
         <button type="submit">Add Item</button>
     </form>
 </div>
