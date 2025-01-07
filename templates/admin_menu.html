@@ -11,8 +11,8 @@
     <form method="POST">
         <div class="form-group">
             <label for="menu_type">Menu Type:</label>
-            <select id="menu_type" name="menu_type" required>
-                <option value="">Select Menu Type</option>
+            <select id="menu_type" name="menu_type" class="edit-input" required>
+                <option value="option-value">Select Food Type</option>
                 <option value="food">Food Menu</option>
                 <option value="drink">Drinks Menu</option>
             </select>
@@ -35,7 +35,7 @@
         
         <div id="food_categories" class="form-group category-select">
             <label for="category">Category:</label>
-            <select id="category" name="category" required>
+            <select id="category" name="category" class="edit-input" required>
                 <option value="">Select Category</option>
                 <option value="Starters">Starters</option>
                 <option value="Main Course">Main Course</option>
@@ -45,7 +45,7 @@
         
         <div id="drink_categories" class="form-group category-select" style="display:none;">
             <label for="drink_category">Category:</label>
-            <select id="drink_category" name="drink_category">
+            <select id="drink_category" name="drink_category" class="edit-input">
                 <option value="">Select Category</option>
                 <option value="Wine">Wine</option>
                 <option value="Beer">Beer</option>
