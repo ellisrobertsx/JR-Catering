@@ -1,14 +1,22 @@
 {% extends "base.html" %}
 
+{% block title %}{% if current_user.is_authenticated %}{{ current_user.username }} - {% endif %}Home - JR Catering{% endblock %}
+
+{% block head %}
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+{% endblock %}
+
 {% block content %}
 <div class="hero-container">
     <div class="hero-image">
         <picture>
             <source 
-                srcset="{{ url_for('static', filename='assets/images/img1.webp') }}" 
+                srcset="{{ url_for('static', filename='assets/images/img1.webp') }}?v={{ timestamp }}" 
                 type="image/webp">
             <img 
-                src="{{ url_for('static', filename='assets/images/img1.webp') }}" 
+                src="{{ url_for('static', filename='assets/images/img1.webp') }}?v={{ timestamp }}" 
                 alt="Hero Image 1 - Showcasing our catering service"
                 width="900"
                 height="400"
@@ -20,10 +28,10 @@
     <div class="hero-image">
         <picture>
             <source 
-                srcset="{{ url_for('static', filename='assets/images/img2.webp') }}" 
+                srcset="{{ url_for('static', filename='assets/images/img2.webp') }}?v={{ timestamp }}" 
                 type="image/webp">
             <img 
-                src="{{ url_for('static', filename='assets/images/img2.webp') }}" 
+                src="{{ url_for('static', filename='assets/images/img2.webp') }}?v={{ timestamp }}" 
                 alt="Hero Image 2 - Featured dishes"
                 width="900"
                 height="400"
@@ -34,10 +42,10 @@
     <div class="hero-image">
         <picture>
             <source 
-                srcset="{{ url_for('static', filename='assets/images/img3.webp') }}" 
+                srcset="{{ url_for('static', filename='assets/images/img3.webp') }}?v={{ timestamp }}" 
                 type="image/webp">
             <img 
-                src="{{ url_for('static', filename='assets/images/img3.webp') }}" 
+                src="{{ url_for('static', filename='assets/images/img3.webp') }}?v={{ timestamp }}" 
                 alt="Hero Image 3 - Catering setup"
                 width="900"
                 height="400"
@@ -48,10 +56,10 @@
     <div class="hero-image">
         <picture>
             <source 
-                srcset="{{ url_for('static', filename='assets/images/img4.webp') }}" 
+                srcset="{{ url_for('static', filename='assets/images/img4.webp') }}?v={{ timestamp }}" 
                 type="image/webp">
             <img 
-                src="{{ url_for('static', filename='assets/images/img4.webp') }}" 
+                src="{{ url_for('static', filename='assets/images/img4.webp') }}?v={{ timestamp }}" 
                 alt="Hero Image 4 - Event catering"
                 width="900"
                 height="400"
@@ -61,17 +69,19 @@
     </div>
 </div>
 
-<h1>Welcome to JR Catering</h1>
+<h1>Welcome to JR Catering{% if current_user.is_authenticated %}, {{ current_user.username }}{% endif %}</h1>
 <p>We are a catering company that specializes in providing high-quality food and service to our clients.</p>
 
 <section id="container">
-    <div class="card" role="button" tabindex="0" onclick="window.location.href='{{ url_for('food_menu') }}'" onkeypress="if(event.key==='Enter') window.location.href='{{ url_for('food_menu') }}'">
+    <div class="card" role="button" tabindex="0" 
+         onclick="window.location.href='{{ url_for('food_menu') }}'" 
+         onkeypress="if(event.key==='Enter') window.location.href='{{ url_for('food_menu') }}'">
         <picture>
             <source 
-                srcset="{{ url_for('static', filename='assets/images/food.webp') }}" 
+                srcset="{{ url_for('static', filename='assets/images/food.webp') }}?v={{ timestamp }}" 
                 type="image/webp">
             <img 
-                src="{{ url_for('static', filename='assets/images/food.webp') }}" 
+                src="{{ url_for('static', filename='assets/images/food.webp') }}?v={{ timestamp }}" 
                 alt="View our food menu - Various dishes available"
                 width="300"
                 height="200"
@@ -83,13 +93,15 @@
         </div>
     </div>
 
-    <div class="card" role="button" tabindex="0" onclick="window.location.href='{{ url_for('drinks_menu') }}'" onkeypress="if(event.key==='Enter') window.location.href='{{ url_for('drinks_menu') }}'">
+    <div class="card" role="button" tabindex="0" 
+         onclick="window.location.href='{{ url_for('drinks_menu') }}'" 
+         onkeypress="if(event.key==='Enter') window.location.href='{{ url_for('drinks_menu') }}'">
         <picture>
             <source 
-                srcset="{{ url_for('static', filename='assets/images/drinks.webp') }}" 
+                srcset="{{ url_for('static', filename='assets/images/drinks.webp') }}?v={{ timestamp }}" 
                 type="image/webp">
             <img 
-                    src="{{ url_for('static', filename='assets/images/drinks.webp') }}" 
+                src="{{ url_for('static', filename='assets/images/drinks.webp') }}?v={{ timestamp }}" 
                 alt="View our drinks menu - Selection of beverages"
                 width="300"
                 height="200"
@@ -101,13 +113,15 @@
         </div>
     </div>
 
-    <div class="card" role="button" tabindex="0" onclick="window.location.href='{{ url_for('book') }}'" onkeypress="if(event.key==='Enter') window.location.href='{{ url_for('book') }}'">
+    <div class="card" role="button" tabindex="0" 
+         onclick="window.location.href='{% if current_user.is_authenticated %}{{ url_for('book') }}{% else %}{{ url_for('login') }}{% endif %}'" 
+         onkeypress="if(event.key==='Enter') window.location.href='{% if current_user.is_authenticated %}{{ url_for('book') }}{% else %}{{ url_for('login') }}{% endif %}'">
         <picture>
             <source 
-                srcset="{{ url_for('static', filename='assets/images/table.webp') }}" 
+                srcset="{{ url_for('static', filename='assets/images/table.webp') }}?v={{ timestamp }}" 
                 type="image/webp">
             <img 
-                src="{{ url_for('static', filename='assets/images/table.webp') }}" 
+                src="{{ url_for('static', filename='assets/images/table.webp') }}?v={{ timestamp }}" 
                 alt="Book a table - Make your reservation"
                 width="300"
                 height="200"
@@ -115,7 +129,7 @@
                 decoding="async">
         </picture>
         <div class="card-content">
-            <h2>{% if session.get('user_id') and get_user_bookings() %}View Bookings{% else %}Book a Table{% endif %}</h2>
+            <h2>{% if current_user.is_authenticated %}View Bookings{% else %}Book a Table{% endif %}</h2>
         </div>
     </div>
 </section>

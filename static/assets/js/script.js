@@ -19,6 +19,28 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Handle logout link click
+    const logoutLink = document.querySelector('a[href="/logout"]');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            fetch('/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/';
+                    // Force a complete page reload from server
+                    window.location.reload(true);
+                }
+            })
+            .catch(error => console.error('Logout error:', error));
+        });
+    }
+
     const dropdownBtn = document.querySelector('.dropbtn');
     const dropdownContent = document.querySelector('.dropdown-content');
     

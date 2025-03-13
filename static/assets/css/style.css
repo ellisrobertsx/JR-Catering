@@ -1501,9 +1501,9 @@ form button:hover {
     }
 
     .unique-booking-card {
-        flex: 0 1 400px; /* Fixed width, don't grow, can shrink */
-        margin: 0; /* Remove margin auto */
-        width: 400px; /* Force consistent width */
+        flex: 0 1 400px; 
+        margin: 0; 
+        width: 400px; 
     }
 
     }

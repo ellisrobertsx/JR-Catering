@@ -3,6 +3,7 @@
     padding: 1rem;
     margin: 0 auto;
     text-align: center;
+    max-width: 1200px;
 }
 
 .admin-section {
@@ -14,215 +15,42 @@
     max-width: 95%;
 }
 
-.admin-section h2 {
-    color: var(--accent-color);
-    margin-bottom: 1.5rem;
-    font-size: 1.5em;
+.section-title {
     text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.section-title h2 {
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.5em;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid var(--accent-color);
 }
 
-/* Mobile Card Layout */
-.admin-section tr {
-    display: block;
-    margin: 0.5rem auto;
-    background: var(--primary-color);
-    padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid var(--accent-color);
-    width: 90%;
-    box-sizing: border-box;
-    text-align: center;
+.line {
+    display: inline-block;
+    width: 50px;
+    height: 2px;
+    background: var(--accent-color);
+    margin: 0 10px;
 }
 
-/* Cell styling for mobile */
-.admin-section td {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
-    border: none;
-    text-align: center;
-    width: 100%;
-    box-sizing: border-box;
-    word-break: break-word;
-    max-width: 100%;
-}
-
-/* Label and data styling */
-.admin-section td::before {
-    content: attr(data-label);
-    font-weight: bold;
-    color: var(--accent-color);
-    display: block;
-    width: 100%;
-    margin-bottom: 0.3rem;
-    text-align: center;
-}
-
-/* Style for the actual data content */
-.admin-section td > span,
-.admin-section td > div,
-.admin-section td > p,
-.admin-section td > a,
-.admin-section td:not([data-label=""]) {
-    display: block;
-    text-align: center;
-    width: 100%;
-    margin: 0.3rem auto;
-}
-
-/* Contact Info Styling */
-.contact-info {
-    margin: 0.5rem auto;
-    text-align: center;
-}
-
-/* Contact info items (email and phone) */
-.contact-info p {
-    margin: 0.3rem auto;
-    font-size: 0.9rem;
-    line-height: 1.4;
-    word-break: break-word;
-    text-align: center;
-    padding: 0 0.5rem;
-}
-
-/* Message section styling */
-.special-requests {
-    margin: 1rem auto;
-    text-align: center;
-    width: 90%;
-}
-
-/* Message header */
-.special-requests::before {
-    content: "Message";
-    font-weight: bold;
-    color: var(--accent-color);
-    display: block;
-    width: 100%;
-    margin-bottom: 0.3rem;
-    text-align: center;
-}
-
-/* Message content */
-.message-content {
-    background: var(--primary-color);
-    padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid var(--accent-color);
-    margin: 0.5rem auto;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* Ensure direct text content is centered */
-.admin-section td::after {
-    content: attr(data-content);
-    display: block;
-    width: 100%;
-    text-align: center;
-}
-
-/* Input fields styling */
-.admin-section input,
-.admin-section select,
-.admin-section textarea {
-    width: 90%;
-    margin: 0.5rem auto;
-    text-align: center;
-    display: block;
-}
-
-/* Form groups */
-.form-group {
-    text-align: center;
-    margin: 1rem auto;
-    width: 100%;
-}
-
-/* Button container */
-.booking-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 1rem auto;
-    width: 100%;
-}
-
-/* Button styling */
-.btn {
-    width: 90%;
-    padding: 0.75rem;
-    margin: 0 auto 0.5rem auto;
-    font-size: 0.9rem;
-    display: block;
-}
-
-/* Table container */
-.table-responsive {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-    margin: 0 auto;
-    text-align: center;
-}
-
-/* Ensure all text elements are centered */
-.admin-section td > * {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* Message text specific styling */
-.contact-info p:last-child {
-    margin-bottom: 1rem;
-}
-
-/* Button container for mobile */
-.booking-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-    width: 100%;
-}
-
-/* Button styling for mobile */
-.btn {
-    width: 90%;
-    padding: 0.75rem;
-    margin: 0 0 0.5rem 0;
-    font-size: 0.9rem;
-}
-
-/* Table container */
-.table-responsive {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-    padding: 0;
-    margin: 0 auto;
-    text-align: center;
-}
-
+/* Booking Card Layout for Mobile */
 .admin-section table {
     width: 100%;
     border-collapse: collapse;
 }
 
-/* Hide table headers on mobile */
 .admin-section thead {
-    display: none;
+    display: none; /* Hide headers on mobile */
 }
 
-/* Booking Card Layout */
+.admin-section tbody {
+    display: block;
+    width: 100%;
+}
+
 .admin-section tr {
     display: block;
     margin: 0.5rem auto;
@@ -239,51 +67,12 @@
     display: block;
     padding: 0.5rem;
     border: none;
-    text-align: left;
+    text-align: center;
     width: 100%;
     box-sizing: border-box;
     word-wrap: break-word;
 }
 
-/* Contact Info in Cards */
-.admin-section td p {
-    margin: 0.3rem auto;
-    font-size: 0.9rem;
-    line-height: 1.4;
-    word-break: break-word;
-    max-width: 100%;
-    text-align: center;
-}
-
-/* Email and Phone specific styling */
-.admin-section td p:has(a),
-.admin-section td a {
-    word-break: break-all;
-    display: inline-block;
-    max-width: 100%;
-}
-
-/* Message text styling */
-.admin-section td p:last-child {
-    white-space: pre-wrap;
-    margin-bottom: 0.5rem;
-}
-
-/* Ensure tbody is properly displayed */
-.admin-section tbody {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-}
-
-/* Filter section */
-.booking-filters {
-    margin-bottom: 1rem;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* Add labels for mobile */
 .admin-section td::before {
     content: attr(data-label);
     font-weight: bold;
@@ -292,48 +81,145 @@
     margin-bottom: 0.3rem;
 }
 
-/* Contact Info Styling */
-.contact-info {
-    margin: 0.5rem auto;
-    text-align: center;
+/* Menu Items Layout */
+.menu-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center; /* Center items horizontally */
+    align-items: center; /* Center items vertically if needed */
     width: 100%;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
 }
 
-.contact-info p {
-    margin: 0.4rem 0;
-    font-size: 0.95rem;
-    padding: 0 0.5rem;
+.menu-item {
+    padding: 1rem;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 8px;
+    background: var(--primary-color);
+    color: var(--text-color);
+    text-align: center; /* Center text inside each item */
+    margin: 0 auto; /* Ensure centering within flex container */
+    border: 2px solid var(--accent-color); /* Adjusted border size */
+    box-sizing: border-box; /* Ensure padding fits within max-width */
 }
 
-/* Button Styling */
-.btn {
+/* Messages Layout */
+.messages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    width: 100%;
+}
+
+.message-item {
+    padding: 1rem;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 8px;
+    background: var(--primary-color);
+    color: var(--text-color);
+    text-align: center;
+    margin: 0 auto;
+    border: 2px solid var(--accent-color);
+    box-sizing: border-box;
+}
+
+.message-item p {
+    margin: 0.3rem 0;
+    font-size: 0.9rem;
+}
+
+.message-item .read-status {
+    font-style: italic;
+    color: #aaa;
+}
+
+/* Responsive border adjustment */
+@media (min-width: 768px) {
+    .menu-item, .message-item {
+        border-width: 2px; /* Maintain border size */
+    }
+}
+
+@media (min-width: 1024px) {
+    .menu-item, .message-item {
+        border-width: 2px; /* Maintain border size */
+    }
+}
+
+.menu-item h3 {
+    margin: 0 0 0.5rem;
+    color: var(--accent-color);
+}
+
+.menu-item p {
+    margin: 0.3rem 0;
+    font-size: 0.9rem;
+}
+
+/* Filter Section */
+.booking-filters {
+    margin-bottom: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.filter-group {
+    margin: 0.5rem auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-input {
+    padding: 0.75rem 1.5rem; /* Match button padding */
+    margin: 0.5rem auto;
+    border: 1px solid var(--accent-color);
+    border-radius: 4px;
+    text-align: center;
+    width: auto; /* Match button width */
+    min-width: 120px; /* Consistent with buttons */
+    background: var(--primary-color);
+    color: var(--text-color);
+}
+
+/* Form Groups for Add Menu Item */
+.form-group {
+    text-align: center;
+    margin: 1rem auto;
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
     width: 90%;
     padding: 0.75rem;
     margin: 0.5rem auto;
-    border: none;
+    border: 1px solid var(--accent-color);
     border-radius: 4px;
-    font-size: 0.95rem;
-    cursor: pointer;
+    background: var(--primary-color);
+    color: var(--text-color);
+    text-align: center;
     display: block;
 }
 
-.edit-btn {
-    background: var(--accent-color);
-    color: var(--primary-color);
+.form-group textarea {
+    height: 100px;
+    resize: vertical;
 }
 
-.delete-btn {
-    background: #dc3545;
-    color: white;
-}
-
-/* Message Styling */
-.message-unread {
-    border-left: 4px solid var(--accent-color);
-}
-
+/* Select Styling */
 .admin-container select,
 .edit-input[type="select"],
 select.edit-input {
@@ -346,54 +232,124 @@ select.edit-input {
     background-position: right 0.75rem center;
     background-size: 1em;
     padding-right: 2.5rem;
-    width: 100%;
-    padding: 0.75rem;
     background-color: var(--accent-color);
     color: var(--primary-color);
     border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    transition: opacity 0.3s ease;
 }
 
-.admin-container select:hover,
-.edit-input[type="select"]:hover,
-select.edit-input:hover {
-    opacity: 0.9;
-}
-
-
-.message-read {
-    opacity: 0.8;
-}
-
-.read-checkbox {
-    width: 20px;
-    height: 20px;
-    margin: 0 auto 0.5rem;
-    display: block;
-}
-
-/* Filter Controls for Mobile */
-.booking-filters {
-    text-align: center;
-    margin: 1rem auto;
-    max-width: 90%;
-}
-
-.filter-group {
+/* Button Styling */
+.btn,
+.admin-button {
+    padding: 0.75rem 1.5rem; /* Standardized size */
     margin: 0.5rem auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: inline-block; /* Consistent sizing */
+    background: var(--accent-color);
+    color: var(--primary-color);
+    text-align: center;
+    text-decoration: none;
+    width: auto; /* Allow natural width */
+    min-width: 120px; /* Minimum width for consistency */
 }
 
-.filter-input {
-    width: 90%;
-    padding: 0.75rem;
-    margin: 0.5rem auto;
-    border: 1px solid var(--accent-color);
-    border-radius: 4px;
-    text-align: center;
+.btn:hover,
+.admin-button:hover {
+    background: #b8932d;
+}
+
+.delete-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #c82333;
+}
+
+.read-btn {
+    background: #28a745;
+    color: white;
+}
+
+.read-btn:hover {
+    background: #218838;
+}
+
+/* Responsive Adjustments */
+@media (min-width: 768px) {
+    .admin-container {
+        padding: 2rem;
+    }
+
+    .admin-section {
+        max-width: 100%;
+    }
+
+    .admin-section thead {
+        display: table-header-group; /* Show headers on larger screens */
+    }
+
+    .admin-section tbody {
+        display: table-row-group;
+    }
+
+    .admin-section tr {
+        display: table-row;
+        margin: 0;
+        padding: 0;
+        border: none;
+        width: auto;
+    }
+
+    .admin-section td {
+        display: table-cell;
+        padding: 1rem;
+        border: 1px solid var(--accent-color);
+    }
+
+    .admin-section td::before {
+        content: none; /* Remove labels on larger screens */
+    }
+
+    .menu-item,
+    .message-item {
+        width: 45%;
+    }
+
+    .btn,
+    .admin-button {
+        padding: 0.75rem 1.5rem; /* Consistent size */
+    }
+
+    .filter-group {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .filter-input {
+        width: auto; /* Match button width */
+        min-width: 120px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 70%;
+    }
+}
+
+@media (min-width: 1024px) {
+    .menu-item,
+    .message-item {
+        width: 30%;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 50%;
+    }
 }

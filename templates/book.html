@@ -8,7 +8,7 @@
         <span class="line"></span>
     </div>
     
-    {% if 'user_id' not in session %}
+    {% if not current_user.is_authenticated %}
         <div class="login-prompt">
             <p>Please log in to view and manage your bookings.</p>
             <a href="{{ url_for('login') }}" class="btn primary-btn">Login</a>
@@ -25,11 +25,11 @@
             <form id="new-booking-form-element" onsubmit="submitNewBooking(event)">
                 <div class="form-group">
                     <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required>
+                    <input type="text" id="name" name="name" value="{{ current_user.username }}" required>
                 </div>
                 <div class="form-group">
                     <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="email" id="email" name="email" value="{{ current_user.email }}" required>
                 </div>
                 <div class="form-group">
                     <label for="phone">Phone:</label>
@@ -79,7 +79,7 @@
                         </div>
                         
                         <!-- Edit form (hidden by default) -->
-                        <div class="unique-booking-edit-form" id="edit-form-{{ booking.id }}">
+                        <div class="unique-booking-edit-form" id="edit-form-{{ booking.id }}" style="display: none;">
                             <form onsubmit="updateBooking(event, {{ booking.id }})">
                                 <div class="form-group">
                                     <label for="name-{{ booking.id }}">Name:</label>
@@ -126,20 +126,19 @@
 function setMinDate(inputId) {
     const dateInput = document.getElementById(inputId);
     const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1); // 
+    tomorrow.setDate(tomorrow.getDate() + 1);
     const yyyy = tomorrow.getFullYear();
     const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
     const dd = String(tomorrow.getDate()).padStart(2, '0');
     dateInput.min = `${yyyy}-${mm}-${dd}`;
 }
 
-// Generate time slots in 5-minute intervals
 function generateTimeSlots(selectId) {
     const timeSelect = document.getElementById(selectId);
     timeSelect.innerHTML = '<option value="">Select a time</option>';
     
-    const startHour = 11; 
-    const endHour = 22;   
+    const startHour = 11;
+    const endHour = 22;
     
     for (let hour = startHour; hour < endHour; hour++) {
         for (let minute = 0; minute < 60; minute += 5) {
@@ -155,7 +154,6 @@ function generateTimeSlots(selectId) {
     }
 }
 
-// Initialize date and time inputs when form is shown
 function toggleNewBookingForm() {
     const form = document.getElementById('new-booking-form');
     if (form.style.display === 'none') {
@@ -167,12 +165,9 @@ function toggleNewBookingForm() {
     }
 }
 
-// Replace the existing toggleEditForm function with this updated version
 function toggleEditForm(bookingId) {
-    // Get the specific booking card
     const targetCard = document.querySelector(`.unique-booking-card[data-booking-id="${bookingId}"]`);
     
-    // First, close all other edit forms
     const allBookingCards = document.querySelectorAll('.unique-booking-card');
     allBookingCards.forEach(card => {
         if (card !== targetCard) {
@@ -184,35 +179,27 @@ function toggleEditForm(bookingId) {
         }
     });
 
-    // Toggle the target card
     if (targetCard) {
         const isEditing = targetCard.classList.toggle('editing');
         const editForm = targetCard.querySelector('.unique-booking-edit-form');
         const displayForm = targetCard.querySelector('.unique-booking-display');
 
         if (isEditing) {
-            // Opening edit form
             editForm.style.display = 'block';
             displayForm.style.display = 'none';
-            // Initialize form elements
             setMinDate(`date-${bookingId}`);
             generateTimeSlots(`time-${bookingId}`);
-            // Set the current time value
             const currentTime = document.getElementById(`booking-info-${bookingId}`).querySelector('p:nth-child(3)').textContent.split(': ')[1];
             document.getElementById(`time-${bookingId}`).value = currentTime;
-            // Adjust grid layout
             targetCard.style.gridColumn = 'span 2';
         } else {
-            // Closing edit form
             editForm.style.display = 'none';
             displayForm.style.display = 'block';
-            // Reset grid layout
             targetCard.style.gridColumn = 'auto';
         }
     }
 }
 
-// Validate date and time on form submission
 document.querySelector('#new-booking-form-element').addEventListener('submit', function(event) {
     const selectedDate = new Date(document.getElementById('date').value);
     const selectedTime = document.getElementById('time').value;
@@ -221,7 +208,7 @@ document.querySelector('#new-booking-form-element').addEventListener('submit', f
     const [hours, minutes] = selectedTime.split(':');
     selectedDate.setHours(parseInt(hours), parseInt(minutes));
     
-    if (selectedDate <= now) { 
+    if (selectedDate <= now) {
         event.preventDefault();
         alert('Please select a future date and time.');
     }
@@ -329,7 +316,6 @@ function submitNewBooking(event) {
     const guestsValue = document.getElementById('guests').value;
     const specialRequestsValue = document.getElementById('special_requests').value;
 
-    // Debug logs
     console.log('Form Values:', {
         name: nameValue,
         email: emailValue,
@@ -383,20 +369,20 @@ function submitNewBooking(event) {
 
         const newBookingCard = `
             <div class="unique-booking-card" data-booking-id="${data.booking.id}">
-                <div class="unique-booking-display">
+                <div class="unique-booking-display" id="booking-display-${data.booking.id}">
                     <div class="booking-info" id="booking-info-${data.booking.id}">
                         <p><strong>Booking ID:</strong> ${data.booking.id}</p>
                         <p><strong>Date:</strong> ${data.booking.date}</p>
                         <p><strong>Time:</strong> ${data.booking.time}</p>
                         <p><strong>Number of Guests:</strong> ${data.booking.guests}</p>
                     </div>
-                    <div class="unique-booking-actions">
+                    <div class="booking-actions">
                         <button class="btn edit-btn" onclick="toggleEditForm(${data.booking.id})">Edit Booking</button>
                         <button class="btn cancel-btn" onclick="deleteBooking(${data.booking.id})">Cancel Booking</button>
                     </div>
                 </div>
                 
-                <div class="unique-booking-edit-form">
+                <div class="unique-booking-edit-form" id="edit-form-${data.booking.id}" style="display: none;">
                     <form onsubmit="updateBooking(event, ${data.booking.id})">
                         <div class="form-group">
                             <label for="name-${data.booking.id}">Name:</label>
@@ -424,7 +410,7 @@ function submitNewBooking(event) {
                             <label for="guests-${data.booking.id}">Number of Guests:</label>
                             <input type="number" id="guests-${data.booking.id}" name="guests" value="${data.booking.guests}" min="1" max="20" required>
                         </div>
-                        <div class="unique-booking-actions">
+                        <div class="booking-actions">
                             <button type="submit" class="btn save-btn">Save Changes</button>
                             <button type="button" class="btn cancel-btn" onclick="toggleEditForm(${data.booking.id})">Cancel</button>
                         </div>
@@ -445,13 +431,9 @@ function submitNewBooking(event) {
         alert(error.message || 'Error creating booking. Please try again.');
     })
     .finally(() => {
-       
         submitButton.disabled = false;
         submitButton.textContent = 'Make Booking';
     });
 }
-
-
 </script>
 {% endblock %}
-

@@ -16,16 +16,12 @@
             --hover-color: #555555;
         }
     </style>
-    <link rel="preload" href="{{ url_for('static', filename='assets/css/style.css') }}" as="style">
-    <link rel="preload" href="{{ url_for('static', filename='assets/js/script.js') }}" as="script">
-    
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}?v=1" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}?v=1">
     
     <link rel="preconnect" href="https://kit.fontawesome.com" crossorigin>
     <link rel="dns-prefetch" href="https://kit.fontawesome.com">
-    
-    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='assets/images/icon-192.png') }}">
+    <link rel="manifest" href="{{ url_for('serve_manifest') }}">
+    <link rel="icon" href="{{ url_for('serve_favicon') }}" type="image/x-icon">
     
     <title>{% block title %}JR Catering{% endblock %}</title>
     {% block head %}{% endblock %}
@@ -48,18 +44,18 @@
                         </div>
                     </li>
                     <li>
-                        {% if session.get('user_id') %}
+                        {% if current_user.is_authenticated %}
                             <a href="{{ url_for('book') }}">Bookings</a>
                         {% else %}
                             <a href="{{ url_for('book') }}">Book</a>
                         {% endif %}
                     </li>
                     <li><a href="{{ url_for('contact') }}">Contact</a></li>
-                    {% if session.get('user_id') == 1 %}
+                    {% if current_user.is_authenticated and current_user.is_admin %}
                         <li><a href="{{ url_for('admin_panel') }}">Admin Panel</a></li>
                     {% endif %}
                     <li>
-                        {% if session.get('user_id') is none %}
+                        {% if current_user.is_anonymous %}
                             <a href="{{ url_for('login') }}" class="nav-link">Login</a>
                         {% else %}
                             <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
@@ -105,11 +101,8 @@
         <p id="footer-text">&copy; 2024 JR Catering. All rights reserved.</p>
     </footer>
 
-    <script type="module">
-        document.documentElement.classList.remove('no-js');
-    </script>
-
-    <script src="{{ url_for('static', filename='assets/js/script.js') }}?v=2"></script>
+    <script src="{{ url_for('static', filename='assets/js/script.js') }}?v=2" defer></script>
+    <script src="{{ url_for('static', filename='assets/js/register.js') }}" defer></script>
     <script src="https://kit.fontawesome.com/3388b1b6ae.js" crossorigin defer></script>
 </body>
-</html> 
+</html>
