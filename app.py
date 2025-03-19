@@ -14,6 +14,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired
 from passlib.hash import scrypt
+from passlib.hash import sha256_crypt  # Added for dual-hash support
 from functools import wraps
 from dotenv import load_dotenv
 import psycopg2
@@ -98,16 +99,6 @@ def index():
         logger.debug(f"Index route - User authenticated: {current_user.is_authenticated}")
         if current_user.is_authenticated:
             logger.debug(f"User {current_user.username} is authenticated")
-            # Ensure session user_id matches current_user.id
-            if session.get('user_id') != current_user.id:
-                logger.debug("Session user_id mismatch, updating session")
-                session['user_id'] = current_user.id
-        else:
-            # Clear any residual session data for unauthenticated users
-            if 'user_id' in session:
-                logger.debug("Clearing residual session data for unauthenticated user")
-                session.pop('user_id', None)
-        
         response = make_response(render_template('index.html'))
         response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
         response.headers['Pragma'] = 'no-cache'
@@ -599,7 +590,7 @@ def login():
                     login_user(user, remember=True)
                     flash('Logged in successfully.', 'success')
                     logger.debug(f"User {username} logged in successfully with Werkzeug hash, is_admin: {user.is_admin}")
-                # If that fails, try passlib's sha256_crypt (for testuser/admin)
+                # Fall back to sha256_crypt (for testuser if it’s still that hash)
                 elif sha256_crypt.verify(password, user.password):
                     session.permanent = True
                     login_user(user, remember=True)
