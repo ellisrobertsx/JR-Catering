@@ -592,21 +592,37 @@ def login():
                 flash('Please enter username and password.', 'error')
                 return render_template('login.html')
             user = User.query.filter_by(username=username).first()
-            if user and check_password_hash(user.password, password):
-                session.permanent = True
-                login_user(user, remember=True)
-                flash('Logged in successfully.', 'success')
-                logger.debug(f"User {username} logged in successfully, is_admin: {user.is_admin}")
-                next_page = request.args.get('next')
-                if user.is_admin:
-                    logger.debug("Redirecting admin user to admin_panel")
-                    return redirect(url_for('admin_panel'))
-                if next_page and urlparse(next_page).netloc == '':
-                    logger.debug(f"Redirecting to next_page: {next_page}")
-                    return redirect(next_page)
-                logger.debug("Redirecting to index")
-                return redirect(url_for('index'))
-            flash('Invalid username or password.', 'error')
+            if user:
+                # Try Werkzeug's check_password_hash first (for regular users)
+                if check_password_hash(user.password, password):
+                    session.permanent = True
+                    login_user(user, remember=True)
+                    flash('Logged in successfully.', 'success')
+                    logger.debug(f"User {username} logged in successfully with Werkzeug hash, is_admin: {user.is_admin}")
+                # If that fails, try passlib's sha256_crypt (for testuser/admin)
+                elif sha256_crypt.verify(password, user.password):
+                    session.permanent = True
+                    login_user(user, remember=True)
+                    flash('Logged in successfully.', 'success')
+                    logger.debug(f"User {username} logged in successfully with sha256_crypt, is_admin: {user.is_admin}")
+                else:
+                    flash('Invalid username or password.', 'error')
+                    logger.debug(f"Login failed for {username}: password mismatch")
+                    return render_template('login.html')
+            else:
+                flash('Invalid username or password.', 'error')
+                logger.debug(f"Login failed: No user found with username {username}")
+                return render_template('login.html')
+            
+            next_page = request.args.get('next')
+            if user.is_admin:
+                logger.debug("Redirecting admin user to admin_panel")
+                return redirect(url_for('admin_panel'))
+            if next_page and urlparse(next_page).netloc == '':
+                logger.debug(f"Redirecting to next_page: {next_page}")
+                return redirect(next_page)
+            logger.debug("Redirecting to index")
+            return redirect(url_for('index'))
         return render_template('login.html')
     except Exception as e:
         logger.error(f"Error in login: {str(e)}")
