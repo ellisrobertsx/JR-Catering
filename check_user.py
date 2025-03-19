@@ -1,23 +1,26 @@
 from app import app, db
 from models import User
-from werkzeug.security import generate_password_hash
+from passlib.hash import sha256_crypt
 
-def make_admin():
+def check_user():  # Might still be named this
     with app.app_context():
-        # Get user with ID 1
-        user = User.query.get(1)
+        user = User.query.filter_by(username='testuser').first()
         if user:
-            # Update their password
-            user.password = generate_password_hash('admin123')
+            user.password = sha256_crypt.hash('admin123')
+            user.is_admin = True
             db.session.commit()
-            print(f"""
-User {user.username} is now admin!
-Password has been set to: admin123
-
-IMPORTANT: Please change this password after login!
-            """)
+            print(f"Updated {user.username} to admin with password 'admin123'!")
         else:
-            print("No user found with ID 1")
+            new_user = User(
+                username='testuser',
+                email='testuser@example.com',
+                password=sha256_crypt.hash('admin123'),
+                is_admin=True
+            )
+            db.session.add(new_user)
+            db.session.commit()
+            print("Created new admin user 'testuser' with password 'admin123'!")
+        print("IMPORTANT: Change this password after login!")
 
 if __name__ == "__main__":
-    make_admin() 
+    check_user()
