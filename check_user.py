@@ -2,7 +2,7 @@ from app import app, db
 from models import User
 from passlib.hash import sha256_crypt
 
-def check_user():  # Might still be named this
+def check_user():
     with app.app_context():
         user = User.query.filter_by(username='testuser').first()
         if user:
