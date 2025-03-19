@@ -584,22 +584,29 @@ def login():
                 return render_template('login.html')
             user = User.query.filter_by(username=username).first()
             if user:
+                logger.debug(f"Attempting login for {username}, stored hash: {user.password}")
                 # Try Werkzeug's check_password_hash first (for regular users)
                 if check_password_hash(user.password, password):
                     session.permanent = True
                     login_user(user, remember=True)
                     flash('Logged in successfully.', 'success')
                     logger.debug(f"User {username} logged in successfully with Werkzeug hash, is_admin: {user.is_admin}")
-                # Fall back to sha256_crypt (for testuser if it’s still that hash)
-                elif sha256_crypt.verify(password, user.password):
-                    session.permanent = True
-                    login_user(user, remember=True)
-                    flash('Logged in successfully.', 'success')
-                    logger.debug(f"User {username} logged in successfully with sha256_crypt, is_admin: {user.is_admin}")
+                # Fall back to sha256_crypt (for testuser)
                 else:
-                    flash('Invalid username or password.', 'error')
-                    logger.debug(f"Login failed for {username}: password mismatch")
-                    return render_template('login.html')
+                    try:
+                        if sha256_crypt.verify(password, user.password):
+                            session.permanent = True
+                            login_user(user, remember=True)
+                            flash('Logged in successfully.', 'success')
+                            logger.debug(f"User {username} logged in successfully with sha256_crypt, is_admin: {user.is_admin}")
+                        else:
+                            flash('Invalid username or password.', 'error')
+                            logger.debug(f"Login failed for {username}: sha256_crypt verification failed")
+                            return render_template('login.html')
+                    except ValueError as e:
+                        flash('Invalid username or password.', 'error')
+                        logger.debug(f"Login failed for {username}: sha256_crypt error - {str(e)}")
+                        return render_template('login.html')
             else:
                 flash('Invalid username or password.', 'error')
                 logger.debug(f"Login failed: No user found with username {username}")
