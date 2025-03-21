@@ -20,6 +20,10 @@ import psycopg2
 from sqlalchemy.exc import SQLAlchemyError
 from urllib.parse import urlparse
 
+# Core Flask app for JR Catering project, managing bookings and menus
+# Using Flask-Login for authentication, SQLAlchemy for database, and logging for debugging
+
+
 # Configure detailed logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -28,6 +32,8 @@ handler.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
+# Added logging to track user actions and debug issues like login failures on Heroku
+
 
 # Initialize Flask-Login
 login_manager = LoginManager()
@@ -60,6 +66,7 @@ login_manager.init_app(app)
 login_manager.session_protection = "strong"
 login_manager.remember_cookie_duration = timedelta(days=31)
 
+# User loader function to load user from database
 @login_manager.user_loader
 def load_user(user_id):
     try:
@@ -91,17 +98,19 @@ def serve_favicon():
         logger.error(f"Error serving favicon.ico: {str(e)}")
         return jsonify({'error': 'Favicon not found'}), 404
 
-# Routes
+# Main landing page for JR Catering
 @app.route('/')
 def index():
     try:
         logger.debug(f"Index route - User authenticated: {current_user.is_authenticated}")
         if current_user.is_authenticated:
             logger.debug(f"User {current_user.username} is authenticated")
+            # Ensure session user_id matches current user ID
             if session.get('user_id') != current_user.id:
                 logger.debug("Session user_id mismatch, updating session")
                 session['user_id'] = current_user.id
         else:
+            # Clean up sessions for logged out users
             if 'user_id' in session:
                 logger.debug("Clearing residual session data for unauthenticated user")
                 session.pop('user_id', None)
@@ -115,6 +124,7 @@ def index():
         logger.error(f"Error loading index: {str(e)}")
         return render_template('500.html'), 500
 
+# Displays food menu, grouped by category
 @app.route('/food_menu')
 def food_menu():
     try:
@@ -478,6 +488,7 @@ def register():
         flash(error_msg, 'error')
         return render_template('register.html')
 
+# Admin dashboard for managing JR Catering bookings and menu items
 @app.route('/admin')
 @login_required
 def admin_panel():
@@ -630,6 +641,7 @@ def delete_message(message_id):
         flash('Error deleting message. Please try again later.', 'error')
         return redirect(url_for('admin_panel'))
 
+# User login with admin redirect
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     try:
@@ -738,4 +750,4 @@ if __name__ == '__main__':
         except Exception as e:
             print(f"❌ Error setting up database: {str(e)}")
             db.session.rollback()
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=False, host='0.0.0.0', port=5000)
