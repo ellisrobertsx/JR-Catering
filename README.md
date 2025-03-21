@@ -116,6 +116,12 @@ Interactive menu display featuring:
 - Pricing information
 - Special dietary indicators (Vegetarian, Vegan, Gluten-Free)
 
+### Admin Page
+Admin Panel to control the site
+- Admin can update both food and drink menus
+- Admin can respond to any message sent
+- Admin can handle bookings made by users 
+
 
 ## Design
 

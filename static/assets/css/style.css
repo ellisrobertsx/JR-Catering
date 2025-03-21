@@ -333,7 +333,7 @@ footer {
 }
 
 .unique-booking-edit-form {
-    display: none !important; /* Hide edit form by default */
+    display: none !important; 
 }
 
 .unique-booking-card.editing .unique-booking-display {
@@ -358,7 +358,7 @@ footer {
     font-size: 1.2rem;
 }
 
-/* Base button styles */
+
 .unique-booking-card .btn,
 .unique-booking-actions .btn {
     width: 100%;
@@ -374,22 +374,22 @@ footer {
     text-align: center;
 }
 
-/* Edit button style */
+
 .btn.edit-btn {
     background-color: var(--accent-color);
 }
 
-/* Save button style */
+
 .btn.save-btn {
     background-color: var(--accent-color);
 }
 
-/* Cancel button style */
+
 .btn.cancel-btn {
     background-color: var(--accent-color);
 }
 
-/* Hover states */
+
 .btn.edit-btn:hover,
 .btn.save-btn:hover {
     background-color: var(--hover-color);
@@ -643,7 +643,7 @@ form label {
     display: none;
 }
 
-/* Edit state with correct class names */
+
 .unique-booking-card.editing .unique-booking-display {
     display: none !important;
 }

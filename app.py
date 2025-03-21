@@ -42,12 +42,12 @@ app.config.update(
     SECRET_KEY=os.environ.get('SECRET_KEY', 'dev'),
     SQLALCHEMY_DATABASE_URI='postgresql://postgres:qXoNbwivQCAIEWbwBOjIZoSmhdMIOvOM@junction.proxy.rlwy.net:44318/railway',
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    SESSION_COOKIE_SECURE=False,  # Set to True in production with HTTPS
+    SESSION_COOKIE_SECURE=False,  
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE='Lax',
     PERMANENT_SESSION_LIFETIME=timedelta(days=31),
     REMEMBER_COOKIE_DURATION=timedelta(days=31),
-    REMEMBER_COOKIE_SECURE=False,  # Set to True in production with HTTPS
+    REMEMBER_COOKIE_SECURE=False,  
     REMEMBER_COOKIE_HTTPONLY=True,
     REMEMBER_COOKIE_REFRESH_EACH_REQUEST=True,
     SEND_FILE_MAX_AGE_DEFAULT=0,
@@ -193,14 +193,14 @@ def contact():
 def book():
     try:
         logger.debug(f"Book route - User authenticated: {current_user.is_authenticated}, ID: {current_user.id}")
-        # Get current time
+        
         now = datetime.now()
-        # Query bookings, filtering out those ended more than 4 hours ago
+        
         bookings = Booking.query.filter_by(user_id=current_user.id).all()
         active_bookings = []
         
         for booking in bookings:
-            # Combine date and time into a datetime object
+            
             booking_datetime_str = f"{booking.date} {booking.time}"
             try:
                 booking_datetime = datetime.strptime(booking_datetime_str, '%Y-%m-%d %H:%M')
@@ -208,10 +208,10 @@ def book():
                 logger.error(f"Invalid date/time format for booking ID {booking.id}: {booking_datetime_str}")
                 continue
             
-            # Calculate end time (4 hours after booking start)
+            
             booking_end = booking_datetime + timedelta(hours=4)
             
-            # Include booking if it hasn't ended yet or ended less than 4 hours ago
+            
             if now <= booking_end:
                 active_bookings.append(booking)
             else:
@@ -378,7 +378,7 @@ def register():
             
             logger.debug(f"Received form data: username={username}, email={email}")
 
-            # Validation
+            
             if not all([username, email, password, confirm_password]):
                 error_msg = 'Please fill in all fields.'
                 logger.warning(f"Validation failed: {error_msg}")
@@ -487,7 +487,7 @@ def admin_panel():
             flash('Access denied. Admin privileges required.', 'error')
             return redirect(url_for('index'))
         
-        # Get date filter from query parameter
+        
         date_filter = request.args.get('date_filter')
         if date_filter:
             bookings = Booking.query.filter(Booking.date == date_filter).order_by(Booking.date.desc()).all()
@@ -520,12 +520,12 @@ def add_menu_item():
             price = request.form.get('price')
             category = request.form.get('category') if menu_type == 'food' else request.form.get('drink_category')
             
-            # Validate required fields
+            
             if not all([menu_type, name, description, price]):
                 flash('All fields (Menu Type, Name, Description, Price) are required.', 'error')
                 return render_template('admin_menu.html')
             
-            # Validate category based on menu_type
+            
             if menu_type == 'food' and not category:
                 flash('Category is required for food items.', 'error')
                 return render_template('admin_menu.html')
@@ -536,7 +536,7 @@ def add_menu_item():
                 flash('Invalid menu type.', 'error')
                 return render_template('admin_menu.html')
             
-            price = float(price)  # Convert price to float after validation
+            price = float(price)  
             
             if menu_type == 'food':
                 new_item = FoodItem(name=name, description=description, price=price, category=category)
@@ -733,7 +733,7 @@ if __name__ == '__main__':
     with app.app_context():
         print("Setting up database...")
         try:
-            db.create_all()  # Create tables without dropping
+            db.create_all()  
             print("✅ Database tables set up successfully!")
         except Exception as e:
             print(f"❌ Error setting up database: {str(e)}")

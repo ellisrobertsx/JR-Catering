@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     message.textContent = data.error;
                     message.className = 'alert error';
                 } else if (data.success) {
-                    message.textContent = 'Registration successful!';  // Only this message on success
+                    message.textContent = 'Registration successful!';  
                     message.className = 'alert success';
                     setTimeout(() => {
                         window.location.href = data.redirect || '/';

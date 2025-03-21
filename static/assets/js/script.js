@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => {
                 if (response.ok) {
                     window.location.href = '/';
-                    // Force a complete page reload from server
+                    
                     window.location.reload(true);
                 }
             })

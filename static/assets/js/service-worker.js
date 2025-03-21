@@ -4,7 +4,7 @@ const ASSETS_TO_CACHE = [
     '/static/assets/css/style.css',
     '/static/assets/js/script.js',
     '/static/assets/images/img1.webp',
-    // Add other critical assets
+    
 ];
 
 self.addEventListener('install', (event) => {

@@ -4,7 +4,7 @@ def init_db():
     with app.app_context():
         print("Starting database initialization...")
         
-        # Create tables
+        
         db.create_all()
         print("Tables created successfully")
         

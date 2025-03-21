@@ -1,8 +1,8 @@
-from app import app, db  # Import app and db from app.py
-from models import User, MenuItem, DrinkItem  # Import models from models.py
+from app import app, db  
+from models import User, MenuItem, DrinkItem  
 
 def check_database():
-    with app.app_context():  # Set up application context
+    with app.app_context():  
         session = db.session
         try:
             # Check Users
