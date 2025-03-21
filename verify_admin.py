@@ -1,22 +1,40 @@
-from app import app, db
-from models import User
+from database import Session
+from models import User, MenuItem, DrinkItem
 
-with app.app_context():
-    user = User.query.filter_by(username='testuser').first()
-    if user:
-        print(f"Username: {user.username}, ID: {user.id}, Is Admin: {user.is_admin}")
-        if not user.is_admin:
-            user.is_admin = True
-            db.session.commit()
-            print("Updated testuser to admin")
-    else:
-        print("User 'testuser' not found - creating one")
-        new_user = User(
-            username='testuser',
-            password=generate_password_hash('admin123'),
-            email='testuser@example.com',
-            is_admin=True
-        )
-        db.session.add(new_user)
-        db.session.commit()
-        print("Created testuser as admin")
+def check_database():
+    session = Session()
+    try:
+        # Check Users
+        print("\n=== Users in Database ===")
+        users = session.query(User).all()
+        for user in users:
+            print(f"Username: {user.username}")
+            print(f"Email: {user.email}")
+            print(f"Is Admin: {user.is_admin}")
+            print("---")
+        
+        # Check Menu Items
+        print("\n=== Food Menu Items ===")
+        menu_items = session.query(MenuItem).all()
+        for item in menu_items:
+            print(f"Name: {item.name}")
+            print(f"Category: {item.category}")
+            print(f"Price: £{item.price}")
+            print("---")
+        
+        # Check Drink Items
+        print("\n=== Drink Menu Items ===")
+        drink_items = session.query(DrinkItem).all()
+        for drink in drink_items:
+            print(f"Name: {drink.name}")
+            print(f"Category: {drink.category}")
+            print(f"Price: £{drink.price}")
+            print("---")
+            
+    except Exception as e:
+        print(f"Error checking database: {str(e)}")
+    finally:
+        session.close()
+
+if __name__ == "__main__":
+    check_database()

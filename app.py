@@ -14,12 +14,11 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired
 from passlib.hash import scrypt
-from passlib.hash import sha256_crypt  # Added for dual-hash support
 from functools import wraps
 from dotenv import load_dotenv
 import psycopg2
 from sqlalchemy.exc import SQLAlchemyError
-from urllib.parse import urlparse  # Added missing import
+from urllib.parse import urlparse
 
 # Configure detailed logging
 logging.basicConfig(level=logging.DEBUG)
@@ -99,6 +98,14 @@ def index():
         logger.debug(f"Index route - User authenticated: {current_user.is_authenticated}")
         if current_user.is_authenticated:
             logger.debug(f"User {current_user.username} is authenticated")
+            if session.get('user_id') != current_user.id:
+                logger.debug("Session user_id mismatch, updating session")
+                session['user_id'] = current_user.id
+        else:
+            if 'user_id' in session:
+                logger.debug("Clearing residual session data for unauthenticated user")
+                session.pop('user_id', None)
+        
         response = make_response(render_template('index.html'))
         response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
         response.headers['Pragma'] = 'no-cache'
@@ -170,7 +177,7 @@ def contact():
             if not name or not email or not message:
                 flash('Please fill in all fields.', 'error')
                 return render_template('contact.html')
-            new_contact = Contact(name=name, email=email, message=message)
+            new_contact = Contact(name=name, email=email, message=message, is_read=False)
             db.session.add(new_contact)
             db.session.commit()
             flash('Message sent successfully!', 'success')
@@ -186,8 +193,31 @@ def contact():
 def book():
     try:
         logger.debug(f"Book route - User authenticated: {current_user.is_authenticated}, ID: {current_user.id}")
+        # Get current time
+        now = datetime.now()
+        # Query bookings, filtering out those ended more than 4 hours ago
         bookings = Booking.query.filter_by(user_id=current_user.id).all()
-        return render_template('book.html', bookings=bookings)
+        active_bookings = []
+        
+        for booking in bookings:
+            # Combine date and time into a datetime object
+            booking_datetime_str = f"{booking.date} {booking.time}"
+            try:
+                booking_datetime = datetime.strptime(booking_datetime_str, '%Y-%m-%d %H:%M')
+            except ValueError:
+                logger.error(f"Invalid date/time format for booking ID {booking.id}: {booking_datetime_str}")
+                continue
+            
+            # Calculate end time (4 hours after booking start)
+            booking_end = booking_datetime + timedelta(hours=4)
+            
+            # Include booking if it hasn't ended yet or ended less than 4 hours ago
+            if now <= booking_end:
+                active_bookings.append(booking)
+            else:
+                logger.debug(f"Excluding expired booking ID {booking.id} - Ended at {booking_end}, Now: {now}")
+
+        return render_template('book.html', bookings=active_bookings)
     except Exception as e:
         logger.error(f"Error in book: {str(e)}")
         flash('Error processing your booking. Please try again later.', 'error')
@@ -291,6 +321,25 @@ def delete_booking(booking_id):
         db.session.rollback()
         logger.error(f"Error in delete_booking: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+@app.route('/admin_delete_booking/<int:booking_id>', methods=['POST'])
+@login_required
+def admin_delete_booking(booking_id):
+    try:
+        logger.debug(f"Admin_delete_booking route - User authenticated: {current_user.is_authenticated}, Booking ID: {booking_id}")
+        if not current_user.is_admin:
+            flash('Access denied. Admin privileges required.', 'error')
+            return redirect(url_for('index'))
+        
+        booking = Booking.query.get_or_404(booking_id)
+        db.session.delete(booking)
+        db.session.commit()
+        flash('Booking deleted successfully!', 'success')
+        return redirect(url_for('admin_panel'))
+    except Exception as e:
+        logger.error(f"Error in admin_delete_booking: {str(e)}")
+        flash('Error deleting booking. Please try again later.', 'error')
+        return redirect(url_for('admin_panel'))
 
 @app.route('/confirmation/<int:booking_id>')
 @login_required
@@ -468,20 +517,31 @@ def add_menu_item():
             menu_type = request.form.get('menu_type')
             name = request.form.get('name')
             description = request.form.get('description')
-            price = float(request.form.get('price'))
+            price = request.form.get('price')
             category = request.form.get('category') if menu_type == 'food' else request.form.get('drink_category')
             
-            if not all([menu_type, name, description, price, category]):
-                flash('All fields are required.', 'error')
+            # Validate required fields
+            if not all([menu_type, name, description, price]):
+                flash('All fields (Menu Type, Name, Description, Price) are required.', 'error')
                 return render_template('admin_menu.html')
+            
+            # Validate category based on menu_type
+            if menu_type == 'food' and not category:
+                flash('Category is required for food items.', 'error')
+                return render_template('admin_menu.html')
+            elif menu_type == 'drink' and not category:
+                flash('Category is required for drink items.', 'error')
+                return render_template('admin_menu.html')
+            elif menu_type not in ['food', 'drink']:
+                flash('Invalid menu type.', 'error')
+                return render_template('admin_menu.html')
+            
+            price = float(price)  # Convert price to float after validation
             
             if menu_type == 'food':
                 new_item = FoodItem(name=name, description=description, price=price, category=category)
             elif menu_type == 'drink':
                 new_item = DrinkItem(name=name, description=description, price=price, category=category)
-            else:
-                flash('Invalid menu type.', 'error')
-                return render_template('admin_menu.html')
             
             db.session.add(new_item)
             db.session.commit()
@@ -579,42 +639,32 @@ def login():
         if request.method == 'POST':
             username = request.form.get('username')
             password = request.form.get('password')
+            logger.debug(f"Login attempt - Username: {username}")
             if not username or not password:
                 flash('Please enter username and password.', 'error')
                 return render_template('login.html')
             user = User.query.filter_by(username=username).first()
             if user:
-                logger.debug(f"Attempting login for {username}, stored hash: {user.password}")
-                # Try sha256_crypt first (for testuser)
-                if sha256_crypt.verify(password, user.password):
-                    session.permanent = True
-                    login_user(user, remember=True)
-                    flash('Logged in successfully.', 'success')
-                    logger.debug(f"User {username} logged in successfully with sha256_crypt, is_admin: {user.is_admin}")
-                # Fall back to Werkzeug for regular users
-                elif check_password_hash(user.password, password):
-                    session.permanent = True
-                    login_user(user, remember=True)
-                    flash('Logged in successfully.', 'success')
-                    logger.debug(f"User {username} logged in successfully with Werkzeug hash, is_admin: {user.is_admin}")
-                else:
-                    flash('Invalid username or password.', 'error')
-                    logger.debug(f"Login failed for {username}: password mismatch")
-                    return render_template('login.html')
+                logger.debug(f"User found - ID: {user.id}, Is Admin: {user.is_admin}")
             else:
-                flash('Invalid username or password.', 'error')
-                logger.debug(f"Login failed: No user found with username {username}")
-                return render_template('login.html')
-            
-            next_page = request.args.get('next')
-            if user.is_admin:
-                logger.debug("Redirecting admin user to admin_panel")
-                return redirect(url_for('admin_panel'))
-            if next_page and urlparse(next_page).netloc == '':
-                logger.debug(f"Redirecting to next_page: {next_page}")
-                return redirect(next_page)
-            logger.debug("Redirecting to index")
-            return redirect(url_for('index'))
+                logger.debug(f"No user found for username: {username}")
+            if user and check_password_hash(user.password, password):
+                session.permanent = True
+                login_user(user, remember=True)
+                flash('Logged in successfully.', 'success')
+                logger.debug(f"User {username} logged in successfully, is_admin: {user.is_admin}")
+                next_page = request.args.get('next')
+                logger.debug(f"Next page: {next_page}")
+                if user.is_admin:
+                    logger.debug("Redirecting admin user to admin_panel")
+                    return redirect(url_for('admin_panel'))
+                if next_page and urlparse(next_page).netloc == '':
+                    logger.debug(f"Redirecting to next_page: {next_page}")
+                    return redirect(next_page)
+                logger.debug("Redirecting to index")
+                return redirect(url_for('index'))
+            flash('Invalid username or password.', 'error')
+            logger.debug("Login failed: Invalid credentials")
         return render_template('login.html')
     except Exception as e:
         logger.error(f"Error in login: {str(e)}")
